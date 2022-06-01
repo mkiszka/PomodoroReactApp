@@ -1,185 +1,128 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pomodoro Application</title>
-    <style>.App {         
-        font-family: sans-serif;
-    }
-    .TimeboxEditor {
-        text-align: right;
-        border: 1px solid gray;
-        border-radius: 5px;
-        padding: 20px;
-        margin-bottom: 20px;        
-    }
-    input {
-        min-width: 60%;
-        margin-left: 20px;
-        font-style: 16px;        
+    <style>
+        .App {
+            font-family: sans-serif;
+        }
 
-    }
-    button {
-        font-style: 16px;
+        .TimeboxEditor {
+            text-align: right;
+            border: 1px solid gray;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        input {
+            min-width: 60%;
+            margin-left: 20px;
+            font-style: 16px;
+
+        }
+
+        button {
+            font-style: 16px;
 
 
-    }
-    .Timebox {
-       border: 1px solid gray;
-       border-radius: 5px;
-       padding: 20px;
-       text-align: center;
-    }
-    .Clock {
-        background: red;;
-    }
-    .ProgressBar {
-        border: 1px solid orange;
-        border-radius: 5px;
-        height: 25px;
-        margin-bottom: 20px;
-        padding: 5px;        
-        
-    }
-    .ProgressBar::before {
-        background-color: red;
-        content: "";
-        height: 100%;
-        width: calc(100% - var(--width));
-        float: right;
-        
-    }
+        }
 
-    .ProgressBar > div {
-        
-    }
-    .inactive {
-        filter: blur(2px) grayscale(1);
-    }
+        .Timebox {
+            border: 1px solid gray;
+            border-radius: 5px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .Clock {
+            background: red;
+            ;
+        }
+
+        .ProgressBar {
+            border: 1px solid orange;
+            border-radius: 5px;
+            height: 25px;
+            margin-bottom: 20px;
+            padding: 5px;
+
+        }
+
+        .ProgressBar::before {
+            background-color: red;
+            content: "";
+            height: 100%;
+            width: calc(100% - var(--width));
+            float: right;
+
+        }
+
+        .ProgressBar>div {}
+
+        .inactive {
+            filter: blur(2px) grayscale(1);
+        }
     </style>
     <!-- <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script> -->
     <script src="https://unpkg.com/react@17.0.2/umd/react.development.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@17.0.2/umd/react-dom.development.js" crossorigin></script>
 </head>
-<body id="root">
-  
+
+<body id="bodyContent">
+    <div id="App">
+
+    </div>
 </body>
 <script type="text/javascript">
 
-const  ch1 = document.createElement("h1");
-ch1.textContent = "Pomodoro Application";
+    const ch1 = React.createElement("h1", {}, "Pomodoro Application");
+    const chr = React.createElement('hr');
 
-const chr = document.createElement('hr');
+    const divTimeBoxEditor = React.createElement("div", {
+        className:
+            "TimeboxEditor inactive"
+    },
+        React.createElement("label", {}, "Co robisz?"),
+        React.createElement("input", {
+            disabled: true,
+            value: "Uczę się",
+            type: "text",
+        }),
+        React.createElement("br"),
+        React.createElement("label", {}, "Ile minut?"),
+        React.createElement("input", {
+            disabled: true,
+            value: "140",
+            type: "number",
+        }),
+        React.createElement("br"),
+        React.createElement("button", {}, "Zacznij"),
+    );
 
+    const divTimeBox = React.createElement("div",
+        { className: "Timebox" },
+        React.createElement("h1", {}, "Uczę się skrótów klawiszowych"),
+        React.createElement("h2", { className: "Clock" }, "Pozostało 13:28"),
+        React.createElement("div", { className: "ProgressBar", style: { "--width": "60%" } }
 
-const divApp = document.createElement("div");
-divApp.className = "App";
-divApp.append(ch1);
-divApp.append(chr);
+        ),
+        React.createElement("button", { disabled: true}, "Start"),
+        React.createElement("button", {}, "Stop"),
+        React.createElement("button", {}, "Pauzuj"),
+        " Liczba przerw 2"
 
-var divTimeBox = document.createElement("div");
-divTimeBox.className = "TimeboxEditor inactive";
+    )
 
-var label = document.createElement("label");
-label.textContent="Co robisz?";
+    ReactDOM.render([ch1, chr, divTimeBoxEditor, divTimeBox], document.getElementById("App"));
 
-var input = document.createElement("input");
-input.disabled=true;
-input.value="Uczę się";
-input.type="text";
-
-label.append(input);
-
-divTimeBox.append(label);
-divTimeBox.append(document.createElement("br"));
-
-var label = document.createElement("label");
-label.textContent="Ile minut?";
-
-var input = document.createElement("input");
-input.disabled=true;
-input.value="140";
-input.type="number";
-
-label.append(input);
-
-var button = document.createElement("button")
-button.textContent = "Zacznij;"
-
-divTimeBox.append(label);
-divTimeBox.append(document.createElement("br"));
-divTimeBox.append(button);
-divApp.append(divTimeBox);
-
-divTimeBox = document.createElement("div");
-divTimeBox.className = "Timebox";
-
-
-var element = document.createElement("h1");
-element.textContent = "Uczę się skrótów klawiszowych";
-
-divTimeBox.append(element);
-
-element = document.createElement("h2");
-element.className = "Clock";
-element.textContent="Pozostało 13:28";
-
-divTimeBox.append(element);
-
-element = document.createElement("div");
-element.className="ProgressBar";
-element.style="--width: 60%;";
-
-divTimeBox.append(element);
-
-element = document.createElement("button");
-element.disabled=true;
-element.textContent="Start";
-
-divTimeBox.append(element);
-
-element = document.createElement("button");
-element.textContent="Stop";
-
-divTimeBox.append(element);
-
-element = document.createElement("button");
-element.textContent="Pauzuj";
-
-divTimeBox.append(element);
-
-element=document.createElement("span");
-element.textContent = "Liczba przerw 2";
-
-divTimeBox.append(element);
-
-divApp.append(divTimeBox);
-
-var rootElement = document.getElementById("root");
-rootElement.append(divApp);
-
-
-
-// var tmp = document.createElement("h1");
-// tmp.textContent = "test";
-// element.append(tmp);
-// rootElement.append(element);
-
-// const domElment = document.createElement("h2");
-// domElment.className="Clock";
-// domElment.textContent = "Pozostało 10:20"
-
-
-
-
-
-//const element = React.createElement("h2", { className: "Clock"},"Pozostało 15:25");
-
-
-// ReactDOM.createRoot(rootElement);
-//ReactDOM.render(element,rootElement);
+    // ReactDOM.createRoot(rootElement);
+    ReactDOM.render(rootElemen, document.getElementById("bodyElement"));
 </script>
+
 </html>
