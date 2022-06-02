@@ -121,6 +121,8 @@ const ch1 = React.createElement("h1", {key: "ch1"}, "Pomodoro Application");
     );
 
     const rootElement = ReactDOM.createRoot(document.getElementById("App"));
+    //dlaczego react ostrzega o braku key w poniższej tablicy,
+    //a przy braku key w dzieciach createElement nie ostrzega ?
     rootElement.render([ch1, chr, divTimeBoxEditor, divTimeBox]);
 </script>
 
