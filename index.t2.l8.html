@@ -85,7 +85,7 @@
             </div>
             <div class="Timebox">
                 <h1>Uczę się skrótów klawiszowych</h1>
-             
+
                 <div id="root"></div>
                 <div class="ProgressBar" style="--width: 60%;">
 
@@ -107,19 +107,18 @@
         return (<h2 key="asd" className="Clock"> Pozostało {hours}:{minutes}</h2>)
     }
 
-    function Clock({ hours, minutes, seconds, miliseconds, keyPreffix }) {
-        //TODO
-        //Undefinied checking should be done before range checking.     
-        hours = (hours < 0 ? 0 : (hours > 23 ? 23 : hours));        
+    function Clock({ hours = 0, minutes = 0, seconds = 0, miliseconds = 0, keyPreffix }) {
+       
+        hours = (hours < 0 ? 0 : (hours > 23 ? 23 : hours));
         minutes = (minutes < 0 ? 0 : (minutes > 59 ? 59 : minutes));
-        seconds  = (seconds  < 0 ? 0 : (seconds  > 59 ? 59 : seconds ));
-        miliseconds  = (miliseconds  < 0 ? 0 : (miliseconds  > 999 ? 999 : miliseconds ));
+        seconds = (seconds < 0 ? 0 : (seconds > 59 ? 59 : seconds));
+        miliseconds = (miliseconds < 0 ? 0 : (miliseconds > 999 ? 999 : miliseconds));
         return (
             <h2 key='{key}:h2' className="Clock">
-                Pozostało {hours === undefined ? "00" : String(hours).padStart(2, "0")}:
-                {minutes === undefined ? "00" : String(minutes).padStart(2, "0")}:
-                {seconds === undefined ? "00" : String(seconds).padStart(2, "0")}.
-                {miliseconds === undefined ? "000" : String(miliseconds).padStart(3, "0")}
+                Pozostało { String(hours).padStart(2, "0")}:
+                { String(minutes).padStart(2, "0")}:
+                { String(seconds).padStart(2, "0")}.
+                { String(miliseconds).padStart(3, "0")}
             </h2>)
     }
 
@@ -131,8 +130,8 @@
         (<Clock keyPrefix="clock3" hours={24} minutes={60} seconds={60} miliseconds={1000} />),
         (<Clock keyPrefix="clock4" hours={-3} minutes={97} seconds={-23} miliseconds={823} />),
         (<Clock keyPrefix="clock5" />)
-        ]
+    ]
         , rootElement);
-    </script>
+</script>
 
 </html>
