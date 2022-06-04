@@ -53,12 +53,12 @@
 
         }
 
-        .ProgressBar_trackRemaining_false::before {
+        .ProgressBar_trackRemaining_true::before {
             width: calc(100% - var(--width));
-            float: right;
+            float: left;
         }
 
-        .ProgressBar_trackRemaining_true::before {
+        .ProgressBar_trackRemaining_false::before {
             width: calc(var(--width));
             float: left;
         }
@@ -100,7 +100,7 @@
             </h2>)
     }
     function ProgressBar({ percent = 0, trackRemaining = false, className }) {
-
+        
         return (
             <div className={
                 `ProgressBar ProgressBar_trackRemaining_${trackRemaining} ${className} `
@@ -182,8 +182,7 @@
             this.intervalId = window.setInterval(
                 () => {
                     this.setState(
-                        (prevState) => {
-                            console.log("set state fired");
+                        (prevState) => {                         
                             const elapsedTimeInSeconds = prevState.elapsedTimeInSeconds + 0.1;
                             if (elapsedTimeInSeconds > this.totalTimeInSeconds) {
                                 this.stopTimer();                               
@@ -203,12 +202,12 @@
             const timeLeftInSecond = this.totalTimeInSeconds - elapsedTimeInSeconds;
             const minutesLeft = Math.floor(timeLeftInSecond / 60);
             const secondsLeft = Math.floor(timeLeftInSecond % 60);
-            const progressInPercent = (timeLeftInSecond / this.totalTimeInSeconds) * 100;
+            const progressInPercent = ((this.totalTimeInSeconds - timeLeftInSecond) / this.totalTimeInSeconds) * 100;
 
             return (<div className="Timebox">
                 <h1>Uczę się skrótów klawiszowych</h1>
                 <Clock keyPrefix="clock1" minutes={minutesLeft} seconds={secondsLeft} className={isPaused ? "inactive" : ""} />
-                <ProgressBar percent={progressInPercent} className={isPaused ? "inactive" : ""} trackRemaining="true" />
+                <ProgressBar percent={progressInPercent} className={isPaused ? "inactive" : ""} trackRemaining="false" />
                 <button onClick={this.handleStart} disabled={isRunning}>Start</button>
                 <button onClick={this.handleStop} disabled={!isRunning}>Stop</button>
                 <button onClick={this.tooglePause} disabled={!isRunning}>{isPaused ? "Wzów" : "Pauzuj"}</button>
@@ -232,7 +231,7 @@
             <h1>Pomodoro Application</h1>
             <hr />
             <TimeboxEditor />
-            <Timebox totalTimeInSeconds={totalTimeInSeconds} />
+            <Timebox totalTimeInSeconds={totalTimeInSeconds}/>
         </div>);
     }
 
