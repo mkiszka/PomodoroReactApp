@@ -118,17 +118,17 @@
                 isRunning: false,
                 isPaused: false,
                 pausesCount: 0,
-                elapsedTimeInMiliSeconds: 0,
+                elapsedTimeInMiliSeconds: 0,          
                 startTime: -1
             }
-
-            this.totalTimeInMiliSeconds = props.totalTimeInMinutes * 60000;
 
             this.handleStart = this.handleStart.bind(this);
             this.handleStop = this.handleStop.bind(this);
             this.tooglePause = this.tooglePause.bind(this);
         }
-
+        converMinutesToMiliSeconds(value) {
+            return value * 60000;
+        }
         handleStart(event) {
             this.setState(
                 {
@@ -190,8 +190,10 @@
                         (prevState) => {
 
                             const elapsedTimeInMiliSeconds = new Date().getTime() - startTime;
-                            console.log(this.totalTimeInMiliSeconds, elapsedTimeInMiliSeconds);
-                            if (elapsedTimeInMiliSeconds >= this.totalTimeInMiliSeconds) {
+                            const { totalTimeInMinutes } = this.props;
+                            const totalTimeInMiliSeconds = this.converMinutesToMiliSeconds(totalTimeInMinutes);
+                            console.log(totalTimeInMiliSeconds, elapsedTimeInMiliSeconds);
+                            if (elapsedTimeInMiliSeconds >= totalTimeInMiliSeconds) {
                                 this.stopTimer();
                             }
                             return ({ elapsedTimeInMiliSeconds: elapsedTimeInMiliSeconds });
@@ -204,15 +206,18 @@
         }
 
         render() {
+            
             const { isRunning, isPaused, pausesCount, elapsedTimeInMiliSeconds } = this.state;
-            const { title } = this.props;
+            const { title, totalTimeInMinutes } = this.props;            
+            const totalTimeInMiliSeconds = this.converMinutesToMiliSeconds(totalTimeInMinutes);
 
-            const timeLeftInMiliSeconds = this.totalTimeInMiliSeconds - elapsedTimeInMiliSeconds;
+            const timeLeftInMiliSeconds = totalTimeInMiliSeconds - elapsedTimeInMiliSeconds;
             const milisecondsLeft = Math.floor(timeLeftInMiliSeconds % 1000);
             const secondsLeft = Math.floor(timeLeftInMiliSeconds / 1000 % 60);
             const minutesLeft = Math.floor(timeLeftInMiliSeconds / 1000 / 60);
 
-            const progressInPercent = ((this.totalTimeInMiliSeconds - elapsedTimeInMiliSeconds) / this.totalTimeInMiliSeconds) * 100;
+
+            const progressInPercent = ((totalTimeInMiliSeconds - elapsedTimeInMiliSeconds) / totalTimeInMiliSeconds) * 100;
             // console.log(elapsedTimeInMiliSeconds, minutesLeft, secondsLeft, milisecondsLeft, progressInPercent);
 
             return (<div className="Timebox">
@@ -229,18 +234,21 @@
     }
 
     class TimeboxEditor extends React.Component {
-       
+
         state = {
             title: "Co robisz?", totalTimeInSeconds: 140
         }
         handleTitleChange = (event) => {
             this.setState({ title: event.target.value });
+            this.props.onTitleChange(event);
         }
         handleTotalTimeInSecondChange = (event) => {
             this.setState({ totalTimeInSeconds: event.target.value });
+            this.props.onTotalTimeInMinutesChange(event);
         }
         render() {
             const { title, totalTimeInSeconds } = this.state;
+
 
             return (<div className="TimeboxEditor">
                 <label>Co robisz ?<input disabled={false} value={title} type="text" onChange={this.handleTitleChange} /></label><br />
@@ -254,13 +262,28 @@
     class EditableTimeBox extends React.Component {
         state = {
             title: "Ucze się tego i tamtego?",
-            totalTimeInMinutes: 25
+            totalTimeInMinutes: 25,            
         }
+
+        handleTitleChange = (event) => {
+            this.setState({
+                title: event.target.value
+            });
+            console.log(event.target.value);
+        }
+
+        handleTotalTimeInMinutesChange = (event) => {
+            this.setState({
+                totalTimeInMinutes: event.target.value
+            });
+            console.log(event.target.value);
+        }
+
         render() {
             const { title, totalTimeInMinutes } = this.state;
             return (
                 <>
-                    <TimeboxEditor />
+                    <TimeboxEditor onTitleChange={this.handleTitleChange} onTotalTimeInMinutesChange={this.handleTotalTimeInMinutesChange} />
                     <Timebox title={title} totalTimeInMinutes={totalTimeInMinutes} />
                 </>
             )
