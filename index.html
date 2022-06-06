@@ -86,7 +86,6 @@
 <script type="text/babel">
 
     function Clock({ className, hours = 0, minutes = 0, seconds = 0, miliseconds = 0, keyPreffix }) {
-
         //hours = (hours < 0 ? 0 : (hours > 23 ? 23 : hours));
         hours = (hours < 0 ? 0 : hours);
         minutes = (minutes < 0 ? 0 : (minutes > 59 ? 59 : minutes));
@@ -115,121 +114,33 @@
     class Timebox extends React.Component {
         constructor(props) {
             super(props);
-            this.state = {
-                isRunning: false,
-                isPaused: false,
-                pausesCount: 0,
-                elapsedTimeInMiliSeconds: 0,
-                startTime: -1
-            }
-
-            this.handleStart = this.handleStart.bind(this);
-            this.handleStop = this.handleStop.bind(this);
-            this.tooglePause = this.tooglePause.bind(this);
-        }
-        converMinutesToMiliSeconds(value) {
-            return value * 60000;
-        }
-        handleStart(event) {
-            this.setState(
-                {
-                    isRunning: true,
-                    elapsedTimeInMiliSeconds: 0
-                }
-            );
-            this.startTimer();
-        }
-        handleStop(event) {
-            this.setState(
-                {
-                    isRunning: false,
-                    isPaused: false,
-                    pausesCount: 0,
-                    elapsedTimeInMiliSeconds: 0
-                }
-            );
-            this.stopTimer();
-
-        }
-        handlePause(event) {
-            this.setState(
-                {
-                    isRunning: false,
-                    isPaused: true
-                }
-            );
-        }
-
-        tooglePause() {
-            this.setState(
-                function (prevState) {
-                    const isPaused = !prevState.isPaused;
-                    if (isPaused) {
-                        this.stopTimer();
-                    } else {
-                        this.startTimer();
-                    }
-                    return {
-                        isPaused: isPaused,
-                        pausesCount: isPaused ? prevState.pausesCount + 1 : prevState.pausesCount
-                    }
-
-                }
-            )
-        }
-
-        stopTimer() {
-            window.clearInterval(this.intervalId);
-        }
-
-        startTimer() {
-            //this.setState({ startTime: new Date().getTime()});
-            const startTime = new Date().getTime();
-            this.intervalId = window.setInterval(
-                () => {
-                    this.setState(
-                        (prevState) => {
-
-                            const elapsedTimeInMiliSeconds = new Date().getTime() - startTime;
-                            const { totalTimeInMinutes } = this.props;
-                            const totalTimeInMiliSeconds = this.converMinutesToMiliSeconds(totalTimeInMinutes);
-                            console.log(totalTimeInMiliSeconds, elapsedTimeInMiliSeconds);
-                            if (elapsedTimeInMiliSeconds >= totalTimeInMiliSeconds) {
-                                this.stopTimer();
-                            }
-                            return ({ elapsedTimeInMiliSeconds: elapsedTimeInMiliSeconds });
-
-                        }
-                    );
-                },
-                100
-            )
         }
 
         render() {
 
-            const { isRunning, isPaused, pausesCount, elapsedTimeInMiliSeconds } = this.state;
-            const { title, totalTimeInMinutes, isEditable, onEdit } = this.props;
-            const totalTimeInMiliSeconds = this.converMinutesToMiliSeconds(totalTimeInMinutes);
+            const {
+                title, totalTimeInMinutes, isEditable, isRunning, isPaused, pausesCount, elapsedTimeInMiliSeconds,
+                onEdit, onPlay, onStop, onTogglePause } = this.props;
 
+            const totalTimeInMiliSeconds = totalTimeInMinutes * 60000;
             const timeLeftInMiliSeconds = totalTimeInMiliSeconds - elapsedTimeInMiliSeconds;
             const milisecondsLeft = Math.floor(timeLeftInMiliSeconds % 1000);
             const secondsLeft = Math.floor(timeLeftInMiliSeconds / 1000 % 60);
             const minutesLeft = Math.floor(timeLeftInMiliSeconds / 1000 / 60 % 60);
             const hoursLeft = Math.floor(timeLeftInMiliSeconds / 1000 / 60 / 60);
-
             const progressInPercent = ((totalTimeInMiliSeconds - elapsedTimeInMiliSeconds) / totalTimeInMiliSeconds) * 100;
-            // console.log(elapsedTimeInMiliSeconds, minutesLeft, secondsLeft, milisecondsLeft, progressInPercent);
+
 
             return (<div className={`Timebox  ${isEditable ? "inactive" : ""}`}>
+
                 <h1>{title}</h1>
 
                 <Clock keyPrefix="clock1" hours={hoursLeft} minutes={minutesLeft} seconds={secondsLeft} miliseconds={milisecondsLeft} className={isPaused ? "inactive" : ""} />
                 <ProgressBar percent={progressInPercent} className={isPaused ? "inactive" : ""} trackRemaining="false" />
                 <button onClick={onEdit} disabled={isEditable}>Edytuj</button>
-                <button onClick={this.handleStart} disabled={isRunning || isEditable}>Start</button>
-                <button onClick={this.handleStop} disabled={!isRunning}>Stop</button>
-                <button onClick={this.tooglePause} disabled={!isRunning}>{isPaused ? "Wzów" : "Pauzuj"}</button>
+                <button onClick={onPlay} disabled={isRunning || isEditable}>Start</button>
+                <button onClick={onStop} disabled={!isRunning}>Stop</button>
+                <button onClick={onTogglePause} disabled={!isRunning}>{isPaused ? "Wznów" : "Pauzuj"}</button>
                 Liczba przerw: {pausesCount}
             </div >);
         }
@@ -257,10 +168,23 @@
     }
 
     class EditableTimeBox extends React.Component {
-        state = {
-            title: "Ucze się tego i tamtego?",
-            totalTimeInMinutes: 25,
-            isEditable: true
+        constructor(props) {
+            super(props);
+            this.state = {
+                title: "Ucze się tego i tamtego?",
+                totalTimeInMinutes: 25,
+                isEditable: false,
+
+                timebox_startTime: 0,
+                timebox_isRunning: false,
+                timebox_isPaused: false,
+                timebox_pausesCount: 0,
+                timebox_elapsedTimeInMiliSeconds: 0
+
+            }
+
+            this.startTimer = this.startTimer.bind(this);
+            this.stopTimer = this.stopTimer.bind(this);
         }
 
         handleTitleChange = (event) => {
@@ -281,8 +205,101 @@
             this.setState({ isEditable: true });
         }
 
+        handlePlay = (event) => {
+            this.setState(
+                {
+                    timebox_isRunning: true,
+                    timebox_isPaused: false,
+                    timebox_elapsedTimeInMiliSeconds: 0
+                }
+            );
+            this.startTimer();
+        }
+
+        handleTogglePause = (event) => {
+            this.setState(
+                function (prevState) {
+                  
+                    const { timebox_isRunning, timebox_isPaused } = prevState;
+                    if (timebox_isPaused) {
+                        console.log("start");
+                        this.startTimer(false);
+                    } else {                        
+                        console.log("stop");
+                        this.stopTimer();
+                    }
+                    return {
+                   
+                        timebox_isPaused: !timebox_isPaused,
+                        timebox_pausesCount: !timebox_isPaused ? prevState.timebox_pausesCount + 1 : prevState.timebox_pausesCount
+                    }
+
+                }
+            )
+        }
+
+        handleStop = (event) => {
+            this.setState(
+                {
+                    timebox_isRunning: false,
+                    timebox_isPaused: false,
+                    timebox_pausesCount: 0,
+                    timebox_elapsedTimeInMiliSeconds: 0
+                }
+            );
+            this.stopTimer();
+        }
+
+
+
+
+
+        stopTimer() {            
+            window.clearInterval(this.intervalId);
+        }
+
+
+        startTimer(initializeStartTime = true) {
+            //this.setState({ startTime: new Date().getTime()});
+            let startTime;
+            if( initializeStartTime) {
+                startTime = new Date().getTime();
+                this.setState({startTime});
+            } else {
+                startTime = this.state.startTime;
+            }
+            this.intervalId = window.setInterval(
+                () => {
+                    this.setState(
+                        (prevState) => {                          
+                            const timebox_elapsedTimeInMiliSeconds = new Date().getTime() - startTime;
+                            const timebox_totalTimeInMiliSeconds = prevState.totalTimeInMinutes * 60000;
+                            //console.log(timebox_totalTimeInMiliSeconds, timebox_elapsedTimeInMiliSeconds);
+                            if (timebox_elapsedTimeInMiliSeconds >= timebox_totalTimeInMiliSeconds) {
+                                this.stopTimer();
+                            }
+                            return ({ timebox_elapsedTimeInMiliSeconds: timebox_elapsedTimeInMiliSeconds });
+
+                        }
+                    );
+                },
+                100
+            )
+        }
+
         render() {
-            const { title, totalTimeInMinutes, isEditable } = this.state;
+            const {
+                title,
+                totalTimeInMinutes,
+                isEditable,
+
+                timebox_isRunning,
+                timebox_isPaused,
+                //timebox_pausesCount,
+                timebox_pausesCount,
+                timebox_elapsedTimeInMiliSeconds,
+
+            } = this.state;
             return (
                 <>
                     <TimeboxEditor title={title}
@@ -294,8 +311,20 @@
                     <Timebox
                         title={title}
                         totalTimeInMinutes={totalTimeInMinutes}
+
+                        isEditable={isEditable}
+
+                        isRunning={timebox_isRunning}
+                        isPaused={timebox_isPaused}
+                        pausesCount={timebox_pausesCount}
+                        elapsedTimeInMiliSeconds={timebox_elapsedTimeInMiliSeconds}
+
                         onEdit={this.handleEdit}
-                        isEditable={isEditable} />
+                        onPlay={this.handlePlay}
+                        onStop={this.handleStop}
+                        onTogglePause={this.handleTogglePause}
+
+                    />
 
                 </>
             )
