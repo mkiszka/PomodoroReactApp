@@ -175,7 +175,7 @@
                 totalTimeInMinutes: 25,
                 isEditable: false,
 
-                timebox_startTime: 0,
+                timebox_lastIntervalTime: 0,
                 timebox_isRunning: false,
                 timebox_isPaused: false,
                 timebox_pausesCount: 0,
@@ -244,7 +244,8 @@
                     timebox_isRunning: false,
                     timebox_isPaused: false,
                     timebox_pausesCount: 0,
-                    timebox_elapsedTimeInMiliSeconds: 0
+                    timebox_elapsedTimeInMiliSeconds: 0,
+                    timebox_lastIntervalTime: 0
                 }
             );
             this.stopTimer();
@@ -256,29 +257,33 @@
 
         stopTimer() {            
             window.clearInterval(this.intervalId);
+            this.setState(
+                (prevState) => {                          
+                    const timebox_elapsedTimeInMiliSeconds = prevState.timebox_elapsedTimeInMiliSeconds + new Date().getTime() - prevState.timebox_lastIntervalTime;
+                 
+                    return ({ timebox_elapsedTimeInMiliSeconds: timebox_elapsedTimeInMiliSeconds });
+
+                }
+            );
         }
 
 
         startTimer(initializeStartTime = true) {
-            //this.setState({ startTime: new Date().getTime()});
-            let startTime;
-            if( initializeStartTime) {
-                startTime = new Date().getTime();
-                this.setState({startTime});
-            } else {
-                startTime = this.state.startTime;
-            }
+            
+            this.setState( { timebox_lastIntervalTime: new Date().getTime() } );
+
             this.intervalId = window.setInterval(
                 () => {
                     this.setState(
-                        (prevState) => {                          
-                            const timebox_elapsedTimeInMiliSeconds = new Date().getTime() - startTime;
+                        (prevState) => {                 
+                            const now = new Date().getTime();
+                            const timebox_elapsedTimeInMiliSeconds = prevState.timebox_elapsedTimeInMiliSeconds + new Date().getTime() - prevState.timebox_lastIntervalTime;
                             const timebox_totalTimeInMiliSeconds = prevState.totalTimeInMinutes * 60000;
                             //console.log(timebox_totalTimeInMiliSeconds, timebox_elapsedTimeInMiliSeconds);
                             if (timebox_elapsedTimeInMiliSeconds >= timebox_totalTimeInMiliSeconds) {
                                 this.stopTimer();
                             }
-                            return ({ timebox_elapsedTimeInMiliSeconds: timebox_elapsedTimeInMiliSeconds });
+                            return ({ timebox_elapsedTimeInMiliSeconds: timebox_elapsedTimeInMiliSeconds,timebox_lastIntervalTime: now });
 
                         }
                     );
