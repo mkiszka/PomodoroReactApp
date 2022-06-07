@@ -39,6 +39,31 @@
             text-align: center;
         }
 
+        .TimeboxListElement {
+            margin-top: 5px;
+            display: flex;
+            background-color: #F2BD41;
+            color: #1A18A1;
+            align-items: center;
+        }
+
+        .TimeboxListElementTitle {
+            width: 80%;
+            height: 100%;
+            text-align: left;
+
+            margin-right: 5px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .TimeboxListElementTime {
+            width: 20%;
+            font-size: large;
+            justify-content: center;
+            text-justify: center;
+        }
+
         .Clock {
             color: orangered;
             ;
@@ -146,7 +171,9 @@
         }
     }
 
+
     class TimeboxEditor extends React.Component {
+
 
         render() {
             const { title, totalTimeInMinutes, isEditable,
@@ -156,14 +183,76 @@
             } = this.props;
 
 
-            return (<div className={`TimeboxEditor  ${isEditable ? "" : "inactive"}`}>
+            return (<div className={`TimeboxEditor ${isEditable ? "" : "inactive"}`}>
                 <label>Co robisz ?<input disabled={!isEditable} value={title} type="text"
                     onChange={onTitleChange} /></label><br />
                 <label>Ile minut ?<input disabled={!isEditable} value={totalTimeInMinutes} type="number"
                     onChange={onTotalTimeInMinutesChange} /></label><br />
-                <button disabled={!isEditable} onClick={onConfirm}>Zatwierdź zmiany.</button>
+                <button disabled={!isEditable} onClick={onConfirm}>Dodaj</button>
             </div>
             );
+        }
+    }
+
+
+    class TimeboxListElement extends React.Component {
+
+        render() {
+            const { title, totalTimeInMinutes, onEdit, onDelete } = this.props;
+            return (
+                <div className="Timebox TimeboxListElement">
+                    <div className="TimeboxListElementTitle">{title}</div>
+                    <div className="TimeboxListElementTime">{totalTimeInMinutes} min.</div>
+                    <div className="TimeboxListElementAction">
+                        <button onClick={onEdit}>Zmień</button>
+                        <button onClick={onDelete}>Usuń</button>
+                    </div>
+                </div>
+            )
+        }
+    }
+
+    class TimeboxList extends React.Component {
+        state = {
+            timeboxes: [
+                { title: "Wywołanie eventów", totalTimeInMinutes: 20 },
+                { title: "KP-3034 Migracja z ver 1.14 do 1.15 usuwa powiązanie pacjent pracownik.", totalTimeInMinutes: 20 },
+                { title: "KP-3104 Deploy webserwisu zamówień dla 1.15", totalTimeInMinutes: 20 },
+            ]
+        }
+
+        handleDelete = (key) => {
+            this.setState(
+                (prevState) => {
+
+                    return (
+                        {
+                            timeboxes: prevState.timeboxes.filter(
+                                (value, index) => index === key ? false : true
+                            )
+                        }
+                    )
+                }
+            )
+        }
+        //TOOD
+        //funkcja zmień i funkcja dodaj
+
+        render() {
+            return this.state.timeboxes.map((elem, key) => {
+                // console.log(elem,key);
+                return (
+                    <TimeboxListElement
+                        key={key}
+                        title={elem.title}
+                        totalTimeInMinutes={elem.totalTimeInMinutes}
+
+                        onEdit={() => { }}
+                        onDelete={() => { this.handleDelete(key) }}
+                    />
+                )
+            }
+            )
         }
     }
 
@@ -173,7 +262,7 @@
             this.state = {
                 title: "Ucze się tego i tamtego?",
                 totalTimeInMinutes: 25,
-                isEditable: false,
+                isEditable: true,
 
                 timebox_lastIntervalTime: 0,
                 timebox_isRunning: false,
@@ -219,10 +308,10 @@
         handleTogglePause = (event) => {
             this.setState(
                 (prevState) => {
-                  
-                    const { timebox_isRunning, timebox_isPaused } = prevState;                    
+
+                    const { timebox_isRunning, timebox_isPaused } = prevState;
                     return {
-                   
+
                         timebox_isPaused: !timebox_isPaused,
                         timebox_pausesCount: !timebox_isPaused ? prevState.timebox_pausesCount + 1 : prevState.timebox_pausesCount
                     }
@@ -233,10 +322,10 @@
                     if (timebox_isPaused) {
                         console.log("stop");
                         this.stopTimer();
-                    } else {                        
+                    } else {
                         console.log("start");
                         this.startTimer(false);
-                        
+
                     }
                 }
             )
@@ -244,19 +333,19 @@
 
         handleStop = (event) => {
 
-            this.setState( (prevState) => {
+            this.setState((prevState) => {
 
 
                 return
-                    ({
-                        timebox_isRunning: false,
-                        timebox_isPaused: false,
-                        timebox_pausesCount: 0,
-                        timebox_elapsedTimeInMiliSeconds: 0,
-                        timebox_lastIntervalTime: 0
-                    });
-                
+                ({
+                    timebox_isRunning: false,
+                    timebox_isPaused: false,
+                    timebox_pausesCount: 0,
+                    timebox_elapsedTimeInMiliSeconds: 0,
+                    timebox_lastIntervalTime: 0
                 });
+
+            });
             this.stopTimer();
         }
 
@@ -264,12 +353,12 @@
 
 
 
-        stopTimer() {            
+        stopTimer() {
             window.clearInterval(this.intervalId);
             this.setState(
-                (prevState) => {                          
+                (prevState) => {
                     const timebox_elapsedTimeInMiliSeconds = prevState.timebox_elapsedTimeInMiliSeconds + new Date().getTime() - prevState.timebox_lastIntervalTime;
-                 
+
                     return ({ timebox_elapsedTimeInMiliSeconds: timebox_elapsedTimeInMiliSeconds });
 
                 }
@@ -278,13 +367,13 @@
 
 
         startTimer(initializeStartTime = true) {
-            
-            this.setState( { timebox_lastIntervalTime: new Date().getTime() } );
+
+            this.setState({ timebox_lastIntervalTime: new Date().getTime() });
 
             this.intervalId = window.setInterval(
                 () => {
                     this.setState(
-                        (prevState) => {                 
+                        (prevState) => {
                             const now = new Date().getTime();
                             const timebox_elapsedTimeInMiliSeconds = prevState.timebox_elapsedTimeInMiliSeconds + new Date().getTime() - prevState.timebox_lastIntervalTime;
                             const timebox_totalTimeInMiliSeconds = prevState.totalTimeInMinutes * 60000;
@@ -292,7 +381,7 @@
                             if (timebox_elapsedTimeInMiliSeconds >= timebox_totalTimeInMiliSeconds) {
                                 this.stopTimer();
                             }
-                            return ({ timebox_elapsedTimeInMiliSeconds: timebox_elapsedTimeInMiliSeconds,timebox_lastIntervalTime: now });
+                            return ({ timebox_elapsedTimeInMiliSeconds: timebox_elapsedTimeInMiliSeconds, timebox_lastIntervalTime: now });
 
                         }
                     );
@@ -350,6 +439,7 @@
             <h1>Pomodoro Application</h1>
             <hr />
             <EditableTimeBox />
+            <TimeboxList />
         </div>);
     }
 
