@@ -218,36 +218,45 @@
 
         handleTogglePause = (event) => {
             this.setState(
-                function (prevState) {
+                (prevState) => {
                   
-                    const { timebox_isRunning, timebox_isPaused } = prevState;
-                    if (timebox_isPaused) {
-                        console.log("start");
-                        this.startTimer(false);
-                    } else {                        
-                        console.log("stop");
-                        this.stopTimer();
-                    }
+                    const { timebox_isRunning, timebox_isPaused } = prevState;                    
                     return {
                    
                         timebox_isPaused: !timebox_isPaused,
                         timebox_pausesCount: !timebox_isPaused ? prevState.timebox_pausesCount + 1 : prevState.timebox_pausesCount
                     }
 
+                },
+                () => {
+                    const { timebox_isPaused } = this.state;
+                    if (timebox_isPaused) {
+                        console.log("stop");
+                        this.stopTimer();
+                    } else {                        
+                        console.log("start");
+                        this.startTimer(false);
+                        
+                    }
                 }
             )
         }
 
         handleStop = (event) => {
-            this.setState(
-                {
-                    timebox_isRunning: false,
-                    timebox_isPaused: false,
-                    timebox_pausesCount: 0,
-                    timebox_elapsedTimeInMiliSeconds: 0,
-                    timebox_lastIntervalTime: 0
-                }
-            );
+
+            this.setState( (prevState) => {
+
+
+                return
+                    ({
+                        timebox_isRunning: false,
+                        timebox_isPaused: false,
+                        timebox_pausesCount: 0,
+                        timebox_elapsedTimeInMiliSeconds: 0,
+                        timebox_lastIntervalTime: 0
+                    });
+                
+                });
             this.stopTimer();
         }
 
