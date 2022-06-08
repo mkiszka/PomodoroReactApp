@@ -19,7 +19,7 @@
             margin-bottom: 20px;
         }
 
-        input {
+        .TimeboxEditor>label>input {
             min-width: 60%;
             margin-left: 20px;
             font-style: 16px;
@@ -45,6 +45,11 @@
             background-color: #F2BD41;
             color: #1A18A1;
             align-items: center;
+
+        }
+
+        .TimeboxListElementTitle>input {
+            width: 100%
         }
 
         .TimeboxListElementTitle {
@@ -55,13 +60,26 @@
             margin-right: 5px;
             font-size: 18px;
             font-weight: bold;
+            display: flex;
+        }
+
+
+        .TimeboxListElementTime>input[type=number] {
+            width: 30px;
         }
 
         .TimeboxListElementTime {
-            width: 20%;
+            width: 115px;
             font-size: large;
             justify-content: center;
             text-justify: center;
+            display: flex;
+        }
+
+        .TimeboxListElementAction {
+            width: 110px;
+            justify-content: center;
+            display: flex;
         }
 
         .Clock {
@@ -102,6 +120,8 @@
     </style>
     <script src="https://unpkg.com/react@17.0.2/umd/react.development.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@17.0.2/umd/react-dom.development.js" crossorigin></script>
+    <!-- <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script> -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
 
@@ -155,8 +175,7 @@
             const hoursLeft = Math.floor(timeLeftInMiliSeconds / 1000 / 60 / 60);
             const progressInPercent = ((totalTimeInMiliSeconds - elapsedTimeInMiliSeconds) / totalTimeInMiliSeconds) * 100;
 
-
-            return (<div className={`Timebox  ${isEditable ? "inactive" : ""}`}>
+            return (<div className={`Timebox  ${isEditable ? "" : "inactive"}`}>
 
                 <h1>{title}</h1>
 
@@ -179,7 +198,7 @@
             const { title, totalTimeInMinutes, isEditable,
                 onTitleChange,
                 onTotalTimeInMinutesChange,
-                onConfirm
+                onAdd
             } = this.props;
 
 
@@ -188,7 +207,7 @@
                     onChange={onTitleChange} /></label><br />
                 <label>Ile minut ?<input disabled={!isEditable} value={totalTimeInMinutes} type="number"
                     onChange={onTotalTimeInMinutesChange} /></label><br />
-                <button disabled={!isEditable} onClick={onConfirm}>Dodaj</button>
+                <button disabled={!isEditable} onClick={onAdd}>Dodaj</button>
             </div>
             );
         }
@@ -198,11 +217,12 @@
     class TimeboxListElement extends React.Component {
 
         render() {
-            const { title, totalTimeInMinutes, onEdit, onDelete } = this.props;
+            console.log("render");
+            const { title, id,  totalTimeInMinutes, onEdit, onDelete, onTitleChange, onTimeChange } = this.props;
             return (
                 <div className="Timebox TimeboxListElement">
-                    <div className="TimeboxListElementTitle">{title}</div>
-                    <div className="TimeboxListElementTime">{totalTimeInMinutes} min.</div>
+                    <div className="TimeboxListElementTitle"><input value={title} onChange={(event) => { onTitleChange(event,id) }} /></div>
+                    <div className="TimeboxListElementTime"><input value={totalTimeInMinutes} onChange={(event) => { onTimeChange(event,id) }} type="number" />min.</div>
                     <div className="TimeboxListElementAction">
                         <button onClick={onEdit}>Zmień</button>
                         <button onClick={onDelete}>Usuń</button>
@@ -213,42 +233,27 @@
     }
 
     class TimeboxList extends React.Component {
-        state = {
-            timeboxes: [
-                { title: "Wywołanie eventów", totalTimeInMinutes: 20 },
-                { title: "KP-3034 Migracja z ver 1.14 do 1.15 usuwa powiązanie pacjent pracownik.", totalTimeInMinutes: 20 },
-                { title: "KP-3104 Deploy webserwisu zamówień dla 1.15", totalTimeInMinutes: 20 },
-            ]
-        }
 
-        handleDelete = (key) => {
-            this.setState(
-                (prevState) => {
 
-                    return (
-                        {
-                            timeboxes: prevState.timeboxes.filter(
-                                (value, index) => index === key ? false : true
-                            )
-                        }
-                    )
-                }
-            )
-        }
-        //TOOD
-        //funkcja zmień i funkcja dodaj
+      
 
         render() {
-            return this.state.timeboxes.map((elem, key) => {
+
+            const { timeboxes, onDelete, onEdit, onTitleChange, onTimeChange } = this.props;
+            return timeboxes.map((elem, key) => {
                 // console.log(elem,key);
+                
                 return (
                     <TimeboxListElement
                         key={key}
+                        id={key}
                         title={elem.title}
                         totalTimeInMinutes={elem.totalTimeInMinutes}
 
-                        onEdit={() => { }}
-                        onDelete={() => { this.handleDelete(key) }}
+                        onTitleChange={onTitleChange}
+                        onTimeChange={onTimeChange}
+                        onEdit={() => { onEdit(key) }}
+                        onDelete={() => { onDelete(key) }}
                     />
                 )
             }
@@ -256,7 +261,7 @@
         }
     }
 
-    class EditableTimeBox extends React.Component {
+    class Pomodoro extends React.Component {
         constructor(props) {
             super(props);
             this.state = {
@@ -268,12 +273,26 @@
                 timebox_isRunning: false,
                 timebox_isPaused: false,
                 timebox_pausesCount: 0,
-                timebox_elapsedTimeInMiliSeconds: 0
+                timebox_elapsedTimeInMiliSeconds: 0,
 
+
+                timeboxes: [
+                    { title: "Wywołanie eventów", totalTimeInMinutes: 20 },
+                    { title: "KP-3034 Migracja z ver 1.14 do 1.15 usuwa powiązanie pacjent pracownik.", totalTimeInMinutes: 20 },
+                    { title: "KP-3104 Deploy webserwisu zamówień dla 1.15", totalTimeInMinutes: 20 },
+                ]
             }
 
             this.startTimer = this.startTimer.bind(this);
             this.stopTimer = this.stopTimer.bind(this);
+        }
+
+        handleDelete = (key) => {
+            this.setState(
+                (prevState) => {
+                    return { timeboxes: prevState.timeboxes.filter((value, index) => index === key ? false : true) }
+                }
+            )
         }
 
         handleTitleChange = (event) => {
@@ -283,15 +302,34 @@
         }
 
         handleTotalTimeInMinutesChange = (event) => {
+
             this.setState({
                 totalTimeInMinutes: event.target.value
             });
         }
-        handleConfirm = (event) => {
+        handleAdd = (event) => {
+
             this.setState({ isEditable: false });
         }
         handleEdit = (event) => {
             this.setState({ isEditable: true });
+        }
+        handleEditTimeboxListElement = (key) => {
+            console.log("test");
+        }
+        handleTitleElementChange = (event,key) => {
+            const { timeboxes } = this.state;
+            timeboxes[key].title = event.target.value;
+
+            this.setState({timeboxes: timeboxes});
+            
+        }
+
+        handleTimeElementChange = (event,key) => {
+            const { timeboxes } = this.state;
+            timeboxes[key].totalTimeInMinutes = event.target.value;
+
+            this.setState({timeboxes: timeboxes});
         }
 
         handlePlay = (event) => {
@@ -349,10 +387,6 @@
             this.stopTimer();
         }
 
-
-
-
-
         stopTimer() {
             window.clearInterval(this.intervalId);
             this.setState(
@@ -364,7 +398,6 @@
                 }
             );
         }
-
 
         startTimer(initializeStartTime = true) {
 
@@ -390,17 +423,22 @@
             )
         }
 
+
         render() {
             const {
+                //TODO adjust names
+                //TODO
+                //funkcja zmień (ale inline) i funkcja dodaj
                 title,
                 totalTimeInMinutes,
                 isEditable,
 
                 timebox_isRunning,
-                timebox_isPaused,
-                //timebox_pausesCount,
+                timebox_isPaused,                
                 timebox_pausesCount,
                 timebox_elapsedTimeInMiliSeconds,
+
+                timeboxes
 
             } = this.state;
             return (
@@ -409,13 +447,13 @@
                         totalTimeInMinutes={totalTimeInMinutes}
                         onTitleChange={this.handleTitleChange}
                         onTotalTimeInMinutesChange={this.handleTotalTimeInMinutesChange}
-                        onConfirm={this.handleConfirm}
+                        onAdd={this.handleAdd}
                         isEditable={isEditable} />
                     <Timebox
                         title={title}
                         totalTimeInMinutes={totalTimeInMinutes}
 
-                        isEditable={isEditable}
+                        isEditable={true}
 
                         isRunning={timebox_isRunning}
                         isPaused={timebox_isPaused}
@@ -428,7 +466,11 @@
                         onTogglePause={this.handleTogglePause}
 
                     />
-
+                    <TimeboxList timeboxes={timeboxes} onDelete={this.handleDelete}
+                        onEdit={this.handleEditTimeboxListElement} 
+                        onTitleChange={this.handleTitleElementChange}
+                        onTimeChange={this.handleTimeElementChange}
+                        />
                 </>
             )
         }
@@ -438,8 +480,8 @@
         return (<div id="App">
             <h1>Pomodoro Application</h1>
             <hr />
-            <EditableTimeBox />
-            <TimeboxList />
+            <Pomodoro />
+
         </div>);
     }
 
