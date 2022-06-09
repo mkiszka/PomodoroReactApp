@@ -208,22 +208,32 @@
 
     class TimeboxCreator extends React.Component {
 
+        constructor(props) {
+            super(props);
+            this.formRef = React.createRef();
+        }
+
+        handleSubmit = (event) => {
+            event.preventDefault();
+            const { onAdd } = this.props;            
+            const inputs = event.target.getElementsByTagName("input");
+            onAdd({ uid: uuid.v4(), title: inputs[0].value, totalTimeInMinutes: inputs[1].value });
+        }
 
         render() {
             const { title, totalTimeInMinutes, isEditable,
                 onTitleChange,
-                onTotalTimeInMinutesChange,
-                onAdd
+                onTotalTimeInMinutesChange                
             } = this.props;
 
 
-            return (<div className={`TimeboxCreator ${isEditable ? "" : "inactive"}`}>
+            return (<form ref={this.form} onSubmit={this.handleSubmit} className={`TimeboxCreator ${isEditable ? "" : "inactive"}`}>
                 <label>Co robisz ?<input disabled={!isEditable} value={title} type="text"
                     onChange={onTitleChange} /></label><br />
                 <label>Ile minut ?<input disabled={!isEditable} value={totalTimeInMinutes} type="number"
                     onChange={onTotalTimeInMinutesChange} /></label><br />
-                <button disabled={!isEditable} onClick={() => { onAdd({ uid: uuid.v4(), title, totalTimeInMinutes }) }}>Dodaj</button>
-            </div>
+                <button disabled={!isEditable}>Dodaj</button>
+            </form>
             );
         }
     }
