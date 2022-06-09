@@ -180,7 +180,7 @@
 
             const {
                 timebox, isEditable, isRunning, isPaused, pausesCount, elapsedTimeInMiliSeconds,
-                onEdit, onPlay, onStop, onTogglePause } = this.props;
+                 onPlay, onStop, onTogglePause } = this.props;
 
             const totalTimeInMiliSeconds = timebox.totalTimeInMinutes * 60000;
             const timeLeftInMiliSeconds = totalTimeInMiliSeconds - elapsedTimeInMiliSeconds;
@@ -191,13 +191,11 @@
             const progressInPercent = ((totalTimeInMiliSeconds - elapsedTimeInMiliSeconds) / totalTimeInMiliSeconds) * 100;
 
             return (<div className={`Timebox  ${isEditable ? "" : "inactive"}`}>
-
                 <h1>{timebox.title}</h1>
 
                 <Clock keyPrefix="clock1" hours={hoursLeft} minutes={minutesLeft} seconds={secondsLeft} miliseconds={milisecondsLeft} className={isPaused ? "inactive" : ""} />
-                <ProgressBar percent={progressInPercent} className={isPaused ? "inactive" : ""} trackRemaining="false" />
-                <button onClick={onEdit} disabled={isEditable}>Edytuj</button>
-                <button onClick={onPlay} disabled={isRunning || isEditable}>Start</button>
+                <ProgressBar percent={progressInPercent} className={isPaused ? "inactive" : ""} trackRemaining="false" />                
+                <button onClick={onPlay} disabled={isRunning || !isEditable}>Start</button>
                 <button onClick={onStop} disabled={!isRunning}>Stop</button>
                 <button onClick={onTogglePause} disabled={!isRunning}>{isPaused ? "Wznów" : "Pauzuj"}</button>
                 Liczba przerw: {pausesCount}
@@ -221,7 +219,7 @@
         }
 
         render() {
-            console.log("render TimeboxCreator");
+          //  console.log("render TimeboxCreator");
             
             const { title, totalTimeInMinutes, isEditable,
                 onTitleChange,
@@ -244,7 +242,7 @@
     class TimeboxListElement extends React.Component {
 
         render() {
-            console.log("render TimeboxListElement");
+       //     console.log("render TimeboxListElement");
             const { index, timebox, onEdit, onDelete, onTitleChange, onTimeChange, onTimeboxUpdate } = this.props;
             
             return (
@@ -264,7 +262,7 @@
         //TODO join TimeboxList + TimeboxListElement
 
         render() {
-            console.log("render TimeboxList");
+       //     console.log("render TimeboxList");
             const { timeboxes, onDelete, onEdit, onTitleChange, onTimeChange, onTimeboxUpdate } = this.props;
             return timeboxes.map((elem, index) => {
 
@@ -306,7 +304,7 @@
                 timeboxes_currentIndex: 0,
 
                 timeboxes: [
-                    { uid: uuid.v4(), title: "Wywołanie eventów", totalTimeInMinutes: 20, isEditable: false },
+                    { uid: uuid.v4(), title: "Wywołanie eventów", totalTimeInMinutes: 3, isEditable: false },
                     { uid: uuid.v4(), title: "KP-3034 Migracja z ver 1.14 do 1.15 usuwa powiązanie pacjent pracownik.", totalTimeInMinutes: 20, isEditable: false },
                     { uid: uuid.v4(), title: "KP-3104 Deploy webserwisu zamówień dla 1.15", totalTimeInMinutes: 20, isEditable: false },
                 ]
@@ -345,9 +343,7 @@
             }
             )
         }
-        handleEdit = (event) => {
-            this.setState({ isEditable: true });
-        }
+       
         handleEditTimeboxListElement = (uid) => {
           
             this.setState((prevState) => {              
@@ -426,18 +422,15 @@
         }
 
         handleStop = (event) => {
-
+            console.log("Stio");
             this.setState((prevState) => {
-
-
-                return
-                ({
-                    timebox_isRunning: false,
+                  return ({  timebox_isRunning: false,
                     timebox_isPaused: false,
                     timebox_pausesCount: 0,
                     timebox_elapsedTimeInMiliSeconds: 0,
                     timebox_lastIntervalTime: 0
-                });
+                  })
+            
 
             });
             this.stopTimer();
@@ -481,7 +474,7 @@
 
 
         render() {
-            console.log("render Pomodoro");
+       //     console.log("render Pomodoro");
             const {
                 //TODO adjust names
 
@@ -517,8 +510,7 @@
                         isPaused={timebox_isPaused}
                         pausesCount={timebox_pausesCount}
                         elapsedTimeInMiliSeconds={timebox_elapsedTimeInMiliSeconds}
-
-                        onEdit={this.handleEdit}
+                      
                         onPlay={this.handlePlay}
                         onStop={this.handleStop}
                         onTogglePause={this.handleTogglePause}
