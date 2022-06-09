@@ -9,6 +9,9 @@
     <style>
         .App {
             font-family: sans-serif;
+            width: 600px;
+            margin: auto;
+
         }
 
         .TimeboxEditor {
@@ -477,7 +480,7 @@
     }
     function App() {
         const totalTimeInSeconds = 3;
-        return (<div id="App">
+        return (<div id="App" className="App">
             <h1>Pomodoro Application</h1>
             <hr />
             <Pomodoro />
