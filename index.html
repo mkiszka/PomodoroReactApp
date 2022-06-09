@@ -176,10 +176,10 @@
         render() {
 
             const {
-                title, totalTimeInMinutes, isEditable, isRunning, isPaused, pausesCount, elapsedTimeInMiliSeconds,
+                timebox, isEditable, isRunning, isPaused, pausesCount, elapsedTimeInMiliSeconds,
                 onEdit, onPlay, onStop, onTogglePause } = this.props;
 
-            const totalTimeInMiliSeconds = totalTimeInMinutes * 60000;
+            const totalTimeInMiliSeconds = timebox.totalTimeInMinutes * 60000;
             const timeLeftInMiliSeconds = totalTimeInMiliSeconds - elapsedTimeInMiliSeconds;
             const milisecondsLeft = Math.floor(timeLeftInMiliSeconds % 1000);
             const secondsLeft = Math.floor(timeLeftInMiliSeconds / 1000 % 60);
@@ -189,7 +189,7 @@
 
             return (<div className={`Timebox  ${isEditable ? "" : "inactive"}`}>
 
-                <h1>{title}</h1>
+                <h1>{timebox.title}</h1>
 
                 <Clock keyPrefix="clock1" hours={hoursLeft} minutes={minutesLeft} seconds={secondsLeft} miliseconds={milisecondsLeft} className={isPaused ? "inactive" : ""} />
                 <ProgressBar percent={progressInPercent} className={isPaused ? "inactive" : ""} trackRemaining="false" />
@@ -288,6 +288,7 @@
                 timebox_pausesCount: 0,
                 timebox_elapsedTimeInMiliSeconds: 0,
 
+                timeboxes_currentIndex: 0,
 
                 timeboxes: [
                     { title: "Wywołanie eventów", totalTimeInMinutes: 20, isEditable: false },
@@ -464,16 +465,17 @@
         render() {
             const {
                 //TODO adjust names
-s              
+              
                 title,
                 totalTimeInMinutes,
-                isEditable,
+                isEditable, //probably to remove
 
                 timebox_isRunning,
                 timebox_isPaused,
                 timebox_pausesCount,
                 timebox_elapsedTimeInMiliSeconds,
 
+                timeboxes_currentIndex,
                 timeboxes
 
             } = this.state;
@@ -486,8 +488,9 @@ s
                         onAdd={this.handleAdd}
                         isEditable={isEditable} />
                     <Timebox
-                        title={title}
-                        totalTimeInMinutes={totalTimeInMinutes}
+                        timebox={timeboxes[timeboxes_currentIndex]}
+                        // title={title}
+                        // totalTimeInMinutes={totalTimeInMinutes}
 
                         isEditable={true}
 
