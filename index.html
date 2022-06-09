@@ -221,6 +221,8 @@
         }
 
         render() {
+            console.log("render TimeboxCreator");
+            
             const { title, totalTimeInMinutes, isEditable,
                 onTitleChange,
                 onTotalTimeInMinutesChange                
@@ -242,7 +244,7 @@
     class TimeboxListElement extends React.Component {
 
         render() {
-            console.log("render");
+            console.log("render TimeboxListElement");
             const { index, timebox, onEdit, onDelete, onTitleChange, onTimeChange, onTimeboxUpdate } = this.props;
             
             return (
@@ -262,7 +264,7 @@
         //TODO join TimeboxList + TimeboxListElement
 
         render() {
-
+            console.log("render TimeboxList");
             const { timeboxes, onDelete, onEdit, onTitleChange, onTimeChange, onTimeboxUpdate } = this.props;
             return timeboxes.map((elem, index) => {
 
@@ -479,6 +481,7 @@
 
 
         render() {
+            console.log("render Pomodoro");
             const {
                 //TODO adjust names
 
