@@ -135,6 +135,9 @@
     <!-- <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script> -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uuid/8.3.2/uuid.min.js"
+        integrity="sha512-UNM1njAgOFUa74Z0bADwAq8gbTcqZC8Ej4xPSzpnh0l6KMevwvkBvbldF9uR++qKeJ+MOZHRjV1HZjoRvjDfNQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 
 <body>
@@ -219,7 +222,7 @@
                     onChange={onTitleChange} /></label><br />
                 <label>Ile minut ?<input disabled={!isEditable} value={totalTimeInMinutes} type="number"
                     onChange={onTotalTimeInMinutesChange} /></label><br />
-                <button disabled={!isEditable} onClick={() => {onAdd({title, totalTimeInMinutes})}}>Dodaj</button>
+                <button disabled={!isEditable} onClick={() => { onAdd({ uid: uuid.v4(), title, totalTimeInMinutes }) }}>Dodaj</button>
             </div>
             );
         }
@@ -230,13 +233,14 @@
 
         render() {
             console.log("render");
-            const { id, isEditable, timebox, onEdit, onDelete, onTitleChange, onTimeChange,onTimeboxUpdate } = this.props;
+            const { index, timebox, onEdit, onDelete, onTitleChange, onTimeChange, onTimeboxUpdate } = this.props;
+            
             return (
                 <div className={"Timebox TimeboxListElement"}>
-                    <div className="TimeboxListElementTitle"><textarea disabled={!isEditable} value={timebox.title} onChange={ (event) => { onTitleChange(event,id)}} /></div>
-                    <div className="TimeboxListElementTime"><input disabled={!isEditable} value={timebox.totalTimeInMinutes} onChange={ (event) => {onTotalTimeInMinutesChange(event,id)}} type="number" />min.</div>
+                    <div className="TimeboxListElementTitle"><textarea disabled={!timebox.isEditable} value={timebox.title} onChange={(event) => { onTitleChange(event, index) }} /></div>
+                    <div className="TimeboxListElementTime"><input disabled={!timebox.isEditable} value={timebox.totalTimeInMinutes} onChange={(event) => { onTotalTimeInMinutesChange(event, index) }} type="number" />min.</div>
                     <div className="TimeboxListElementAction">
-                        <button onClick={onEdit}>{isEditable ? "Zapisz" : "Edutuj"}</button>
+                        <button onClick={onEdit}>{timebox.isEditable ? "Zapisz" : "Edutuj"}</button>
                         <button onClick={onDelete}>Usuń</button>
                     </div>
                 </div>
@@ -245,28 +249,27 @@
     }
 
     class TimeboxList extends React.Component {
-
+        //TODO join TimeboxList + TimeboxListElement
 
         render() {
 
-            const { timeboxes, onDelete, onEdit, onTitleChange, onTimeChange,onTimeboxUpdate } = this.props;
-            return timeboxes.map((elem, key) => {
+            const { timeboxes, onDelete, onEdit, onTitleChange, onTimeChange, onTimeboxUpdate } = this.props;
+            return timeboxes.map((elem, index) => {
 
-                //  console.log(elem.isEditable);
+                // console.log(elem.uid);
 
                 return (
                     <TimeboxListElement
-                        key={key}
-                        id={key}
+                        key={elem.uid}
+                        index={index}
                         // title={elem.title}
                         // totalTimeInMinutes={elem.totalTimeInMinutes}
                         timebox={elem}
-                        isEditable={elem.isEditable}
                         onTimeboxUpdate={onTimeboxUpdate}
                         onTitleChange={onTitleChange}
                         onTimeChange={onTimeChange}
-                        onEdit={() => { onEdit(key) }}
-                        onDelete={() => { onDelete(key) }}
+                        onEdit={() => { onEdit(elem.uid) }}
+                        onDelete={() => { onDelete(elem.uid) }}
                     />
                 )
             }
@@ -291,9 +294,9 @@
                 timeboxes_currentIndex: 0,
 
                 timeboxes: [
-                    { title: "Wywołanie eventów", totalTimeInMinutes: 20, isEditable: false },
-                    { title: "KP-3034 Migracja z ver 1.14 do 1.15 usuwa powiązanie pacjent pracownik.", totalTimeInMinutes: 20, isEditable: false },
-                    { title: "KP-3104 Deploy webserwisu zamówień dla 1.15", totalTimeInMinutes: 20, isEditable: false },
+                    { uid: uuid.v4(), title: "Wywołanie eventów", totalTimeInMinutes: 20, isEditable: false },
+                    { uid: uuid.v4(), title: "KP-3034 Migracja z ver 1.14 do 1.15 usuwa powiązanie pacjent pracownik.", totalTimeInMinutes: 20, isEditable: false },
+                    { uid: uuid.v4(), title: "KP-3104 Deploy webserwisu zamówień dla 1.15", totalTimeInMinutes: 20, isEditable: false },
                 ]
             }
 
@@ -301,10 +304,11 @@
             this.stopTimer = this.stopTimer.bind(this);
         }
 
-        handleDelete = (key) => {
+        handleDelete = (uid) => {
+            console.log(uid);
             this.setState(
                 (prevState) => {
-                    return { timeboxes: prevState.timeboxes.filter((value, index) => index === key ? false : true) }
+                    return { timeboxes: prevState.timeboxes.filter((value, index) => value.uid === uid ? false : true) }
                 }
             )
         }
@@ -332,28 +336,30 @@
         handleEdit = (event) => {
             this.setState({ isEditable: true });
         }
-        handleEditTimeboxListElement = (key) => {
-
-
-            this.setState((prevState) => {
-                let timeboxes = prevState.timeboxes;
-                timeboxes[key].isEditable = !prevState.timeboxes[key].isEditable;
-                return ({ timeboxes: timeboxes });
+        handleEditTimeboxListElement = (uid) => {
+          
+            this.setState((prevState) => {              
+                return {
+                    timeboxes: prevState.timeboxes.map((value) => {
+                        return value.uid === uid ? { ...value, isEditable: !value.isEditable } : value
+                    })
+                }
             }
             )
         }
 
-        handleTitleElementChange = (event, key) => {
+        handleTitleElementChange = (event, id) => {
             const { timeboxes } = this.state;
-            timeboxes[key].title = event.target.value;
+            
+            timeboxes[id].title = event.target.value;
 
             this.setState({ timeboxes: timeboxes });
 
         }
 
-        handleTimeElementChange = (event, key) => {
+        handleTimeElementChange = (event, id) => {
             const { timeboxes } = this.state;
-            timeboxes[key].totalTimeInMinutes = event.target.value;
+            timeboxes[id].totalTimeInMinutes = event.target.value;
 
             this.setState({ timeboxes: timeboxes });
         }
@@ -465,7 +471,7 @@
         render() {
             const {
                 //TODO adjust names
-              
+
                 title,
                 totalTimeInMinutes,
                 isEditable, //probably to remove
@@ -509,7 +515,7 @@
                         onEdit={this.handleEditTimeboxListElement}
                         onTitleChange={this.handleTitleElementChange}
                         onTimeChange={this.handleTimeElementChange}
-                       
+
                     />
                 </>
             )
