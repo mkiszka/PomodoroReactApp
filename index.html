@@ -51,7 +51,7 @@
 
         }
 
-        .TimeboxListElementTitle>input {
+        .TimeboxListElementTitle > textarea {
             width: 100%
         }
 
@@ -64,19 +64,30 @@
             font-size: 18px;
             font-weight: bold;
             display: flex;
-        }
-
+        }        
 
         .TimeboxListElementTime>input[type=number] {
-            width: 30px;
+            width: 40px;
         }
 
         .TimeboxListElementTime {
-            width: 115px;
-            font-size: large;
-            justify-content: center;
-            text-justify: center;
+            width: 155px;            
+            justify-content: center;        
             display: flex;
+        }
+
+        .TimeboxListElementTitle textarea,
+        .TimeboxListElementTime input
+         {
+            border: 0px;
+            color: #1A18A1;
+         }
+
+        .TimeboxListElementTitle textarea:disabled,
+        .TimeboxListElementTime input:disabled
+         {
+            border: 0px;
+            background-color: #F2BD41;
         }
 
         .TimeboxListElementAction {
@@ -221,11 +232,11 @@
 
         render() {
             console.log("render");
-            const { title, id,  totalTimeInMinutes, onEdit, onDelete, onTitleChange, onTimeChange } = this.props;
+            const { title, id, isEditable, totalTimeInMinutes, onEdit, onDelete, onTitleChange, onTimeChange } = this.props;
             return (
-                <div className="Timebox TimeboxListElement">
-                    <div className="TimeboxListElementTitle"><input value={title} onChange={(event) => { onTitleChange(event,id) }} /></div>
-                    <div className="TimeboxListElementTime"><input value={totalTimeInMinutes} onChange={(event) => { onTimeChange(event,id) }} type="number" />min.</div>
+                <div className={ "Timebox TimeboxListElement"}>
+                    <div className="TimeboxListElementTitle"><textarea disabled={!isEditable} value={title} onChange={(event) => { onTitleChange(event, id) }} /></div>
+                    <div className="TimeboxListElementTime"><input disabled={!isEditable} value={totalTimeInMinutes} onChange={(event) => { onTimeChange(event, id) }} type="number" />min.</div>
                     <div className="TimeboxListElementAction">
                         <button onClick={onEdit}>Zmień</button>
                         <button onClick={onDelete}>Usuń</button>
@@ -238,20 +249,20 @@
     class TimeboxList extends React.Component {
 
 
-      
-
         render() {
 
             const { timeboxes, onDelete, onEdit, onTitleChange, onTimeChange } = this.props;
             return timeboxes.map((elem, key) => {
-                // console.log(elem,key);
-                
+                 
+                //  console.log(elem.isEditable);
+
                 return (
                     <TimeboxListElement
                         key={key}
                         id={key}
                         title={elem.title}
                         totalTimeInMinutes={elem.totalTimeInMinutes}
+                        isEditable={elem.isEditable}
 
                         onTitleChange={onTitleChange}
                         onTimeChange={onTimeChange}
@@ -280,9 +291,9 @@
 
 
                 timeboxes: [
-                    { title: "Wywołanie eventów", totalTimeInMinutes: 20 },
-                    { title: "KP-3034 Migracja z ver 1.14 do 1.15 usuwa powiązanie pacjent pracownik.", totalTimeInMinutes: 20 },
-                    { title: "KP-3104 Deploy webserwisu zamówień dla 1.15", totalTimeInMinutes: 20 },
+                    { title: "Wywołanie eventów", totalTimeInMinutes: 20, isEditable: false },
+                    { title: "KP-3034 Migracja z ver 1.14 do 1.15 usuwa powiązanie pacjent pracownik.", totalTimeInMinutes: 20, isEditable: false },
+                    { title: "KP-3104 Deploy webserwisu zamówień dla 1.15", totalTimeInMinutes: 20, isEditable: false },
                 ]
             }
 
@@ -318,21 +329,30 @@
             this.setState({ isEditable: true });
         }
         handleEditTimeboxListElement = (key) => {
-            console.log("test");
+             
+
+            this.setState((prevState) => 
+                { 
+                    let timeboxes = prevState.timeboxes;         
+                    timeboxes[key].isEditable = !prevState.timeboxes[key].isEditable;
+                    return ({timeboxes: timeboxes});
+                }
+            )
         }
-        handleTitleElementChange = (event,key) => {
+
+        handleTitleElementChange = (event, key) => {
             const { timeboxes } = this.state;
             timeboxes[key].title = event.target.value;
 
-            this.setState({timeboxes: timeboxes});
-            
+            this.setState({timeboxes: timeboxes });
+
         }
 
-        handleTimeElementChange = (event,key) => {
+        handleTimeElementChange = (event, key) => {
             const { timeboxes } = this.state;
             timeboxes[key].totalTimeInMinutes = event.target.value;
 
-            this.setState({timeboxes: timeboxes});
+            this.setState({ timeboxes: timeboxes });
         }
 
         handlePlay = (event) => {
@@ -437,7 +457,7 @@
                 isEditable,
 
                 timebox_isRunning,
-                timebox_isPaused,                
+                timebox_isPaused,
                 timebox_pausesCount,
                 timebox_elapsedTimeInMiliSeconds,
 
@@ -470,10 +490,10 @@
 
                     />
                     <TimeboxList timeboxes={timeboxes} onDelete={this.handleDelete}
-                        onEdit={this.handleEditTimeboxListElement} 
+                        onEdit={this.handleEditTimeboxListElement}
                         onTitleChange={this.handleTitleElementChange}
                         onTimeChange={this.handleTimeElementChange}
-                        />
+                    />
                 </>
             )
         }
