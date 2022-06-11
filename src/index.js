@@ -5,7 +5,7 @@ import './index.css';
 import reportWebVitals from './reportWebVitals';
 import { v4 as uuidv4 } from 'uuid';
 import Timebox from './components/Timebox';
-
+import "./styles/main.css"
 
 class TimeboxCreator extends React.Component {
 
