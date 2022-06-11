@@ -1,4 +1,6 @@
 import React from "react";
+import { IoTrashOutline,IoMenu,IoSave } from "react-icons/io5";
+
 
 class TimeboxListElement extends React.Component {
 
@@ -11,8 +13,9 @@ class TimeboxListElement extends React.Component {
                 <div className="TimeboxListElementTitle"><textarea disabled={!timebox.isEditable} value={timebox.title} onChange={(event) => { onTitleChange(event, index) }} /></div>
                 <div className="TimeboxListElementTime"><input disabled={!timebox.isEditable} value={timebox.totalTimeInMinutes} onChange={(event) => { onTimeChange(event, index) }} type="number" />min.</div>
                 <div className="TimeboxListElementAction">
-                    <button onClick={onEdit}>{timebox.isEditable ? "Zapisz" : "Edutuj"}</button>
-                    <button onClick={onDelete}>Usuń</button>
+                    {timebox.isEditable ? (<IoSave className="cursorPointer" onClick={onEdit}/>) : (<IoMenu className="cursorPointer" onClick={onEdit}></IoMenu>)}
+                                       
+                    <IoTrashOutline className="cursorPointer" onClick={onDelete}/>
                 </div>
             </div>
         )
