@@ -1,3 +1,4 @@
+
 .App {
     font-family: sans-serif;
     width: 600px;
@@ -7,28 +8,23 @@
 
 .TimeboxCreator {
     text-align: right;
-    border: 1px solid gray;
-    border-radius: 5px;
+    border: $default-border;
+    border-radius: $border-radius;
     padding: 20px;
     margin-bottom: 20px;
-}
 
-.TimeboxCreator>label>input {
-    min-width: 60%;
-    margin-left: 20px;
-    font-style: 16px;
-
-}
-
-button {
-    font-style: 16px;
-
-
+    >label {
+        >input {
+            min-width: 60%;
+            margin-left: 20px;
+            font-style: 16px;
+        }
+    }
 }
 
 .Timebox {
-    border: 1px solid gray;
-    border-radius: 5px;
+    border: $default-border;
+    border-radius: $border-radius;
     padding: 20px;
     text-align: center;
 }
@@ -36,14 +32,13 @@ button {
 .TimeboxListElement {
     margin-top: 5px;
     display: flex;
-    background-color: #F2BD41;
-    color: #1A18A1;
+    background-color: $list-element-background-color;
+    color: $list-element-color;
     align-items: center;
 
-}
-
-.TimeboxListElementTitle>textarea {
-    width: 100%
+    >textarea {
+        width: 100%
+    }
 }
 
 .TimeboxListElementTitle {
@@ -55,28 +50,34 @@ button {
     font-size: 18px;
     font-weight: bold;
     display: flex;
-}
 
-.TimeboxListElementTime>input[type=number] {
-    width: 40px;
+    >textarea {
+        width: 100%;
+    }
 }
 
 .TimeboxListElementTime {
     width: 155px;
     justify-content: center;
     display: flex;
+
+    >input {
+        &[type=number] {
+            width: 40px;
+        }
+    }
 }
 
 .TimeboxListElementTitle textarea,
 .TimeboxListElementTime input {
     border: 0px;
-    color: #1A18A1;
+    color: $list-element-color;
 }
 
 .TimeboxListElementTitle textarea:disabled,
 .TimeboxListElementTime input:disabled {
     border: 0px;
-    background-color: #F2BD41;
+    background-color: $list-element-background-color;
 }
 
 .TimeboxListElementAction {
@@ -92,10 +93,16 @@ button {
 
 .ProgressBar {
     border: 1px solid orange;
-    border-radius: 5px;
+    border-radius: $border-radius;
     height: 25px;
     margin-bottom: 20px;
     padding: 5px;
+
+    &::before {
+        background-color: red;
+        content: "";
+        height: 100%;
+    }
 
 }
 
@@ -107,16 +114,4 @@ button {
 .ProgressBar_trackRemaining_false::before {
     width: calc(var(--width));
     float: left;
-}
-
-.ProgressBar::before {
-    background-color: red;
-    content: "";
-    height: 100%;
-
-
-}
-
-.inactive {
-    filter: blur(2px) grayscale(0.4);
 }
