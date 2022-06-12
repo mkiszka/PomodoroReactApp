@@ -112,15 +112,29 @@ class Timebox extends React.Component {
             onPlay, onStop, onTogglePause } = this.props;
 
         const { isRunning, isPaused, pausesCount, elapsedTimeInMiliSeconds } = this.state
+        let totalTimeInMiliSeconds,timeLeftInMiliSeconds, milisecondsLeft, minutesLeft;
+        let secondsLeft, hoursLeft;
+        let progressInPercent;
+        let timeboxEmpty = false;
+        if( timebox == null || Object.keys(timebox).length == 0 ) {
+             totalTimeInMiliSeconds = 0;
+             timeLeftInMiliSeconds = 0;
+             milisecondsLeft = 0;
+             secondsLeft = 0;
+             minutesLeft = 0;
+             hoursLeft = 0;
+             progressInPercent = 0;
+             timeboxEmpty = true;
+        } else {
+             totalTimeInMiliSeconds = timebox.totalTimeInMinutes * 60000;
+             timeLeftInMiliSeconds = totalTimeInMiliSeconds - elapsedTimeInMiliSeconds;
+             milisecondsLeft = Math.floor(timeLeftInMiliSeconds % 1000);
+             secondsLeft = Math.floor(timeLeftInMiliSeconds / 1000 % 60);
+             minutesLeft = Math.floor(timeLeftInMiliSeconds / 1000 / 60 % 60);
+             hoursLeft = Math.floor(timeLeftInMiliSeconds / 1000 / 60 / 60);
+             progressInPercent = ((totalTimeInMiliSeconds - elapsedTimeInMiliSeconds) / totalTimeInMiliSeconds) * 100;
+        }
 
-        const totalTimeInMiliSeconds = timebox.totalTimeInMinutes * 60000;
-        const timeLeftInMiliSeconds = totalTimeInMiliSeconds - elapsedTimeInMiliSeconds;
-        const milisecondsLeft = Math.floor(timeLeftInMiliSeconds % 1000);
-        const secondsLeft = Math.floor(timeLeftInMiliSeconds / 1000 % 60);
-        const minutesLeft = Math.floor(timeLeftInMiliSeconds / 1000 / 60 % 60);
-        const hoursLeft = Math.floor(timeLeftInMiliSeconds / 1000 / 60 / 60);
-        const progressInPercent = ((totalTimeInMiliSeconds - elapsedTimeInMiliSeconds) / totalTimeInMiliSeconds) * 100;
-console.log(isPaused,isRunning);
         return (<div className={`Timebox  ${isEditable ? "" : "inactive"}`}>
             <h1>{timebox.title}</h1>
             <h4>Liczba przerw: {pausesCount}</h4>
@@ -130,12 +144,12 @@ console.log(isPaused,isRunning);
                 miliseconds={milisecondsLeft}
                 className={isPaused ? "inactive" : ""} />
             <ProgressBar
-                percent={progressInPercent} className={isPaused ? "inactive" : ""} trackRemaining="false" />            
-            <button onClick={ !isPaused && !isRunning ? this.handlePlay : this.handleTogglePause}> 
-                {isRunning && !isPaused ? <IoPauseCircleOutline className="button-active"/> : <IoPlayCircleOutline className="button-active"/> }
+                percent={progressInPercent} className={isPaused ? "inactive" : ""} trackRemaining="false" />                
+            <button onClick={ !isPaused && !isRunning ? this.handlePlay : this.handleTogglePause} disabled={timeboxEmpty}> 
+                {isRunning && !isPaused ? <IoPauseCircleOutline className={timeboxEmpty?"button-inactive":"button-active"}/> : <IoPlayCircleOutline className={timeboxEmpty?"button-inactive":"button-active"}/> }
             </button>
-            <button onClick={this.handleStop} disabled={!isRunning} >
-                <IoStopCircleOutline className="button-active"/>
+            <button onClick={this.handleStop} disabled={!isRunning || timeboxEmpty} >
+                <IoStopCircleOutline className={timeboxEmpty?"button-inactive":"button-active"}/>
             </button>
            
         </div >);

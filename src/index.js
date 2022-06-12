@@ -4,7 +4,7 @@ import "./styles/main.scss"
 
 import reportWebVitals from './reportWebVitals';
 import App from './components/App';
-
+import {CookiesProvider} from 'react-cookie'
 
 //const rootElement = document.getElementById("root");
 //ReactDOM.render(<App />
@@ -13,7 +13,9 @@ import App from './components/App';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <React.StrictMode>
-        <App />
+        <CookiesProvider>
+            <App />
+        </CookiesProvider>
     </React.StrictMode>
 );
 
