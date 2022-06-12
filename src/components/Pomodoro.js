@@ -1,12 +1,28 @@
 import React from "react";
+import { instanceOf } from 'prop-types';
 import { v4 as uuidv4 } from 'uuid';
 import Timebox from "./Timebox";
 import TimeboxList from "./TimeboxList";
 import TimeboxCreator from "./TimeboxCreator";
+import { withCookies, Cookies } from 'react-cookie';
 
 class Pomodoro extends React.Component {
+
+    static propTypes = {
+        cookies: instanceOf(Cookies).isRequired
+    }
+
     constructor(props) {
         super(props);
+        const {cookies} = this.props;
+        const timeboxes = 
+            cookies.get('timeboxes') || 
+            [
+                { uid: uuidv4(), title: "Wywołanie eventów", totalTimeInMinutes: 3, isEditable: false },
+                { uid: uuidv4(), title: "KP-3034 Migracja z ver 1.14 do 1.15 usuwa powiązanie pacjent pracownik.", totalTimeInMinutes: 20, isEditable: false },
+                { uid: uuidv4(), title: "KP-3104 Deploy webserwisu zamówień dla 1.15", totalTimeInMinutes: 20, isEditable: false },
+            ];
+
         this.state = {
             title: "Ucze się tego i tamtego?",
             totalTimeInMinutes: 25,
@@ -14,21 +30,19 @@ class Pomodoro extends React.Component {
 
             timeboxes_currentIndex: 0,
 
-            timeboxes: [
-                { uid: uuidv4(), title: "Wywołanie eventów", totalTimeInMinutes: 3, isEditable: false },
-                { uid: uuidv4(), title: "KP-3034 Migracja z ver 1.14 do 1.15 usuwa powiązanie pacjent pracownik.", totalTimeInMinutes: 20, isEditable: false },
-                { uid: uuidv4(), title: "KP-3104 Deploy webserwisu zamówień dla 1.15", totalTimeInMinutes: 20, isEditable: false },
-            ]
+            timeboxes: timeboxes
         }
 
       
     }
 
     handleDelete = (uid) => {
-        console.log(uid);
+        const { cookies } = this.props;
         this.setState(
             (prevState) => {
-                return { timeboxes: prevState.timeboxes.filter((value, index) => value.uid === uid ? false : true) }
+                let timeboxes = prevState.timeboxes.filter((value, index) => value.uid === uid ? false : true);
+                cookies.set('timeboxes',timeboxes,{ path: '/'});
+                return { timeboxes:  timeboxes}
             }
         )
     }
@@ -46,9 +60,12 @@ class Pomodoro extends React.Component {
         });
     }
     handleAdd = (timeboxToAdd) => {
+        const { cookies } = this.props;
+        
         this.setState((prevState) => {
             let timeboxes = prevState.timeboxes;
             timeboxes = [...prevState.timeboxes, timeboxToAdd];
+            cookies.set('timeboxes',timeboxes,{ path: '/'});
             return ({ timeboxes: timeboxes });
         }
         )
@@ -128,4 +145,4 @@ class Pomodoro extends React.Component {
         )
     }
 }
-export default Pomodoro;
+export default withCookies(Pomodoro);
