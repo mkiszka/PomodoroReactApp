@@ -3,4 +3,13 @@
     border-radius: $border-radius;
     padding: 20px;
     text-align: center;
+
+    >button {
+        all: unset;
+        cursor: hand;
+    }
+    svg {
+        height: $react-icons-button-medium;
+        width: $react-icons-button-medium;          
+    }
 }
