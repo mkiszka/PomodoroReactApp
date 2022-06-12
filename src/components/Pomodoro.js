@@ -132,7 +132,7 @@ class Pomodoro extends React.Component {
                     onAdd={this.handleAdd}
                     isEditable={isEditable} />
                 <Timebox
-                    timebox={timeboxes[timeboxes_currentIndex]}                        
+                    timebox={timeboxes.length > 0 ? timeboxes[timeboxes_currentIndex]:{}}
                     isEditable={true}
                 />
                 <TimeboxList timeboxes={timeboxes} onDelete={this.handleDelete}
