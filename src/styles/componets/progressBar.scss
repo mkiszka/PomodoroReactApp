@@ -1,0 +1,24 @@
+.ProgressBar {
+    border: 1px solid orange;
+    border-radius: $border-radius;
+    height: 25px;
+    margin-bottom: 20px;
+    padding: 5px;
+
+    &::before {
+        background-color: red;
+        content: "";
+        height: 100%;
+    }
+
+}
+
+.ProgressBar_trackRemaining_true::before {
+    width: calc(100% - var(--width));
+    float: left;
+}
+
+.ProgressBar_trackRemaining_false::before {
+    width: calc(var(--width));
+    float: left;
+}
