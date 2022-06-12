@@ -1,6 +1,7 @@
 import React from 'react';
 import Clock from './Clock';
 import ProgressBar from './ProgressBar';
+import { IoPlayCircleOutline,IoStopCircleOutline, IoPauseCircleOutline } from 'react-icons/io5'
 
 class Timebox extends React.Component {
     constructor(props) {
@@ -105,7 +106,7 @@ class Timebox extends React.Component {
     }
 
     render() {
-
+//TODO too many render issue
         const {
             timebox, isEditable,
             onPlay, onStop, onTogglePause } = this.props;
@@ -119,21 +120,24 @@ class Timebox extends React.Component {
         const minutesLeft = Math.floor(timeLeftInMiliSeconds / 1000 / 60 % 60);
         const hoursLeft = Math.floor(timeLeftInMiliSeconds / 1000 / 60 / 60);
         const progressInPercent = ((totalTimeInMiliSeconds - elapsedTimeInMiliSeconds) / totalTimeInMiliSeconds) * 100;
-
+console.log(isPaused,isRunning);
         return (<div className={`Timebox  ${isEditable ? "" : "inactive"}`}>
             <h1>{timebox.title}</h1>
-
+            <h4>Liczba przerw: {pausesCount}</h4>
             <Clock keyPrefix="clock1"
                 hours={hoursLeft} minutes={minutesLeft}
                 seconds={secondsLeft}
                 miliseconds={milisecondsLeft}
                 className={isPaused ? "inactive" : ""} />
             <ProgressBar
-                percent={progressInPercent} className={isPaused ? "inactive" : ""} trackRemaining="false" />
-            <button onClick={this.handlePlay} disabled={isRunning || !isEditable}>Start</button>
-            <button onClick={this.handleStop} disabled={!isRunning}>Stop</button>
-            <button onClick={this.handleTogglePause} disabled={!isRunning}>{isPaused ? "Wznów" : "Pauzuj"}</button>
-            Liczba przerw: {pausesCount}
+                percent={progressInPercent} className={isPaused ? "inactive" : ""} trackRemaining="false" />            
+            <button onClick={ !isPaused && !isRunning ? this.handlePlay : this.handleTogglePause}> 
+                {isRunning && !isPaused ? <IoPauseCircleOutline className="button-active"/> : <IoPlayCircleOutline className="button-active"/> }
+            </button>
+            <button onClick={this.handleStop} disabled={!isRunning} >
+                <IoStopCircleOutline className="button-active"/>
+            </button>
+           
         </div >);
     }
 }
