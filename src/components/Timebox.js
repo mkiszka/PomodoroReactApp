@@ -142,7 +142,7 @@ class Timebox extends React.Component {
                 hours={hoursLeft} minutes={minutesLeft}
                 seconds={secondsLeft}
                 miliseconds={milisecondsLeft}
-                className={isPaused ? "inactive" : ""} />
+                className={"TimeboxClock " + (isPaused ? "inactive" : "")} />
             <ProgressBar
                 percent={progressInPercent} className={isPaused ? "inactive" : ""} trackRemaining="false" />                
             <button onClick={ !isPaused && !isRunning ? this.handlePlay : this.handleTogglePause} disabled={timeboxEmpty}> 
