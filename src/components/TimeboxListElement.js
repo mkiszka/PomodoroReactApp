@@ -1,13 +1,13 @@
 import React from "react";
 import { IoTrashOutline,IoMenu,IoSaveOutline,
     IoAddCircleOutline } from "react-icons/io5";
-
+import PropTypes from "prop-types";
 
 class TimeboxListElement extends React.Component {
 
     render() {
         console.log("render TimeboxListElement");
-        const { index, timebox, onEdit, onDelete, onTitleChange, onTimeChange, onTimeboxUpdate } = this.props;
+        const { index, timebox, onEdit, onDelete, onTitleChange, onTimeChange } = this.props;
 
         return (
             <div className={"Timebox TimeboxListElement"}>
@@ -21,6 +21,15 @@ class TimeboxListElement extends React.Component {
             </div>
         )
     }
+}
+
+TimeboxListElement.propTypes = {
+    index: PropTypes.number.isRequired,
+    timebox: PropTypes.object.isRequired,
+    onEdit: PropTypes.func.isRequired,
+    onDelete: PropTypes.func.isRequired,
+    onTitleChange: PropTypes.func.isRequired,
+    onTimeChange: PropTypes.func.isRequired
 }
 
 export default TimeboxListElement;

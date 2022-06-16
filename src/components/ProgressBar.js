@@ -1,6 +1,7 @@
 import React from "react";
+import PropTypes from "prop-types";
 
-function ProgressBar({ percent = 0, trackRemaining = false, className }) {
+function ProgressBar({ percent, trackRemaining, className }) {
 
     return (
         <div className={
@@ -10,6 +11,17 @@ function ProgressBar({ percent = 0, trackRemaining = false, className }) {
 
         </div>
     );
+}
+ProgressBar.defaultProps = {
+    percent: 0,
+    trackRemaining: false,    
+}
+
+ProgressBar.propTypes = {
+    percent: PropTypes.number,
+    trackRemaining: PropTypes.bool,
+    className: PropTypes.string
+
 }
 
 export default ProgressBar;
