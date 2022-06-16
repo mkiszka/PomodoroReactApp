@@ -111,9 +111,7 @@ class Timebox extends React.Component {
     render() {
         
 //TODO too many render issue
-        const {
-            timebox, isEditable,
-            onPlay, onStop, onTogglePause } = this.props;
+        const { timebox, isEditable } = this.props;
 
         const { isRunning, isPaused, pausesCount, elapsedTimeInMiliSeconds } = this.state
         let totalTimeInMiliSeconds,timeLeftInMiliSeconds, milisecondsLeft, minutesLeft;
