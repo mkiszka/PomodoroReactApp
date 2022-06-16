@@ -2,6 +2,7 @@ import React from "react";
 import { v4 as uuidv4 } from "uuid";
 import { IconContext } from "react-icons/";
 import { IoAddCircleOutline } from "react-icons/io5";
+import Message from "./Message";
 
 
 class TimeboxCreator extends React.Component {
@@ -9,13 +10,18 @@ class TimeboxCreator extends React.Component {
     constructor(props) {
         super(props);
         this.formRef = React.createRef();
+        this.state = { hasError: false }
     }
 
     handleSubmit = (event) => {
-        event.preventDefault();
-        const { onAdd } = this.props;
-        const inputs = event.target.getElementsByTagName("input");
-        onAdd({ uid: uuidv4(), title: inputs[0].value, totalTimeInMinutes: inputs[1].value });
+        try {
+            event.preventDefault();
+            const { onAdd } = this.props;
+            const inputs = event.target.getElementsByTagName("input");
+            onAdd({ uid: uuidv4(), title: inputs[0].value, totalTimeInMinutes: inputs[1].value });
+        } catch (error) {            
+            this.setState( { hasError: true, error  })
+        }
     }
 
     render() {
@@ -25,9 +31,11 @@ class TimeboxCreator extends React.Component {
             onTitleChange,
             onTotalTimeInMinutesChange
         } = this.props;
-
+        const { hasError, error } = this.state;
 
         return (
+            this.state.hasError?
+            <Message summmaryMessage={error.Message} />:
             <IconContext.Provider value={{ className: "" }}>
                 <form ref={this.form} onSubmit={this.handleSubmit} className={`TimeboxCreator ${isEditable ? "" : "inactive"}`}>
                     <div>

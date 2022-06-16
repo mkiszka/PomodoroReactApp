@@ -1,0 +1,13 @@
+.Message {
+    padding: 10px;
+    margin-top: $margin-top;
+    margin-bottom: $margin-top;
+    border: $default-border;
+    border-radius: $border-radius;
+    text-align: left;
+
+    >p {
+        margin-left: 30px;
+    }
+
+}
