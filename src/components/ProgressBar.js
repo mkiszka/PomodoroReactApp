@@ -1,13 +1,13 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React from 'react';
+import PropTypes from 'prop-types';
 
-function ProgressBar({ percent, trackRemaining, className }) {
+function ProgressBar({ color, percent, trackRemaining, className }) {
 
     return (
         <div className={
             `ProgressBar ProgressBar_trackRemaining_${trackRemaining} ${className} `
         }
-            style={{ "--width": `${percent}%` }}>
+            style={{ '--width': `${percent}%`, '--background-color': color }}>
 
         </div>
     );
@@ -27,12 +27,14 @@ function validateNumberRange(min, max) {
 ProgressBar.defaultProps = {
     percent: 0,
     trackRemaining: false,
+    color: 'red'
 }
 
 ProgressBar.propTypes = {
     percent: validateNumberRange(0, 100),
     trackRemaining: PropTypes.bool,
-    className: PropTypes.string
+    className: PropTypes.string,
+    color: PropTypes.oneOf(['red', 'green', 'blue'])
 
 }
 
