@@ -28,6 +28,7 @@ class Timebox extends React.Component {
     }
 
     handleTogglePause = (event) => {
+       
         this.setState(
             (prevState) => {
 
@@ -40,6 +41,7 @@ class Timebox extends React.Component {
 
             },
             () => {
+     
                 const { isPaused } = this.state;
                 if (isPaused) {
                     console.log("stop");
@@ -70,6 +72,7 @@ class Timebox extends React.Component {
     }
 
     stopTimer() {
+      
         window.clearInterval(this.intervalId);
         this.setState(
             (prevState) => {
@@ -82,7 +85,7 @@ class Timebox extends React.Component {
     }
 
     startTimer(initializeStartTime = true) {
-
+        
         this.setState({ lastIntervalTime: new Date().getTime() });
 
         this.intervalId = window.setInterval(
@@ -106,6 +109,7 @@ class Timebox extends React.Component {
     }
 
     render() {
+        
 //TODO too many render issue
         const {
             timebox, isEditable,
