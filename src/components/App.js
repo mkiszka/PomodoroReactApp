@@ -1,13 +1,13 @@
 import React from "react";
 import Pomodoro from "./Pomodoro";
 import RealTimeClock from "./RealTimeClock";
-import Error from "./Error";
+import ErrorBoundary from "./ErrorBoundary";
 
 function App() {
     const totalTimeInSeconds = 3;
     return (
         <div id="App" className="App">
-            <Error>
+            <ErrorBoundary>
                 <div className="AppHeader" >
                     <div>
                         <h1>Pomodoro Application</h1>
@@ -17,7 +17,7 @@ function App() {
                 </div>
                 <hr />
                 <Pomodoro />
-            </Error>
+            </ErrorBoundary>
         </div>       
     ) 
 }
