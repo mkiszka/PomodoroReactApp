@@ -2,6 +2,8 @@ import React from 'react';
 import Clock from './Clock';
 import ProgressBar from './ProgressBar';
 import { IoPlayCircleOutline,IoStopCircleOutline, IoPauseCircleOutline } from 'react-icons/io5'
+import PropTypes from 'prop-types'
+import TimeboxListElement from './TimeboxListElement';
 
 class Timebox extends React.Component {
     constructor(props) {
@@ -141,12 +143,13 @@ class Timebox extends React.Component {
             <h1>{timebox.title}</h1>
             <h4>Liczba przerw: {pausesCount}</h4>
             <Clock keyPrefix="clock1"
-                hours={hoursLeft} minutes={minutesLeft}
+                hours={hoursLeft}
+                minutes={minutesLeft}
                 seconds={secondsLeft}
                 miliseconds={milisecondsLeft}
                 className={"TimeboxClock " + (isPaused ? "inactive" : "")} />
             <ProgressBar
-                percent={progressInPercent} className={isPaused ? "inactive" : ""} trackRemaining="false" />                
+                percent={progressInPercent} className={isPaused ? "inactive" : ""} trackRemaining={false} />                
             <button onClick={ !isPaused && !isRunning ? this.handlePlay : this.handleTogglePause} disabled={timeboxEmpty}> 
                 {isRunning && !isPaused ? <IoPauseCircleOutline className={timeboxEmpty?"button-inactive":"button-active"}/> : <IoPlayCircleOutline className={timeboxEmpty?"button-inactive":"button-active"}/> }
             </button>
@@ -158,4 +161,12 @@ class Timebox extends React.Component {
     }
 }
 
+Timebox.defaultProps = {
+    isEditable: true
+}
+
+Timebox.propTypes  = {
+    isEditable: PropTypes.bool,
+    timebox: PropTypes.object
+}
 export default Timebox;

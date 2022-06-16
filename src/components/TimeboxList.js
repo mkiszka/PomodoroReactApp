@@ -1,16 +1,14 @@
 import React from "react";
 import TimeboxListElement from "./TimeboxListElement";
+import PropTypes from "prop-types";
 
 class TimeboxList extends React.Component {
     //TODO join TimeboxList + TimeboxListElement
 
     render() {
         console.log("render TimeboxList");
-        const { timeboxes, onDelete, onEdit, onTitleChange, onTimeChange, onTimeboxUpdate } = this.props;
+        const { timeboxes, onDelete, onEdit, onTitleChange, onTimeChange } = this.props;
         return timeboxes.map((elem, index) => {
-
-            // console.log(elem.uid);
-
             return (
                 <TimeboxListElement
                     key={elem.uid}
@@ -18,7 +16,6 @@ class TimeboxList extends React.Component {
                     // title={elem.title}
                     // totalTimeInMinutes={elem.totalTimeInMinutes}
                     timebox={elem}
-                    onTimeboxUpdate={onTimeboxUpdate}
                     onTitleChange={onTitleChange}
                     onTimeChange={onTimeChange}
                     onEdit={() => { onEdit(elem.uid) }}
@@ -28,6 +25,14 @@ class TimeboxList extends React.Component {
         }
         )
     }
+}
+
+TimeboxList.propTypes = {
+   timeboxes: PropTypes.array, 
+   onTitleChange: PropTypes.func.isRequired,
+   onTimeChange: PropTypes.func.isRequired,
+   onEdit: PropTypes.func.isRequired,
+   onDelete: PropTypes.func.isRequired
 }
 
 export default TimeboxList;

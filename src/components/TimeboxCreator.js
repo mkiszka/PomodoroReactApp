@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import { IconContext } from "react-icons/";
 import { IoAddCircleOutline } from "react-icons/io5";
 import Message from "./Message";
-
+import PropTypes from "prop-types";
 
 class TimeboxCreator extends React.Component {
 
@@ -53,6 +53,13 @@ class TimeboxCreator extends React.Component {
             </IconContext.Provider>
         );
     }
+}
+TimeboxCreator.propTypes = {
+    title: PropTypes.string,
+    totalTimeInMinutes: PropTypes.number,
+    isEditable: PropTypes.bool,
+    onTitleChange: PropTypes.func.isRequired,
+    onTotalTimeInMinutesChange: PropTypes.func.isRequired
 }
 
 export default TimeboxCreator;

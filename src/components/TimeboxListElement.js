@@ -1,13 +1,14 @@
 import React from "react";
 import { IoTrashOutline,IoMenu,IoSaveOutline,
     IoAddCircleOutline } from "react-icons/io5";
-
+import PropTypes from "prop-types";
+import { v4 as uuidv4 }  from "uuid"
 
 class TimeboxListElement extends React.Component {
 
     render() {
         console.log("render TimeboxListElement");
-        const { index, timebox, onEdit, onDelete, onTitleChange, onTimeChange, onTimeboxUpdate } = this.props;
+        const { index, timebox, onEdit, onDelete, onTitleChange, onTimeChange } = this.props;
 
         return (
             <div className={"Timebox TimeboxListElement"}>
@@ -21,6 +22,24 @@ class TimeboxListElement extends React.Component {
             </div>
         )
     }
+}
+TimeboxListElement.defaultProps = {
+    index: 0,
+    timebox: { uid: uuidv4(), title: "Default title", totalTimeInMinutes: 3, isEditable: false },
+    onEdit: () => { console.log("handle edit ") },
+    onDelete: () => { console.log("handle delete ") },
+    onTitleChange: () => { console.log("handle title change ") },
+    onTimeChange: () => { console.log("handle time change ") },
+    
+}
+
+TimeboxListElement.propTypes = {
+    index: PropTypes.number.isRequired,
+    timebox: PropTypes.object.isRequired,
+    onEdit: PropTypes.func.isRequired,
+    onDelete: PropTypes.func.isRequired,
+    onTitleChange: PropTypes.func.isRequired,
+    onTimeChange: PropTypes.func.isRequired
 }
 
 export default TimeboxListElement;
