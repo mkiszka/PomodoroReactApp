@@ -2,6 +2,7 @@ import React from "react";
 import { IoTrashOutline,IoMenu,IoSaveOutline,
     IoAddCircleOutline } from "react-icons/io5";
 import PropTypes from "prop-types";
+import { v4 as uuidv4 }  from "uuid"
 
 class TimeboxListElement extends React.Component {
 
@@ -21,6 +22,15 @@ class TimeboxListElement extends React.Component {
             </div>
         )
     }
+}
+TimeboxListElement.defaultProps = {
+    index: 0,
+    timebox: { uid: uuidv4(), title: "Default title", totalTimeInMinutes: 3, isEditable: false },
+    onEdit: () => { console.log("handle edit ") },
+    onDelete: () => { console.log("handle delete ") },
+    onTitleChange: () => { console.log("handle title change ") },
+    onTimeChange: () => { console.log("handle time change ") },
+    
 }
 
 TimeboxListElement.propTypes = {
