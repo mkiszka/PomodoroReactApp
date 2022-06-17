@@ -3,7 +3,7 @@ import Clock from './Clock';
 import ProgressBar from './ProgressBar';
 import { IoPlayCircleOutline,IoStopCircleOutline, IoPauseCircleOutline } from 'react-icons/io5'
 import PropTypes from 'prop-types'
-import TimeboxListElement from './TimeboxListElement';
+import {convertMiliSecondsToMiliSecondsSecondMinutesHours} from '../utilities/time'
 
 class Timebox extends React.Component {
     constructor(props) {
@@ -109,7 +109,7 @@ class Timebox extends React.Component {
             100
         )
     }
-
+   
     render() {
         
 //TODO too many render issue
@@ -132,10 +132,8 @@ class Timebox extends React.Component {
         } else {
              totalTimeInMiliSeconds = timebox.totalTimeInMinutes * 60000;
              timeLeftInMiliSeconds = totalTimeInMiliSeconds - elapsedTimeInMiliSeconds;
-             milisecondsLeft = Math.floor(timeLeftInMiliSeconds % 1000);
-             secondsLeft = Math.floor(timeLeftInMiliSeconds / 1000 % 60);
-             minutesLeft = Math.floor(timeLeftInMiliSeconds / 1000 / 60 % 60);
-             hoursLeft = Math.floor(timeLeftInMiliSeconds / 1000 / 60 / 60);
+             [milisecondsLeft, secondsLeft, minutesLeft, hoursLeft] = convertMiliSecondsToMiliSecondsSecondMinutesHours(timeLeftInMiliSeconds);
+
              progressInPercent = ((totalTimeInMiliSeconds - elapsedTimeInMiliSeconds) / totalTimeInMiliSeconds) * 100;
         }
 
