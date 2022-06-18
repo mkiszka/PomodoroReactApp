@@ -27,7 +27,8 @@ function validateNumberRange(min, max) {
 ProgressBar.defaultProps = {
     percent: 0,
     trackRemaining: false,
-    color: 'red'
+    color: 'red',
+    className: ""
 }
 
 ProgressBar.propTypes = {
