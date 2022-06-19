@@ -1,10 +1,23 @@
+import React from "react";
 import TestRenderer from 'react-test-renderer';
-import ProgressBar from '../../components/ProgressBar';
+import ProgressBar from "../../components/ProgressBar";
+
+
 
 describe('ProgressBar ', () => {
     let progressBar = null;
     let progressBarJSON = null;
-
+   
+    describe('when trackRemaining', () => {
+        it(' is true className should contain  ProgressBar_trackRemaining_true', () => {
+            progressBarJSON = TestRenderer.create(<ProgressBar percent={80} trackRemaining={true} />).toJSON();
+            expect(progressBarJSON.props.className).toMatch('ProgressBar_trackRemaining_true');
+        })
+        it(' is false className should contain  ProgressBar_trackRemaining_true', () => {
+            progressBarJSON = TestRenderer.create(<ProgressBar percent={80} trackRemaining={false} />).toJSON();
+            expect(progressBarJSON.props.className).toMatch('ProgressBar_trackRemaining_false');
+        })
+    });
     describe('when none of parameters was set, should ', () => {
         beforeAll(() => {
             progressBar = TestRenderer.create(<ProgressBar />);
@@ -13,24 +26,8 @@ describe('ProgressBar ', () => {
         it('not contain undefined className', () => {
             expect(progressBarJSON.props.className).not.toMatch(/undefined/);
         });
-        it('looks always the same',()=> {
+        it('looks always the same', () => {
             expect(progressBarJSON).toMatchSnapshot();
         });
-        /*
-        {
-              type: 'div',
-              props: {
-                className: 'ProgressBar ProgressBar_trackRemaining_false undefined ',
-                style: { '--width': '0%', '--background-color': 'red' }
-              },
-              children: null
-            }
-            */
-/*
-        it(' .... ', () => {
-            console.log(progressBar.toJSON());
-            expect(progressBar.toJSON()).toBe();
-        })
-        */
     });
 });
