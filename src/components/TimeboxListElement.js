@@ -7,7 +7,7 @@ import { v4 as uuidv4 }  from "uuid"
 class TimeboxListElement extends React.Component {
 
     render() {
-        console.log("render TimeboxListElement");
+        //console.log("render TimeboxListElement");
         const { index, timebox, onEdit, onDelete, onTitleChange, onTimeChange } = this.props;
 
         return (

@@ -112,7 +112,7 @@ class Pomodoro extends React.Component {
     //     })
     // }
     render() {
-        console.log("render Pomodoro");
+        //console.log("render Pomodoro");
         const {
             //TODO adjust names
 

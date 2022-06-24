@@ -49,10 +49,10 @@ class Timebox extends React.Component {
 
     const { isPaused } = this.state;
     if (isPaused) {
-        console.log("stop");
+        //console.log("stop");
         this.stopTimer();
     } else {
-        console.log("start");
+        //console.log("start");
         this.startTimer(false);
 
     }
@@ -61,7 +61,7 @@ class Timebox extends React.Component {
     }
 
 handleStop = (event) => {
-    console.log("Stio");
+    //console.log("Stio");
     this.setState((prevState) => {
         return ({
             isRunning: false,
