@@ -11,7 +11,8 @@ class TimeboxListElement extends React.Component {
         const { index, timebox, onEdit, onDelete, onTitleChange, onTimeChange, onStart } = this.props;
 
         return (
-            <div className={"Timebox TimeboxListElement"}>
+            <div role={"listitem"}
+                className={"Timebox TimeboxListElement"}>
                 <div className="TimeboxListElementTitle"><textarea disabled={!timebox.isEditable} value={timebox.title} onChange={(event) => { onTitleChange(event, index) }} /></div>
                 <div className="TimeboxListElementTime"><input disabled={!timebox.isEditable} value={timebox.totalTimeInMinutes} onChange={(event) => { onTimeChange(event, index) }} type="number" />min.</div>
                 <div className="TimeboxListElementAction">

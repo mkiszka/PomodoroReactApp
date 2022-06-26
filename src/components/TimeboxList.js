@@ -10,7 +10,7 @@ class TimeboxList extends React.Component {
         const { timeboxes, onDelete, onEdit, onStart, onTitleChange, onTimeChange } = this.props;
         return timeboxes.map((elem, index) => {
             return (
-                <TimeboxListElement
+                <TimeboxListElement                                    
                     key={elem.uid}
                     index={index}
                     // title={elem.title}
@@ -20,7 +20,7 @@ class TimeboxList extends React.Component {
                     onTimeChange={onTimeChange}
                     onEdit={() => { onEdit(elem.uid) }}
                     onDelete={() => { onDelete(elem.uid) }}
-                    onStart={() => { onStart(elem.uid) }}
+                    onStart={() => { onStart(index) }}
                     />
             )
         }

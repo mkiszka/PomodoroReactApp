@@ -130,7 +130,7 @@ render() {
         progressInPercent = ((totalTimeInMiliSeconds - elapsedTimeInMiliSeconds) / totalTimeInMiliSeconds) * 100;
     }
 
-    return (<div className={`Timebox  ${isEditable ? "" : "inactive"}`}>
+    return (<div data-testid={"Timebox"} className={`Timebox  ${isEditable ? "" : "inactive"}`}>
         <h1>{timebox.title}</h1>
         <h4>Liczba przerw: {pausesCount}</h4>
         <Clock keyPrefix="clock1"
