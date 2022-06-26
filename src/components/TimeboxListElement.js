@@ -1,6 +1,6 @@
 import React from "react";
 import { IoTrashOutline,IoMenu,IoSaveOutline,
-    IoPlayOutline } from "react-icons/io5";
+    IoPlayOutline as IoPushOutline } from "react-icons/io5";
 import PropTypes from "prop-types";
 import { v4 as uuidv4 }  from "uuid"
 
@@ -19,7 +19,7 @@ class TimeboxListElement extends React.Component {
                     {timebox.isEditable ? (<IoSaveOutline title="zapisz" className="button-active" onClick={onEdit}/>) : (<IoMenu title="edytuj" className="button-active" onClick={onEdit}></IoMenu>)}
                                        
                     <IoTrashOutline title="usuń" className="button-active" onClick={onDelete}/>
-                    <IoPlayOutline title="start" className="button-active" onClick={onStart}/>
+                    <IoPushOutline title="start" className="button-active" onClick={onStart}/>
                 </div>
             </div>
         )
