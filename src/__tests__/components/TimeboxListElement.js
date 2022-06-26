@@ -47,6 +47,12 @@ describe('TimeboxListElement', () => {
         expect(getByTitle("edytuj")).toBeInTheDocument();
         expect(queryByTitle("zapisz")).toBeNull();
     });
+    it(' has start button', () => {
+
+        const { queryByTitle, getByTitle } = render(<TimeboxListElement timebox={{ uuid: uuid(), title: "Wywołanie eventów", totalTimeInMinutes: 3, isEditable: false }}/>);
+
+        expect(getByTitle("start")).toBeInTheDocument();        
+    });
 
     it(' should set proper value of textarea and input value (title=Wywłanie eventów, totalTimeInMinutes=3)',() => {
         const { getByRole } = render(<TimeboxListElement timebox={{ uuid: uuid(), title: "Wywołanie eventów", totalTimeInMinutes: 3, isEditable: true }}/>);

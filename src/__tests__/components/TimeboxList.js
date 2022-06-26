@@ -4,26 +4,30 @@ import TimeboxList from "../../components/TimeboxList";
 import { v4 as uuidv4 } from "uuid";
 
 describe('TimeboxList', () => {
-    describe('isEditable == false', () => { 
+    describe('isEditable == false', () => {
         let timeboxes;
+        let onTitleChange;
+        let onTimeChange;
+        let onEdit;
+        let onDelete;
+        let onStart;
+
         beforeEach(() => {
             timeboxes = [
                 { uid: uuidv4(), title: "Wywołanie eventów", totalTimeInMinutes: 3, isEditable: false },
                 { uid: uuidv4(), title: "KP-3034 Migracja z ver 1.14 do 1.15 usuwa powiązanie pacjent pracownik.", totalTimeInMinutes: 20, isEditable: false },
                 { uid: uuidv4(), title: "KP-3104 Deploy webserwisu zamówień dla 1.15", totalTimeInMinutes: 20, isEditable: false },
             ];
+
+            onTitleChange = jest.fn();
+            onTimeChange = jest.fn();
+            onEdit = jest.fn();
+            onDelete = jest.fn();
+            onStart = jest.fn();
         })
 
         it('should generate as 3 textboxes and 3 spinbuttons', () => {
-
-            const onTitleChange = jest.fn();
-            const onTimeChange = jest.fn();
-            const onEdit = jest.fn();
-            const onDelete = jest.fn();
-
-
-            const { getAllByRole } = render(<TimeboxList timeboxes={timeboxes} onTitleChange={onTitleChange} onTimeChange={onTimeChange} onEdit={onEdit} onDelete={onDelete} />);
-
+            const { getAllByRole } = render(<TimeboxList timeboxes={timeboxes} onStart={onStart} onTitleChange={onTitleChange} onTimeChange={onTimeChange} onEdit={onEdit} onDelete={onDelete} />);
 
             const timeboxesList = getAllByRole("textbox");
             expect(timeboxesList.length).toEqual(3);
@@ -34,13 +38,7 @@ describe('TimeboxList', () => {
         })
         it('should be disabled', async () => {
 
-            const onTitleChange = jest.fn();
-            const onTimeChange = jest.fn();
-            const onEdit = jest.fn();
-            const onDelete = jest.fn();
-
-
-            const { getAllByTitle, getAllByRole } = render(<TimeboxList timeboxes={timeboxes} onTitleChange={onTitleChange} onTimeChange={onTimeChange} onEdit={onEdit} onDelete={onDelete} />);
+            const { getAllByRole } = render(<TimeboxList timeboxes={timeboxes} onStart={onStart} onTitleChange={onTitleChange} onTimeChange={onTimeChange} onEdit={onEdit} onDelete={onDelete} />);
 
             const textareas = getAllByRole("textbox");
             const spinbuttons = getAllByRole("spinbutton");
@@ -59,16 +57,16 @@ describe('TimeboxList', () => {
 
         it('should fire events 3 times', async () => {
 
-            const onTitleChange = jest.fn();
-            const onTimeChange = jest.fn();
-            const onEdit = jest.fn();
-            const onDelete = jest.fn();
-
-
-            const { debug, getAllByTitle, getAllByRole } = render(<TimeboxList timeboxes={timeboxes} onTitleChange={onTitleChange} onTimeChange={onTimeChange} onEdit={onEdit} onDelete={onDelete} />);
+            const { debug, getAllByTitle, getAllByRole }
+                = render(<TimeboxList timeboxes={timeboxes}
+                    onTitleChange={onTitleChange}
+                    onTimeChange={onTimeChange}
+                    onEdit={onEdit}
+                    onDelete={onDelete}
+                    onStart={onStart} />);
 
             const editButtons = getAllByTitle("edytuj");
-            const deleteButtons = getAllByTitle("usuń");            
+            const deleteButtons = getAllByTitle("usuń");
 
             expect(editButtons.length).toEqual(3);
             expect(deleteButtons.length).toEqual(3);
@@ -79,31 +77,50 @@ describe('TimeboxList', () => {
 
             deleteButtons.forEach(element => {
                 fireEvent.click(element);
-            });        
+            });
 
             expect(onEdit).toBeCalledTimes(3);
             expect(onDelete).toBeCalledTimes(3);
 
         });
+        it('should handle TimeboxListElement start button', () => {
+
+            const { getAllByTitle } = render(<TimeboxList timeboxes={timeboxes}
+                onTitleChange={onTitleChange}
+                onTimeChange={onTimeChange}
+                onEdit={onEdit}
+                onDelete={onDelete}
+                onStart={onStart} />);
+
+            const startButtons = getAllByTitle("start");
+            fireEvent.click(startButtons[1]);
+            expect(onStart).toBeCalledTimes(1);
+        })
     });
-    describe('isEditable == true', () => { 
+    describe('isEditable == true', () => {
         let timeboxes;
+        let onTitleChange;
+        let onTimeChange;
+        let onEdit;
+        let onDelete;
+        let onStart;
+
         beforeEach(() => {
             timeboxes = [
                 { uid: uuidv4(), title: "Wywołanie eventów", totalTimeInMinutes: 3, isEditable: true },
                 { uid: uuidv4(), title: "KP-3034 Migracja z ver 1.14 do 1.15 usuwa powiązanie pacjent pracownik.", totalTimeInMinutes: 20, isEditable: true },
                 { uid: uuidv4(), title: "KP-3104 Deploy webserwisu zamówień dla 1.15", totalTimeInMinutes: 20, isEditable: true },
             ];
+
+            onTitleChange = jest.fn();
+            onTimeChange = jest.fn();
+            onEdit = jest.fn();
+            onDelete = jest.fn();
+            onStart = jest.fn();
         })
-        it('should be enabled', () => {
+        it('should be enabled', () => {          
 
-            const onTitleChange = jest.fn();
-            const onTimeChange = jest.fn();
-            const onEdit = jest.fn();
-            const onDelete = jest.fn();
-
-
-            const { getAllByTitle, getAllByRole } = render(<TimeboxList timeboxes={timeboxes} onTitleChange={onTitleChange} onTimeChange={onTimeChange} onEdit={onEdit} onDelete={onDelete} />);
+            const { getAllByTitle, getAllByRole } = render(<TimeboxList timeboxes={timeboxes} onStart={onStart} onTitleChange={onTitleChange} onTimeChange={onTimeChange} onEdit={onEdit} onDelete={onDelete} />);
 
             const textareas = getAllByRole("textbox");
             const spinbuttons = getAllByRole("spinbutton");
@@ -121,28 +138,16 @@ describe('TimeboxList', () => {
         });
         it('has save button', () => {
 
-            const onTitleChange = jest.fn();
-            const onTimeChange = jest.fn();
-            const onEdit = jest.fn();
-            const onDelete = jest.fn();
-
-
-            const { getAllByTitle, getAllByRole } = render(<TimeboxList timeboxes={timeboxes} onTitleChange={onTitleChange} onTimeChange={onTimeChange} onEdit={onEdit} onDelete={onDelete} />);
+            const { getAllByTitle } = render(<TimeboxList timeboxes={timeboxes} onStart={onStart} onTitleChange={onTitleChange} onTimeChange={onTimeChange} onEdit={onEdit} onDelete={onDelete} />);
 
             const saveButtons = getAllByTitle("zapisz");
-            
 
-            expect(saveButtons.length).toEqual(3);       
+
+            expect(saveButtons.length).toEqual(3);
         });
         it('should fire events 3 times', async () => {
 
-            const onTitleChange = jest.fn();
-            const onTimeChange = jest.fn();
-            const onEdit = jest.fn();
-            const onDelete = jest.fn();
-
-
-            const {  getAllByTitle, getAllByRole } = render(<TimeboxList timeboxes={timeboxes} onTitleChange={onTitleChange} onTimeChange={onTimeChange} onEdit={onEdit} onDelete={onDelete} />);
+            const { getAllByTitle, getAllByRole } = render(<TimeboxList timeboxes={timeboxes} onStart={onStart} onTitleChange={onTitleChange} onTimeChange={onTimeChange} onEdit={onEdit} onDelete={onDelete} />);
 
             const saveButtons = getAllByTitle("zapisz");
             const deleteButtons = getAllByTitle("usuń");
@@ -156,7 +161,7 @@ describe('TimeboxList', () => {
 
             deleteButtons.forEach(element => {
                 fireEvent.click(element);
-            });        
+            });
 
             expect(onEdit).toBeCalledTimes(3);
             expect(onDelete).toBeCalledTimes(3);

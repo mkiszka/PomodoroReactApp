@@ -5,7 +5,6 @@ import Timebox from "./Timebox";
 import TimeboxList from "./TimeboxList";
 import TimeboxCreator from "./TimeboxCreator";
 import { withCookies, Cookies } from 'react-cookie';
-import Message from "./Message";
 
 class Pomodoro extends React.Component {
 
@@ -99,6 +98,10 @@ class Pomodoro extends React.Component {
 
         this.setState({ timeboxes: timeboxes });
     }
+
+    handleStartTimeboxListElement = (id) => {       
+        this.setState({ timeboxes_currentIndex: id });
+    }
     // handleTimeboxUpdate = (indexToUpdate, updatedTimebox) => {
     //     console.log("test");
     //     this.setState((prevState) => {
@@ -140,6 +143,7 @@ class Pomodoro extends React.Component {
                     onEdit={this.handleEditTimeboxListElement}
                     onTitleChange={this.handleTitleElementChange}
                     onTimeChange={this.handleTimeElementChange}
+                    onStart={this.handleStartTimeboxListElement}
 
                 />
             </>
