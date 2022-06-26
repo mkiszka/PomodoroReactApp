@@ -5,7 +5,7 @@ import Pomodoro from "../../components/Pomodoro";
 describe('Pomodoro', () => {
  
     it('something ', () => {
-        const { debug, getAllByTitle, getByTestId, getAllByRole } = render(<Pomodoro time/>);
+        const { debug, getByTestId, getAllByRole } = render(<Pomodoro time/>);
         debug();
         let timebox = getByTestId('Timebox');
         const taskTitle = within(timebox).getByRole('heading', { level: 1 });
