@@ -20,9 +20,10 @@ describe('TimeboxList', () => {
             const onTimeChange = jest.fn();
             const onEdit = jest.fn();
             const onDelete = jest.fn();
+            const onStart = jest.fn();
+            
 
-
-            const { getAllByRole } = render(<TimeboxList timeboxes={timeboxes} onTitleChange={onTitleChange} onTimeChange={onTimeChange} onEdit={onEdit} onDelete={onDelete} />);
+            const { getAllByRole } = render(<TimeboxList timeboxes={timeboxes} onStart={onStart} onTitleChange={onTitleChange} onTimeChange={onTimeChange} onEdit={onEdit} onDelete={onDelete} />);
 
 
             const timeboxesList = getAllByRole("textbox");
@@ -38,9 +39,10 @@ describe('TimeboxList', () => {
             const onTimeChange = jest.fn();
             const onEdit = jest.fn();
             const onDelete = jest.fn();
+            const onStart = jest.fn();
+            
 
-
-            const { getAllByTitle, getAllByRole } = render(<TimeboxList timeboxes={timeboxes} onTitleChange={onTitleChange} onTimeChange={onTimeChange} onEdit={onEdit} onDelete={onDelete} />);
+            const { getAllByTitle, getAllByRole } = render(<TimeboxList timeboxes={timeboxes} onStart={onStart} onTitleChange={onTitleChange} onTimeChange={onTimeChange} onEdit={onEdit} onDelete={onDelete} />);
 
             const textareas = getAllByRole("textbox");
             const spinbuttons = getAllByRole("spinbutton");
@@ -63,9 +65,15 @@ describe('TimeboxList', () => {
             const onTimeChange = jest.fn();
             const onEdit = jest.fn();
             const onDelete = jest.fn();
+            const handleStart = jest.fn();
 
-
-            const { debug, getAllByTitle, getAllByRole } = render(<TimeboxList timeboxes={timeboxes} onTitleChange={onTitleChange} onTimeChange={onTimeChange} onEdit={onEdit} onDelete={onDelete} />);
+            const { debug, getAllByTitle, getAllByRole } 
+                = render(<TimeboxList timeboxes={timeboxes} 
+                    onTitleChange={onTitleChange} 
+                    onTimeChange={onTimeChange} 
+                    onEdit={onEdit} 
+                    onDelete={onDelete} 
+                    onStart={handleStart} />);
 
             const editButtons = getAllByTitle("edytuj");
             const deleteButtons = getAllByTitle("usuń");            
@@ -85,6 +93,24 @@ describe('TimeboxList', () => {
             expect(onDelete).toBeCalledTimes(3);
 
         });
+        it('should handle TimeboxListElement start button',async () => {    
+            const handleTitleChange = jest.fn();
+            const handleTimeChange = jest.fn();
+            const handleEdit = jest.fn();                
+            const handleDelete = jest.fn();      
+            const handleStart = jest.fn();
+
+            const { getAllByTitle } = render(<TimeboxList timeboxes={timeboxes} 
+                onTitleChange={handleTitleChange} 
+                onTimeChange={handleTimeChange} 
+                onEdit={handleEdit} 
+                onDelete={handleDelete}
+                onStart={handleStart} />);
+
+            const startButtons = getAllByTitle("start");
+            await fireEvent.click(startButtons[1]);
+            expect(handleStart).toBeCalledTimes(1);
+        })
     });
     describe('isEditable == true', () => { 
         let timeboxes;
@@ -101,9 +127,10 @@ describe('TimeboxList', () => {
             const onTimeChange = jest.fn();
             const onEdit = jest.fn();
             const onDelete = jest.fn();
+            const onStart = jest.fn();
+            
 
-
-            const { getAllByTitle, getAllByRole } = render(<TimeboxList timeboxes={timeboxes} onTitleChange={onTitleChange} onTimeChange={onTimeChange} onEdit={onEdit} onDelete={onDelete} />);
+            const { getAllByTitle, getAllByRole } = render(<TimeboxList timeboxes={timeboxes} onStart={onStart} onTitleChange={onTitleChange} onTimeChange={onTimeChange} onEdit={onEdit} onDelete={onDelete} />);
 
             const textareas = getAllByRole("textbox");
             const spinbuttons = getAllByRole("spinbutton");
@@ -125,9 +152,10 @@ describe('TimeboxList', () => {
             const onTimeChange = jest.fn();
             const onEdit = jest.fn();
             const onDelete = jest.fn();
+            const onStart = jest.fn();
 
 
-            const { getAllByTitle, getAllByRole } = render(<TimeboxList timeboxes={timeboxes} onTitleChange={onTitleChange} onTimeChange={onTimeChange} onEdit={onEdit} onDelete={onDelete} />);
+            const { getAllByTitle } = render(<TimeboxList timeboxes={timeboxes} onStart={onStart} onTitleChange={onTitleChange} onTimeChange={onTimeChange} onEdit={onEdit} onDelete={onDelete} />);
 
             const saveButtons = getAllByTitle("zapisz");
             
@@ -140,9 +168,10 @@ describe('TimeboxList', () => {
             const onTimeChange = jest.fn();
             const onEdit = jest.fn();
             const onDelete = jest.fn();
+            const onStart = jest.fn();
+            
 
-
-            const {  getAllByTitle, getAllByRole } = render(<TimeboxList timeboxes={timeboxes} onTitleChange={onTitleChange} onTimeChange={onTimeChange} onEdit={onEdit} onDelete={onDelete} />);
+            const {  getAllByTitle, getAllByRole } = render(<TimeboxList timeboxes={timeboxes} onStart={onStart} onTitleChange={onTitleChange} onTimeChange={onTimeChange} onEdit={onEdit} onDelete={onDelete} />);
 
             const saveButtons = getAllByTitle("zapisz");
             const deleteButtons = getAllByTitle("usuń");

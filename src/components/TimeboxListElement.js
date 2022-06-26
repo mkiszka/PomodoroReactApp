@@ -8,7 +8,7 @@ class TimeboxListElement extends React.Component {
 
     render() {
         //console.log("render TimeboxListElement");
-        const { index, timebox, onEdit, onDelete, onTitleChange, onTimeChange } = this.props;
+        const { index, timebox, onEdit, onDelete, onTitleChange, onTimeChange, onStart } = this.props;
 
         return (
             <div className={"Timebox TimeboxListElement"}>
@@ -18,7 +18,7 @@ class TimeboxListElement extends React.Component {
                     {timebox.isEditable ? (<IoSaveOutline title="zapisz" className="button-active" onClick={onEdit}/>) : (<IoMenu title="edytuj" className="button-active" onClick={onEdit}></IoMenu>)}
                                        
                     <IoTrashOutline title="usuń" className="button-active" onClick={onDelete}/>
-                    <IoPlayOutline title="play" className="button-active"/>
+                    <IoPlayOutline title="start" className="button-active" onClick={onStart}/>
                 </div>
             </div>
         )

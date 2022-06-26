@@ -7,7 +7,7 @@ class TimeboxList extends React.Component {
 
     render() {
         //console.log("render TimeboxList");
-        const { timeboxes, onDelete, onEdit, onTitleChange, onTimeChange } = this.props;
+        const { timeboxes, onDelete, onEdit, onStart, onTitleChange, onTimeChange } = this.props;
         return timeboxes.map((elem, index) => {
             return (
                 <TimeboxListElement
@@ -20,7 +20,8 @@ class TimeboxList extends React.Component {
                     onTimeChange={onTimeChange}
                     onEdit={() => { onEdit(elem.uid) }}
                     onDelete={() => { onDelete(elem.uid) }}
-                />
+                    onStart={() => { onStart(elem.uid) }}
+                    />
             )
         }
         )
@@ -32,7 +33,8 @@ TimeboxList.propTypes = {
    onTitleChange: PropTypes.func.isRequired,
    onTimeChange: PropTypes.func.isRequired,
    onEdit: PropTypes.func.isRequired,
-   onDelete: PropTypes.func.isRequired
+   onDelete: PropTypes.func.isRequired,
+   onStart: PropTypes.func.isRequired
 }
 
 export default TimeboxList;

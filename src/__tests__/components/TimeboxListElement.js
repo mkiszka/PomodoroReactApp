@@ -51,7 +51,7 @@ describe('TimeboxListElement', () => {
 
         const { queryByTitle, getByTitle } = render(<TimeboxListElement timebox={{ uuid: uuid(), title: "Wywołanie eventów", totalTimeInMinutes: 3, isEditable: false }}/>);
 
-        expect(getByTitle("play")).toBeInTheDocument();        
+        expect(getByTitle("start")).toBeInTheDocument();        
     });
 
     it(' should set proper value of textarea and input value (title=Wywłanie eventów, totalTimeInMinutes=3)',() => {
