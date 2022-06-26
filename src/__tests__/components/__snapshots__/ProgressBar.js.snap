@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ProgressBar  when none of parameters was set, should  looks always the same 1`] = `
+<div
+  className="ProgressBar ProgressBar_trackRemaining_false  "
+  data-testid="ProgressBar-div"
+  style={
+    Object {
+      "--background-color": "red",
+      "--width": "0%",
+    }
+  }
+/>
+`;

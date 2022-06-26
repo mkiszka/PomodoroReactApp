@@ -7,7 +7,7 @@ import { v4 as uuidv4 }  from "uuid"
 class TimeboxListElement extends React.Component {
 
     render() {
-        console.log("render TimeboxListElement");
+        //console.log("render TimeboxListElement");
         const { index, timebox, onEdit, onDelete, onTitleChange, onTimeChange } = this.props;
 
         return (
@@ -15,9 +15,9 @@ class TimeboxListElement extends React.Component {
                 <div className="TimeboxListElementTitle"><textarea disabled={!timebox.isEditable} value={timebox.title} onChange={(event) => { onTitleChange(event, index) }} /></div>
                 <div className="TimeboxListElementTime"><input disabled={!timebox.isEditable} value={timebox.totalTimeInMinutes} onChange={(event) => { onTimeChange(event, index) }} type="number" />min.</div>
                 <div className="TimeboxListElementAction">
-                    {timebox.isEditable ? (<IoSaveOutline className="button-active" onClick={onEdit}/>) : (<IoMenu className="button-active" onClick={onEdit}></IoMenu>)}
+                    {timebox.isEditable ? (<IoSaveOutline title="zapisz" className="button-active" onClick={onEdit}/>) : (<IoMenu title="edytuj" className="button-active" onClick={onEdit}></IoMenu>)}
                                        
-                    <IoTrashOutline className="button-active" onClick={onDelete}/>
+                    <IoTrashOutline title="usuń" className="button-active" onClick={onDelete}/>
                 </div>
             </div>
         )

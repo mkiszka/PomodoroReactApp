@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 function ProgressBar({ color, percent, trackRemaining, className }) {
 
     return (
-        <div className={
+        <div  data-testid='ProgressBar-div' className={
             `ProgressBar ProgressBar_trackRemaining_${trackRemaining} ${className} `
         }
             style={{ '--width': `${percent}%`, '--background-color': color }}>
@@ -27,7 +27,8 @@ function validateNumberRange(min, max) {
 ProgressBar.defaultProps = {
     percent: 0,
     trackRemaining: false,
-    color: 'red'
+    color: 'red',
+    className: ""
 }
 
 ProgressBar.propTypes = {

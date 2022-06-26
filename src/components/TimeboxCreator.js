@@ -25,7 +25,7 @@ class TimeboxCreator extends React.Component {
     }
 
     render() {
-        console.log("render TimeboxCreator");
+        //console.log("render TimeboxCreator");
 
         const { title, totalTimeInMinutes, isEditable,
             onTitleChange,

@@ -6,7 +6,7 @@ class TimeboxList extends React.Component {
     //TODO join TimeboxList + TimeboxListElement
 
     render() {
-        console.log("render TimeboxList");
+        //console.log("render TimeboxList");
         const { timeboxes, onDelete, onEdit, onTitleChange, onTimeChange } = this.props;
         return timeboxes.map((elem, index) => {
             return (
