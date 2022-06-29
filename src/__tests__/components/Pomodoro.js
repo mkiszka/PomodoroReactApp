@@ -5,7 +5,9 @@ import Pomodoro from "../../components/Pomodoro";
 describe('Pomodoro', () => {
  
     it('something ', () => {
-        const { getByTestId, getAllByRole } = render(<Pomodoro time/>);      
+       
+        const { getByTestId, getAllByRole,debug } = render(<Pomodoro/>);
+        // debug();
         let timebox = getByTestId('Timebox');
         const taskTitle = within(timebox).getByRole('heading', { level: 1 });
         expect(taskTitle.textContent).toEqual("Wywołanie eventów");

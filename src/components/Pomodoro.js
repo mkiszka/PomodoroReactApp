@@ -3,6 +3,7 @@ import { instanceOf } from 'prop-types';
 import { v4 as uuidv4 } from 'uuid';
 import Timebox from "./Timebox";
 import TimeboxList from "./TimeboxList";
+import TimeboxListElement from "./TimeboxListElement";
 import TimeboxCreator from "./TimeboxCreator";
 import { withCookies, Cookies } from 'react-cookie';
 
@@ -14,9 +15,9 @@ class Pomodoro extends React.Component {
 
     constructor(props) {
         super(props);
-        const {cookies} = this.props;
-        const timeboxes = 
-            cookies.get('timeboxes') || 
+        const { cookies } = this.props;
+        const timeboxes =
+            cookies.get('timeboxes') ||
             [
                 { uid: uuidv4(), title: "Wywołanie eventów", totalTimeInMinutes: 3, isEditable: false },
                 { uid: uuidv4(), title: "KP-3034 Migracja z ver 1.14 do 1.15 usuwa powiązanie pacjent pracownik.", totalTimeInMinutes: 20, isEditable: false },
@@ -26,14 +27,14 @@ class Pomodoro extends React.Component {
         this.state = {
             title: "Ucze się tego i tamtego?",
             totalTimeInMinutes: 25,
-            isEditable: true,             
+            isEditable: true,
 
             timeboxes_currentIndex: 0,
 
             timeboxes: timeboxes
         }
 
-      
+
     }
 
     handleDelete = (uid) => {
@@ -41,8 +42,8 @@ class Pomodoro extends React.Component {
         this.setState(
             (prevState) => {
                 let timeboxes = prevState.timeboxes.filter((value, index) => value.uid === uid ? false : true);
-                cookies.set('timeboxes',timeboxes,{ path: '/'});
-                return { timeboxes:  timeboxes}
+                cookies.set('timeboxes', timeboxes, { path: '/' });
+                return { timeboxes: timeboxes }
             }
         )
     }
@@ -61,11 +62,11 @@ class Pomodoro extends React.Component {
     }
     handleAdd = (timeboxToAdd) => {
         const { cookies } = this.props;
-        
+
         this.setState((prevState) => {
             let timeboxes = prevState.timeboxes;
             timeboxes = [...prevState.timeboxes, timeboxToAdd];
-            cookies.set('timeboxes',timeboxes,{ path: '/'});
+            cookies.set('timeboxes', timeboxes, { path: '/' });
             return ({ timeboxes: timeboxes });
         }
         )
@@ -99,23 +100,12 @@ class Pomodoro extends React.Component {
         this.setState({ timeboxes: timeboxes });
     }
 
-    handleStartTimeboxListElement = (id) => {       
+    handleStartTimeboxListElement = (id) => {
         this.setState({ timeboxes_currentIndex: id });
     }
-    // handleTimeboxUpdate = (indexToUpdate, updatedTimebox) => {
-    //     console.log("test");
-    //     this.setState((prevState) => {
-    //         const { timeboxes } = prevState;
-    //         return timeboxes.map((timebox, index) => {
-    //             return indexToUpdate === index ? updatedTimebox : timebox;
-    //         }
-
-    //         )
-
-    //     })
-    // }
+   
     render() {
-        //console.log("render Pomodoro");
+        // console.log("render Pomodoro");
         const {
             //TODO adjust names
 
@@ -128,7 +118,7 @@ class Pomodoro extends React.Component {
 
         } = this.state;
         return (
-            <>                
+            <>
                 <TimeboxCreator title={title}
                     totalTimeInMinutes={totalTimeInMinutes}
                     onTitleChange={this.handleTitleChange}
@@ -136,17 +126,28 @@ class Pomodoro extends React.Component {
                     onAdd={this.handleAdd}
                     isEditable={isEditable} />
                 <Timebox
-                    timebox={timeboxes.length > 0 ? timeboxes[timeboxes_currentIndex]:{}}
+                    timebox={timeboxes.length > 0 ? timeboxes[timeboxes_currentIndex] : {}}
                     isEditable={true}
                 />
-                <TimeboxList timeboxes={timeboxes} onDelete={this.handleDelete}
-                    onEdit={this.handleEditTimeboxListElement}
-                    onTitleChange={this.handleTitleElementChange}
-                    onTimeChange={this.handleTimeElementChange}
-                    onStart={this.handleStartTimeboxListElement}
-
-                />
+                <TimeboxList>
+                    {timeboxes.map((elem, index) => {
+                        return (
+                            <TimeboxListElement
+                                key={elem.uid}
+                                index={index}                           
+                                timebox={elem}
+                                onTitleChange={this.handleTitleElementChange}
+                                onTimeChange={this.handleTimeElementChange}
+                                onEdit={() => { this.handleEditTimeboxListElement(elem.uid) }}
+                                onDelete={() => { this.handleDelete(elem.uid) }}
+                                onStart={() => { this.handleStartTimeboxListElement(index) }}
+                            />
+                        );
+                    })
+                    }
+                </TimeboxList>
             </>
+        
         )
     }
 }

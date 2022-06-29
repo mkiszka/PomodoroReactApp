@@ -1,11 +1,13 @@
-import React from "react";
+import React, { Children } from "react";
 import { render, fireEvent, waitFor } from "@testing-library/react";
 import TimeboxList from "../../components/TimeboxList";
+import TimeboxListElement from "../../components/TimeboxListElement";
 import { v4 as uuidv4 } from "uuid";
 
 describe('TimeboxList', () => {
     describe('isEditable == false', () => {
         let timeboxes;
+        let timeboxListChildren;
         let onTitleChange;
         let onTimeChange;
         let onEdit;
@@ -24,10 +26,26 @@ describe('TimeboxList', () => {
             onEdit = jest.fn();
             onDelete = jest.fn();
             onStart = jest.fn();
+
+            timeboxListChildren = 
+                timeboxes.map((elem, index) => {
+                    return (
+                        <TimeboxListElement
+                            key={elem.uid}
+                            index={index}
+                            timebox={elem}
+                            onTitleChange={onTitleChange}
+                            onTimeChange={onTimeChange}
+                            onEdit={() => { onEdit(elem.uid) }}
+                            onDelete={() => { onDelete(elem.uid) }}
+                            onStart={() => { onStart(index) }}
+                        />
+                    );
+                })
         })
 
         it('should generate as 3 textboxes and 3 spinbuttons', () => {
-            const { getAllByRole } = render(<TimeboxList timeboxes={timeboxes} onStart={onStart} onTitleChange={onTitleChange} onTimeChange={onTimeChange} onEdit={onEdit} onDelete={onDelete} />);
+            const { getAllByRole } = render(<TimeboxList>{timeboxListChildren}</TimeboxList>);
 
             const timeboxesList = getAllByRole("textbox");
             expect(timeboxesList.length).toEqual(3);
@@ -38,7 +56,7 @@ describe('TimeboxList', () => {
         })
         it('should be disabled', async () => {
 
-            const { getAllByRole } = render(<TimeboxList timeboxes={timeboxes} onStart={onStart} onTitleChange={onTitleChange} onTimeChange={onTimeChange} onEdit={onEdit} onDelete={onDelete} />);
+            const { getAllByRole } = render(<TimeboxList>{timeboxListChildren}</TimeboxList>);
 
             const textareas = getAllByRole("textbox");
             const spinbuttons = getAllByRole("spinbutton");
@@ -58,12 +76,7 @@ describe('TimeboxList', () => {
         it('should fire events 3 times', async () => {
 
             const { debug, getAllByTitle, getAllByRole }
-                = render(<TimeboxList timeboxes={timeboxes}
-                    onTitleChange={onTitleChange}
-                    onTimeChange={onTimeChange}
-                    onEdit={onEdit}
-                    onDelete={onDelete}
-                    onStart={onStart} />);
+                = render(<TimeboxList>{timeboxListChildren}</TimeboxList>);
 
             const editButtons = getAllByTitle("edytuj");
             const deleteButtons = getAllByTitle("usuń");
@@ -85,12 +98,7 @@ describe('TimeboxList', () => {
         });
         it('should handle TimeboxListElement start button', () => {
 
-            const { getAllByTitle } = render(<TimeboxList timeboxes={timeboxes}
-                onTitleChange={onTitleChange}
-                onTimeChange={onTimeChange}
-                onEdit={onEdit}
-                onDelete={onDelete}
-                onStart={onStart} />);
+            const { getAllByTitle } = render(<TimeboxList>{timeboxListChildren}</TimeboxList>);
 
             const startButtons = getAllByTitle("start");
             fireEvent.click(startButtons[1]);
@@ -99,6 +107,7 @@ describe('TimeboxList', () => {
     });
     describe('isEditable == true', () => {
         let timeboxes;
+        let timeboxListChildren;
         let onTitleChange;
         let onTimeChange;
         let onEdit;
@@ -117,10 +126,27 @@ describe('TimeboxList', () => {
             onEdit = jest.fn();
             onDelete = jest.fn();
             onStart = jest.fn();
-        })
-        it('should be enabled', () => {          
 
-            const { getAllByTitle, getAllByRole } = render(<TimeboxList timeboxes={timeboxes} onStart={onStart} onTitleChange={onTitleChange} onTimeChange={onTimeChange} onEdit={onEdit} onDelete={onDelete} />);
+            timeboxListChildren = 
+                timeboxes.map((elem, index) => {
+                    return (
+                        <TimeboxListElement
+                            key={elem.uid}
+                            index={index}
+                            timebox={elem}
+                            onTitleChange={onTitleChange}
+                            onTimeChange={onTimeChange}
+                            onEdit={() => { onEdit(elem.uid) }}
+                            onDelete={() => { onDelete(elem.uid) }}
+                            onStart={() => { onStart(index) }}
+                        />
+                    );
+                })
+            
+        })
+        it('should be enabled', () => {
+
+            const { getAllByTitle, getAllByRole } = render(<TimeboxList>{timeboxListChildren}</TimeboxList>);
 
             const textareas = getAllByRole("textbox");
             const spinbuttons = getAllByRole("spinbutton");
@@ -137,8 +163,10 @@ describe('TimeboxList', () => {
             });
         });
         it('has save button', () => {
-
-            const { getAllByTitle } = render(<TimeboxList timeboxes={timeboxes} onStart={onStart} onTitleChange={onTitleChange} onTimeChange={onTimeChange} onEdit={onEdit} onDelete={onDelete} />);
+            const { getAllByTitle } = render(<TimeboxList>
+                {timeboxListChildren}
+            </TimeboxList>
+            );
 
             const saveButtons = getAllByTitle("zapisz");
 
@@ -147,7 +175,7 @@ describe('TimeboxList', () => {
         });
         it('should fire events 3 times', async () => {
 
-            const { getAllByTitle, getAllByRole } = render(<TimeboxList timeboxes={timeboxes} onStart={onStart} onTitleChange={onTitleChange} onTimeChange={onTimeChange} onEdit={onEdit} onDelete={onDelete} />);
+            const { getAllByTitle, getAllByRole } = render(<TimeboxList>{timeboxListChildren}</TimeboxList>);
 
             const saveButtons = getAllByTitle("zapisz");
             const deleteButtons = getAllByTitle("usuń");
