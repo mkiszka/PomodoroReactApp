@@ -31,7 +31,7 @@ class TimeboxCreator extends React.Component {
             onTitleChange,
             onTotalTimeInMinutesChange
         } = this.props;
-        const { hasError, error } = this.state;
+        const { /*hasError,*/ error } = this.state;
 
         return (
             this.state.hasError?

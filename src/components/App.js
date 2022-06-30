@@ -5,8 +5,7 @@ import ErrorBoundary from "./ErrorBoundary";
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 
-function App() {
-    const totalTimeInSeconds = 3;
+function App() {    
     return (
         <div id="App" className="App">
             <ErrorBoundary>

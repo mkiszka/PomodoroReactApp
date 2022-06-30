@@ -1,6 +1,4 @@
 import React from "react";
-import TimeboxListElement from "./TimeboxListElement";
-import PropTypes from "prop-types";
 
 class TimeboxList extends React.Component {
     //TODO join TimeboxList + TimeboxListElement
