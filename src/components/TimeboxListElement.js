@@ -1,5 +1,5 @@
 import React from "react";
-import { useDrag } from 'react-dnd'
+import { useDrag,useDrop } from 'react-dnd'
 import {
   IoTrashOutline, IoMenu, IoSaveOutline,
   IoPlayOutline as IoPushOutline
@@ -8,44 +8,49 @@ import PropTypes from "prop-types";
 import { v4 as uuidv4 } from "uuid"
 import { DraggableItemTypes } from "./DraggableItemTypes";
 
-function TimeboxListElement({ index, timebox, onEdit, onDelete, onTitleChange, onTimeChange, onStart }) {
-  //console.log("render TimeboxListElement");        
-
-  const [{ opacity }, drag] = useDrag(
+function TimeboxListElement({ id, timebox, onEdit, onDelete, onTitleChange, onTimeChange, onStart,moveElement, findElement }) {
+        
+  const originalIndex = findElement(id).index
+  const [{ isDragging }, drag] = useDrag(
     () => ({
       type: DraggableItemTypes.TimeboxListElement,
-      item: { index },
-      end(item, monitor) {
-        const dropResult = monitor.getDropResult()
-        if (item && dropResult) {
-          let alertMessage = ''
-          const isDropAllowed =
-            dropResult.allowedDropEffect === 'any' ||
-            dropResult.allowedDropEffect === dropResult.dropEffect
-          if (isDropAllowed) {
-            const isCopyAction = dropResult.dropEffect === 'copy'
-            const actionName = isCopyAction ? 'copied' : 'moved'
-            alertMessage = `You ${actionName} ${item.name} into ${dropResult.name}!`
-          } else {
-            alertMessage = `You cannot ${dropResult.dropEffect} an item into the ${dropResult.name}`
-          }
-          alert(alertMessage)
+      item: { id, originalIndex },
+      collect: (monitor) => ({
+        isDragging: monitor.isDragging(),
+      }),
+      end: (item, monitor) => {
+        const { id: droppedId, originalIndex } = item
+        const didDrop = monitor.didDrop()
+        if (!didDrop) {
+          moveElement(droppedId, originalIndex)
         }
       },
-      collect: (monitor) => ({
-        opacity: monitor.isDragging() ? 0.4 : 1,
-      }),
     }),
-    [index],
+    [id, originalIndex, moveElement],
   )
+  const [, drop] = useDrop(
+    () => ({
+      accept: DraggableItemTypes.DraggableItemTypes,
+      hover({ id: draggedId }) {
+        if (draggedId !== id) {
+          const { index: overIndex } = findElement(id)
+          moveElement(draggedId, overIndex)
+        }
+      },
+    }),
+    [findElement, moveElement],
+  )
+  const opacity = isDragging ? 0 : 1
 
   return (
     <div 
-      ref={drag}
+      ref={(node) => drag(drop(node))}
       role={"listitem"}
-      className={"Timebox TimeboxListElement"}>
-      <div className="TimeboxListElementTitle"><textarea disabled={!timebox.isEditable} value={timebox.title} onChange={(event) => { onTitleChange(event, index) }} /></div>
-      <div className="TimeboxListElementTime"><input disabled={!timebox.isEditable} value={timebox.totalTimeInMinutes} onChange={(event) => { onTimeChange(event, index) }} type="number" />min.</div>
+      className={"Timebox TimeboxListElement"}
+      style={{opacity}}
+      >
+      <div className="TimeboxListElementTitle"><textarea disabled={!timebox.isEditable} value={timebox.title} onChange={(event) => { onTitleChange(event, id) }} /></div>
+      <div className="TimeboxListElementTime"><input disabled={!timebox.isEditable} value={timebox.totalTimeInMinutes} onChange={(event) => { onTimeChange(event, id) }} type="number" />min.</div>
       <div className="TimeboxListElementAction">
         {timebox.isEditable ? (<IoSaveOutline title="zapisz" className="button-active" onClick={onEdit} />) : (<IoMenu title="edytuj" className="button-active" onClick={onEdit}></IoMenu>)}
 

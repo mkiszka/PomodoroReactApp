@@ -1,13 +1,11 @@
-import React from "react";
+import { memo } from "react";
 
-class TimeboxList extends React.Component {
-    //TODO join TimeboxList + TimeboxListElement
-
-    render() {
+const TimeboxList = memo( function TimeboxList( ) {
+       
         //console.log("render TimeboxList");
         const { children } = this.props;
         return (<>{children}</>);     
-    }
-}
+    
+});
 
 export default TimeboxList;

@@ -1,4 +1,5 @@
 import React from "react";
+import { useCallback } from 'react';
 import { instanceOf } from 'prop-types';
 import { v4 as uuidv4 } from 'uuid';
 import Timebox from "./Timebox";
@@ -6,6 +7,9 @@ import TimeboxList from "./TimeboxList";
 import TimeboxListElement from "./TimeboxListElement";
 import TimeboxCreator from "./TimeboxCreator";
 import { withCookies, Cookies } from 'react-cookie';
+import update from 'immutability-helper';
+import { DraggableItemTypes } from "./DraggableItemTypes";
+import { useDrop } from "react-dnd";
 
 class Pomodoro extends React.Component {
 
@@ -103,7 +107,35 @@ class Pomodoro extends React.Component {
     handleStartTimeboxListElement = (id) => {
         this.setState({ timeboxes_currentIndex: id });
     }
-   
+
+    findElement = useCallback(        
+        (id) => {
+            const { timeboxes } = this.state;
+            const element = timeboxes.element((elementc) => `${element.id}` === id)[0]
+            return {
+                element,
+                index: element.indexOf(element),
+            }
+        },
+        [/*timeboxes*/],
+    )
+    moveElement = useCallback(
+        (id, atIndex) => {
+            const { timeboxes } = this.state;
+            const { element, index } = this.findElement(id)
+            this.setState({
+                timeboxes:
+                    update(timeboxes, {
+                        $splice: [
+                            [index, 1],
+                            [atIndex, 0, element],
+                        ],
+                    }),
+            })
+        },
+        [this.findElement, /*timeboxes/*, setCards*/],
+    )
+
     render() {
         // console.log("render Pomodoro");
         const {
@@ -117,6 +149,7 @@ class Pomodoro extends React.Component {
             timeboxes
 
         } = this.state;
+        const [, drop] = useDrop(() => ({ accept: DraggableItemTypes.TimeboxListElement }))
         return (
             <>
                 <TimeboxCreator title={title}
@@ -129,25 +162,27 @@ class Pomodoro extends React.Component {
                     timebox={timeboxes.length > 0 ? timeboxes[timeboxes_currentIndex] : {}}
                     isEditable={true}
                 />
-                <TimeboxList>
+                <TimeboxList timeboxes={timeboxes} ref={drop}>
                     {timeboxes.map((elem, index) => {
                         return (
                             <TimeboxListElement
                                 key={elem.uid}
-                                index={index}                           
+                                id={index}/* change index to uuid and then refactor handleStartTimeboxListElement */
                                 timebox={elem}
                                 onTitleChange={this.handleTitleElementChange}
                                 onTimeChange={this.handleTimeElementChange}
                                 onEdit={() => { this.handleEditTimeboxListElement(elem.uid) }}
                                 onDelete={() => { this.handleDelete(elem.uid) }}
                                 onStart={() => { this.handleStartTimeboxListElement(index) }}
+                                moveElement={this.moveElement}
+                                findElement={this.findElement}
                             />
                         );
                     })
                     }
                 </TimeboxList>
             </>
-        
+
         )
     }
 }
