@@ -1,12 +1,14 @@
 import React from "react";
 import { render, fireEvent, within } from "@testing-library/react";
 import Pomodoro from "../../components/Pomodoro";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
 describe('Pomodoro', () => {
  
     it('something ', () => {
        
-        const { getByTestId, getAllByRole,debug } = render(<Pomodoro/>);
+        const { getByTestId, getAllByRole,debug } = render(<DndProvider backend={HTML5Backend}><Pomodoro/></DndProvider>);
         // debug();
         let timebox = getByTestId('Timebox');
         const taskTitle = within(timebox).getByRole('heading', { level: 1 });

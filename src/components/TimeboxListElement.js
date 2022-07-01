@@ -1,5 +1,5 @@
-import React from "react";
-import { useDrag,useDrop } from 'react-dnd'
+import { useDrag } from 'react-dnd';
+import { useDrop } from 'react-dnd';
 import {
   IoTrashOutline, IoMenu, IoSaveOutline,
   IoPlayOutline as IoPushOutline
@@ -7,33 +7,38 @@ import {
 import PropTypes from "prop-types";
 import { v4 as uuidv4 } from "uuid"
 import { DraggableItemTypes } from "./DraggableItemTypes";
+import React from "react";
 
-function TimeboxListElement({ id, timebox, onEdit, onDelete, onTitleChange, onTimeChange, onStart,moveElement, findElement }) {
+//TODO split into TimeboxListElement and DragableTimeboxListElement
+//TODO remove uid and get it from timebox.uid
+function TimeboxListElement({ uid, timebox, onEdit, onDelete, onTitleChange, onTimeChange, onStart,moveElement, findElement }) {
         
-  const originalIndex = findElement(id).index
+  const originalIndex = findElement(uid).index
+
   const [{ isDragging }, drag] = useDrag(
     () => ({
       type: DraggableItemTypes.TimeboxListElement,
-      item: { id, originalIndex },
+      item: { uid, originalIndex },
       collect: (monitor) => ({
         isDragging: monitor.isDragging(),
       }),
       end: (item, monitor) => {
-        const { id: droppedId, originalIndex } = item
+        const { uid: droppedId, originalIndex } = item
         const didDrop = monitor.didDrop()
         if (!didDrop) {
           moveElement(droppedId, originalIndex)
         }
       },
     }),
-    [id, originalIndex, moveElement],
+    [uid, originalIndex, moveElement],
   )
+
   const [, drop] = useDrop(
     () => ({
       accept: DraggableItemTypes.TimeboxListElement,
-      hover({ id: draggedId }) {
-        if (draggedId !== id) {
-          const { index: overIndex } = findElement(id)
+      hover({ uid: draggedId }) {
+        if (draggedId !== uid) {
+          const { index: overIndex } = findElement(uid)
           moveElement(draggedId, overIndex)
         }
       },
@@ -49,8 +54,8 @@ function TimeboxListElement({ id, timebox, onEdit, onDelete, onTitleChange, onTi
       className={"Timebox TimeboxListElement"}
       style={{opacity}}
       >
-      <div className="TimeboxListElementTitle"><textarea disabled={!timebox.isEditable} value={timebox.title} onChange={(event) => { onTitleChange(event, id) }} /></div>
-      <div className="TimeboxListElementTime"><input disabled={!timebox.isEditable} value={timebox.totalTimeInMinutes} onChange={(event) => { onTimeChange(event, id) }} type="number" />min.</div>
+      <div className="TimeboxListElementTitle"><textarea disabled={!timebox.isEditable} value={timebox.title} onChange={(event) => { onTitleChange(event, originalIndex) }} /></div>
+      <div className="TimeboxListElementTime"><input disabled={!timebox.isEditable} value={timebox.totalTimeInMinutes} onChange={(event) => { onTimeChange(event, originalIndex) }} type="number" />min.</div>
       <div className="TimeboxListElementAction">
         {timebox.isEditable ? (<IoSaveOutline title="zapisz" className="button-active" onClick={onEdit} />) : (<IoMenu title="edytuj" className="button-active" onClick={onEdit}></IoMenu>)}
 
@@ -61,7 +66,7 @@ function TimeboxListElement({ id, timebox, onEdit, onDelete, onTitleChange, onTi
   )
 }
 TimeboxListElement.defaultProps = {
-    index: 0,
+    uid: '0', /* to trzreba usunąć - refaktor*/
     timebox: { uid: uuidv4(), title: "Default title", totalTimeInMinutes: 3, isEditable: false },
     onEdit: () => { console.log("handle edit ") },
     onDelete: () => { console.log("handle delete ") },
@@ -71,7 +76,7 @@ TimeboxListElement.defaultProps = {
 }
 
 TimeboxListElement.propTypes = {
-  index: PropTypes.number.isRequired,
+  uid: PropTypes.string.isRequired,
   timebox: PropTypes.object.isRequired,
   onEdit: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,

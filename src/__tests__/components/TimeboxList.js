@@ -3,16 +3,19 @@ import { render, fireEvent, waitFor } from "@testing-library/react";
 import TimeboxList from "../../components/TimeboxList";
 import TimeboxListElement from "../../components/TimeboxListElement";
 import { v4 as uuidv4 } from "uuid";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
 describe('TimeboxList', () => {
     describe('isEditable == false', () => {
         let timeboxes;
-        let timeboxListChildren;
+        let timeboxList;
         let onTitleChange;
         let onTimeChange;
         let onEdit;
         let onDelete;
         let onStart;
+        let findElement;
 
         beforeEach(() => {
             timeboxes = [
@@ -26,10 +29,12 @@ describe('TimeboxList', () => {
             onEdit = jest.fn();
             onDelete = jest.fn();
             onStart = jest.fn();
+            findElement = jest.fn().mockReturnValue({ index: 0 });
 
-            timeboxListChildren = 
+            timeboxList = <DndProvider backend={HTML5Backend}><TimeboxList>{
                 timeboxes.map((elem, index) => {
                     return (
+
                         <TimeboxListElement
                             key={elem.uid}
                             index={index}
@@ -39,13 +44,16 @@ describe('TimeboxList', () => {
                             onEdit={() => { onEdit(elem.uid) }}
                             onDelete={() => { onDelete(elem.uid) }}
                             onStart={() => { onStart(index) }}
+                            findElement={findElement}
                         />
+
                     );
                 })
+            }</TimeboxList></DndProvider>
         })
 
         it('should generate as 3 textboxes and 3 spinbuttons', () => {
-            const { getAllByRole } = render(<TimeboxList>{timeboxListChildren}</TimeboxList>);
+            const { getAllByRole } = render(timeboxList);
 
             const timeboxesList = getAllByRole("textbox");
             expect(timeboxesList.length).toEqual(3);
@@ -56,7 +64,7 @@ describe('TimeboxList', () => {
         })
         it('should be disabled', async () => {
 
-            const { getAllByRole } = render(<TimeboxList>{timeboxListChildren}</TimeboxList>);
+            const { getAllByRole } = render(timeboxList);
 
             const textareas = getAllByRole("textbox");
             const spinbuttons = getAllByRole("spinbutton");
@@ -76,7 +84,7 @@ describe('TimeboxList', () => {
         it('should fire events 3 times', async () => {
 
             const { debug, getAllByTitle, getAllByRole }
-                = render(<TimeboxList>{timeboxListChildren}</TimeboxList>);
+                = render(timeboxList);
 
             const editButtons = getAllByTitle("edytuj");
             const deleteButtons = getAllByTitle("usuń");
@@ -98,7 +106,7 @@ describe('TimeboxList', () => {
         });
         it('should handle TimeboxListElement start button', () => {
 
-            const { getAllByTitle } = render(<TimeboxList>{timeboxListChildren}</TimeboxList>);
+            const { getAllByTitle } = render(timeboxList);
 
             const startButtons = getAllByTitle("start");
             fireEvent.click(startButtons[1]);
@@ -107,12 +115,13 @@ describe('TimeboxList', () => {
     });
     describe('isEditable == true', () => {
         let timeboxes;
-        let timeboxListChildren;
+        let timeboxList;
         let onTitleChange;
         let onTimeChange;
         let onEdit;
         let onDelete;
         let onStart;
+        let findElement;
 
         beforeEach(() => {
             timeboxes = [
@@ -126,10 +135,12 @@ describe('TimeboxList', () => {
             onEdit = jest.fn();
             onDelete = jest.fn();
             onStart = jest.fn();
+            findElement = jest.fn().mockReturnValue({ index: 0 });
 
-            timeboxListChildren = 
+            timeboxList = <DndProvider backend={HTML5Backend}><TimeboxList>{
                 timeboxes.map((elem, index) => {
                     return (
+
                         <TimeboxListElement
                             key={elem.uid}
                             index={index}
@@ -139,14 +150,17 @@ describe('TimeboxList', () => {
                             onEdit={() => { onEdit(elem.uid) }}
                             onDelete={() => { onDelete(elem.uid) }}
                             onStart={() => { onStart(index) }}
+                            findElement={findElement}
                         />
+
                     );
                 })
-            
+            }</TimeboxList></DndProvider>
+
         })
         it('should be enabled', () => {
 
-            const { getAllByTitle, getAllByRole } = render(<TimeboxList>{timeboxListChildren}</TimeboxList>);
+            const { getAllByTitle, getAllByRole } = render(timeboxList);
 
             const textareas = getAllByRole("textbox");
             const spinbuttons = getAllByRole("spinbutton");
@@ -163,10 +177,7 @@ describe('TimeboxList', () => {
             });
         });
         it('has save button', () => {
-            const { getAllByTitle } = render(<TimeboxList>
-                {timeboxListChildren}
-            </TimeboxList>
-            );
+            const { getAllByTitle } = render(timeboxList);
 
             const saveButtons = getAllByTitle("zapisz");
 
@@ -175,7 +186,7 @@ describe('TimeboxList', () => {
         });
         it('should fire events 3 times', async () => {
 
-            const { getAllByTitle, getAllByRole } = render(<TimeboxList>{timeboxListChildren}</TimeboxList>);
+            const { getAllByTitle, getAllByRole } = render(timeboxList);
 
             const saveButtons = getAllByTitle("zapisz");
             const deleteButtons = getAllByTitle("usuń");

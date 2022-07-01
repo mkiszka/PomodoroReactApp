@@ -8,7 +8,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend'
 function App() {    
     return (
         <div id="App" className="App">
-            <ErrorBoundary>
+            {/* <ErrorBoundary> */}
                 <DndProvider backend={HTML5Backend}>
                     <div className="AppHeader" >
                         <div>
@@ -20,7 +20,7 @@ function App() {
                     <hr />
                     <Pomodoro />
                 </DndProvider>
-            </ErrorBoundary>
+            {/* </ErrorBoundary> */}
         </div>
     )
 }
