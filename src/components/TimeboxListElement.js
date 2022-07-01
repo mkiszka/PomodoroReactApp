@@ -30,7 +30,7 @@ function TimeboxListElement({ id, timebox, onEdit, onDelete, onTitleChange, onTi
   )
   const [, drop] = useDrop(
     () => ({
-      accept: DraggableItemTypes.DraggableItemTypes,
+      accept: DraggableItemTypes.TimeboxListElement,
       hover({ id: draggedId }) {
         if (draggedId !== id) {
           const { index: overIndex } = findElement(id)

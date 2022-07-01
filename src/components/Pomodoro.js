@@ -1,5 +1,4 @@
-import React from "react";
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { instanceOf } from 'prop-types';
 import { v4 as uuidv4 } from 'uuid';
 import Timebox from "./Timebox";
@@ -11,179 +10,139 @@ import update from 'immutability-helper';
 import { DraggableItemTypes } from "./DraggableItemTypes";
 import { useDrop } from "react-dnd";
 
-class Pomodoro extends React.Component {
+function initialTimeboxes(cookies) {
+    return cookies.get('timeboxes') ||
+        [
+            { uid: uuidv4(), title: "Wywołanie eventów", totalTimeInMinutes: 3, isEditable: false },
+            { uid: uuidv4(), title: "KP-3034 Migracja z ver 1.14 do 1.15 usuwa powiązanie pacjent pracownik.", totalTimeInMinutes: 20, isEditable: false },
+            { uid: uuidv4(), title: "KP-3104 Deploy webserwisu zamówień dla 1.15", totalTimeInMinutes: 20, isEditable: false },
+        ];
+}
 
-    static propTypes = {
-        cookies: instanceOf(Cookies).isRequired
-    }
+function Pomodoro({ cookies }) {
 
-    constructor(props) {
-        super(props);
-        const { cookies } = this.props;
-        const timeboxes =
-            cookies.get('timeboxes') ||
-            [
-                { uid: uuidv4(), title: "Wywołanie eventów", totalTimeInMinutes: 3, isEditable: false },
-                { uid: uuidv4(), title: "KP-3034 Migracja z ver 1.14 do 1.15 usuwa powiązanie pacjent pracownik.", totalTimeInMinutes: 20, isEditable: false },
-                { uid: uuidv4(), title: "KP-3104 Deploy webserwisu zamówień dla 1.15", totalTimeInMinutes: 20, isEditable: false },
-            ];
+    const [timeboxes, setTimeboxes] = useState(initialTimeboxes(cookies));
+    const [title, setTitle] = useState("Ucze się tego i tamtego?");
+    const [totalTimeInMinutes, setTotalTimeInMinutes] = useState(25);
+    const [isEditable/*, setIsEditable*/] = useState(true);
+    const [timeboxes_currentIndex, setTimeboxes_currentIndex] = useState(0);
 
-        this.state = {
-            title: "Ucze się tego i tamtego?",
-            totalTimeInMinutes: 25,
-            isEditable: true,
-
-            timeboxes_currentIndex: 0,
-
-            timeboxes: timeboxes
-        }
-
-
-    }
-
-    handleDelete = (uid) => {
-        const { cookies } = this.props;
-        this.setState(
+    function handleDelete(uid) {
+        setTimeboxes(
             (prevState) => {
                 let timeboxes = prevState.timeboxes.filter((value, index) => value.uid === uid ? false : true);
                 cookies.set('timeboxes', timeboxes, { path: '/' });
-                return { timeboxes: timeboxes }
+                return timeboxes;
             }
         )
     }
 
-    handleTitleChange = (event) => {
-        this.setState({
-            title: event.target.value
-        });
+    function handleTitleChange(event) {
+        setTitle(event.target.value);
     }
 
-    handleTotalTimeInMinutesChange = (event) => {
-
-        this.setState({
-            totalTimeInMinutes: event.target.value
-        });
+    function handleTotalTimeInMinutesChange(event) {
+        setTotalTimeInMinutes(event.target.value);
     }
-    handleAdd = (timeboxToAdd) => {
-        const { cookies } = this.props;
-
-        this.setState((prevState) => {
-            let timeboxes = prevState.timeboxes;
-            timeboxes = [...prevState.timeboxes, timeboxToAdd];
-            cookies.set('timeboxes', timeboxes, { path: '/' });
-            return ({ timeboxes: timeboxes });
-        }
+    function handleAdd(timeboxToAdd) {
+        setTimeboxes(
+            (prevState) => {
+                let timeboxes = prevState.timeboxes;
+                timeboxes = [...prevState.timeboxes, timeboxToAdd];
+                cookies.set('timeboxes', timeboxes, { path: '/' });
+                return timeboxes;
+            }
         )
     }
 
-    handleEditTimeboxListElement = (uid) => {
+    function handleEditTimeboxListElement(uid) {
 
-        this.setState((prevState) => {
-            return {
-                timeboxes: prevState.timeboxes.map((value) => {
+        setTimeboxes(
+            (prevState) => {
+                return prevState.timeboxes.map((value) => {
                     return value.uid === uid ? { ...value, isEditable: !value.isEditable } : value
                 })
             }
-        }
         )
     }
 
-    handleTitleElementChange = (event, id) => {
-        const { timeboxes } = this.state;
-
+    function handleTitleElementChange(event, id) {
         timeboxes[id].title = event.target.value;
-
-        this.setState({ timeboxes: timeboxes });
-
+        setTimeboxes(timeboxes);
     }
 
-    handleTimeElementChange = (event, id) => {
-        const { timeboxes } = this.state;
+    function handleTimeElementChange(event, id) {
         timeboxes[id].totalTimeInMinutes = event.target.value;
 
-        this.setState({ timeboxes: timeboxes });
+        setTimeboxes(timeboxes);
     }
 
-    handleStartTimeboxListElement = (id) => {
-        this.setState({ timeboxes_currentIndex: id });
+    function handleStartTimeboxListElement(id) {
+        setTimeboxes_currentIndex(id);
     }
 
-    findElement = useCallback(        
+    const findElement = useCallback(
         (id) => {
-            const { timeboxes } = this.state;
-            const element = timeboxes.element((elementc) => `${element.id}` === id)[0]
+            const element = timeboxes.filter((element) => `${element.id}` === id)[0]
             return {
                 element,
-                index: element.indexOf(element),
+                index: timeboxes.indexOf(element),
             }
         },
-        [/*timeboxes*/],
+        [timeboxes],
     )
-    moveElement = useCallback(
+    const moveElement = useCallback(
         (id, atIndex) => {
-            const { timeboxes } = this.state;
-            const { element, index } = this.findElement(id)
-            this.setState({
-                timeboxes:
-                    update(timeboxes, {
-                        $splice: [
-                            [index, 1],
-                            [atIndex, 0, element],
-                        ],
-                    }),
-            })
+            const { element, index } = findElement(id)
+            setTimeboxes(
+                update(timeboxes, {
+                    $splice: [
+                        [index, 1],
+                        [atIndex, 0, element],
+                    ],
+                }),
+            )
         },
-        [this.findElement, /*timeboxes/*, setCards*/],
+        [findElement, timeboxes],
     )
 
-    render() {
-        // console.log("render Pomodoro");
-        const {
-            //TODO adjust names
+    const [, drop] = useDrop(() => ({ accept: DraggableItemTypes.TimeboxListElement }))
+    return (
+        <>
+            <TimeboxCreator title={title}
+                totalTimeInMinutes={totalTimeInMinutes}
+                onTitleChange={handleTitleChange}
+                onTotalTimeInMinutesChange={handleTotalTimeInMinutesChange}
+                onAdd={handleAdd}
+                isEditable={isEditable} />
+            <Timebox
+                timebox={timeboxes.length > 0 ? timeboxes[timeboxes_currentIndex] : {}}
+                isEditable={true}
+            />
+            <TimeboxList timeboxes={timeboxes} ref={drop}>
+                {timeboxes.map((elem, index) => {
+                    return (
+                        <TimeboxListElement
+                            key={elem.uid}
+                            id={index}/* change index to uuid and then refactor handleStartTimeboxListElement */
+                            timebox={elem}
+                            onTitleChange={handleTitleElementChange}
+                            onTimeChange={handleTimeElementChange}
+                            onEdit={() => { handleEditTimeboxListElement(elem.uid) }}
+                            onDelete={() => { handleDelete(elem.uid) }}
+                            onStart={() => { handleStartTimeboxListElement(index) }}
+                            moveElement={moveElement}
+                            findElement={findElement}
+                        />
+                    );
+                })
+                }
+            </TimeboxList>
+        </>
 
-            title,
-            totalTimeInMinutes,
-            isEditable, //probably to remove
-
-            timeboxes_currentIndex,
-            timeboxes
-
-        } = this.state;
-        const [, drop] = useDrop(() => ({ accept: DraggableItemTypes.TimeboxListElement }))
-        return (
-            <>
-                <TimeboxCreator title={title}
-                    totalTimeInMinutes={totalTimeInMinutes}
-                    onTitleChange={this.handleTitleChange}
-                    onTotalTimeInMinutesChange={this.handleTotalTimeInMinutesChange}
-                    onAdd={this.handleAdd}
-                    isEditable={isEditable} />
-                <Timebox
-                    timebox={timeboxes.length > 0 ? timeboxes[timeboxes_currentIndex] : {}}
-                    isEditable={true}
-                />
-                <TimeboxList timeboxes={timeboxes} ref={drop}>
-                    {timeboxes.map((elem, index) => {
-                        return (
-                            <TimeboxListElement
-                                key={elem.uid}
-                                id={index}/* change index to uuid and then refactor handleStartTimeboxListElement */
-                                timebox={elem}
-                                onTitleChange={this.handleTitleElementChange}
-                                onTimeChange={this.handleTimeElementChange}
-                                onEdit={() => { this.handleEditTimeboxListElement(elem.uid) }}
-                                onDelete={() => { this.handleDelete(elem.uid) }}
-                                onStart={() => { this.handleStartTimeboxListElement(index) }}
-                                moveElement={this.moveElement}
-                                findElement={this.findElement}
-                            />
-                        );
-                    })
-                    }
-                </TimeboxList>
-            </>
-
-        )
-    }
+    )
+}
+Pomodoro.propTypes = {
+    cookies: instanceOf(Cookies).isRequired
 }
 export default withCookies(Pomodoro);
