@@ -99,8 +99,8 @@ function Pomodoro({ cookies }) {
 
     const moveElement = useCallback(
         (uid, atIndex) => {
-            const { element, index } = findElement(uid)
-            console.log(element,index);
+            
+            const { element, index } = findElement(uid)           
             setTimeboxes(
                 update(timeboxes, {
                     $splice: [
@@ -116,7 +116,7 @@ function Pomodoro({ cookies }) {
     const [collectedProps, drop] = useDrop(() => ({ accept: DraggableItemTypes.TimeboxListElement }))
     return (
         <>
-            <TimeboxCreator title={title}
+               <TimeboxCreator title={title}
                 totalTimeInMinutes={totalTimeInMinutes}
                 onTitleChange={handleTitleChange}
                 onTotalTimeInMinutesChange={handleTotalTimeInMinutesChange}
@@ -127,8 +127,7 @@ function Pomodoro({ cookies }) {
                 isEditable={true}
             />
             <TimeboxList timeboxes={timeboxes} ref={drop}>
-                {timeboxes.map((elem, index) => {
-                    console.log(elem);
+                {timeboxes.map((elem, index) => {                    
                     return (
                         <TimeboxListElement
                             key={elem.uid}

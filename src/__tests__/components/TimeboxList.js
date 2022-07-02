@@ -1,5 +1,5 @@
 import React, { Children } from "react";
-import { render, fireEvent, waitFor } from "@testing-library/react";
+import { render, fireEvent, within } from "@testing-library/react";
 import TimeboxList from "../../components/TimeboxList";
 import TimeboxListElement from "../../components/TimeboxListElement";
 import { v4 as uuidv4 } from "uuid";
@@ -157,7 +157,7 @@ describe('TimeboxList', () => {
                 })
             }</TimeboxList></DndProvider>
 
-        })
+        })      
         it('should be enabled', () => {
 
             const { getAllByTitle, getAllByRole } = render(timeboxList);
