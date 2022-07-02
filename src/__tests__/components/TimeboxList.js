@@ -1,5 +1,5 @@
-import React, { Children } from "react";
-import { render, fireEvent, within } from "@testing-library/react";
+import React from "react";
+import { render, fireEvent, screen} from "@testing-library/react";
 import TimeboxList from "../../components/TimeboxList";
 import TimeboxListElement from "../../components/TimeboxListElement";
 import { v4 as uuidv4 } from "uuid";
@@ -53,21 +53,21 @@ describe('TimeboxList', () => {
         })
 
         it('should generate as 3 textboxes and 3 spinbuttons', () => {
-            const { getAllByRole } = render(timeboxList);
+            render(timeboxList);
 
-            const timeboxesList = getAllByRole("textbox");
+            const timeboxesList = screen.getAllByRole("textbox");
             expect(timeboxesList.length).toEqual(3);
-            const timeInput = getAllByRole("spinbutton");
+            const timeInput = screen.getAllByRole("spinbutton");
             expect(timeInput.length).toEqual(3);
 
 
         })
         it('should be disabled', async () => {
 
-            const { getAllByRole } = render(timeboxList);
+            render(timeboxList);
 
-            const textareas = getAllByRole("textbox");
-            const spinbuttons = getAllByRole("spinbutton");
+            const textareas = screen.getAllByRole("textbox");
+            const spinbuttons = screen.getAllByRole("spinbutton");
 
             expect(textareas.length).toEqual(3);
             expect(spinbuttons.length).toEqual(3);
@@ -83,11 +83,10 @@ describe('TimeboxList', () => {
 
         it('should fire events 3 times', async () => {
 
-            const { debug, getAllByTitle, getAllByRole }
-                = render(timeboxList);
+            render(timeboxList);
 
-            const editButtons = getAllByTitle("edytuj");
-            const deleteButtons = getAllByTitle("usuń");
+            const editButtons = screen.getAllByTitle("edytuj");
+            const deleteButtons = screen.getAllByTitle("usuń");
 
             expect(editButtons.length).toEqual(3);
             expect(deleteButtons.length).toEqual(3);
@@ -106,9 +105,9 @@ describe('TimeboxList', () => {
         });
         it('should handle TimeboxListElement start button', () => {
 
-            const { getAllByTitle } = render(timeboxList);
+            render(timeboxList);
 
-            const startButtons = getAllByTitle("start");
+            const startButtons = screen.getAllByTitle("start");
             fireEvent.click(startButtons[1]);
             expect(onStart).toBeCalledTimes(1);
         })
@@ -160,10 +159,10 @@ describe('TimeboxList', () => {
         })      
         it('should be enabled', () => {
 
-            const { getAllByTitle, getAllByRole } = render(timeboxList);
+            render(timeboxList);
 
-            const textareas = getAllByRole("textbox");
-            const spinbuttons = getAllByRole("spinbutton");
+            const textareas = screen.getAllByRole("textbox");
+            const spinbuttons = screen.getAllByRole("spinbutton");
 
             expect(textareas.length).toEqual(3);
             expect(spinbuttons.length).toEqual(3);
@@ -177,19 +176,19 @@ describe('TimeboxList', () => {
             });
         });
         it('has save button', () => {
-            const { getAllByTitle } = render(timeboxList);
+            render(timeboxList);
 
-            const saveButtons = getAllByTitle("zapisz");
+            const saveButtons = screen.getAllByTitle("zapisz");
 
 
             expect(saveButtons.length).toEqual(3);
         });
         it('should fire events 3 times', async () => {
 
-            const { getAllByTitle, getAllByRole } = render(timeboxList);
+            render(timeboxList);
 
-            const saveButtons = getAllByTitle("zapisz");
-            const deleteButtons = getAllByTitle("usuń");
+            const saveButtons = screen.getAllByTitle("zapisz");
+            const deleteButtons = screen.getAllByTitle("usuń");
 
             expect(saveButtons.length).toEqual(3);
             expect(deleteButtons.length).toEqual(3);
