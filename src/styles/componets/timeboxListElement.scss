@@ -4,7 +4,8 @@
     background-color: $list-element-background-color;
     color: $list-element-color;
     align-items: center;
-
+    cursor: move;
+    
     >textarea {
         width: 100%
     }

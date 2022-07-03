@@ -2,24 +2,27 @@ import React from "react";
 import Pomodoro from "./Pomodoro";
 import RealTimeClock from "./RealTimeClock";
 import ErrorBoundary from "./ErrorBoundary";
+import { DndProvider } from 'react-dnd'
+import { HTML5Backend } from 'react-dnd-html5-backend'
 
-function App() {
-    const totalTimeInSeconds = 3;
+function App() {    
     return (
         <div id="App" className="App">
             <ErrorBoundary>
-                <div className="AppHeader" >
-                    <div>
-                        <h1>Pomodoro Application</h1>
+                <DndProvider backend={HTML5Backend}>
+                    <div className="AppHeader" >
+                        <div>
+                            <h1>Pomodoro Application</h1>
+                        </div>
+                        <div><RealTimeClock hours="10" minutes="20" />
+                        </div>
                     </div>
-                    <div><RealTimeClock hours="10" minutes="20" />
-                    </div>
-                </div>
-                <hr />
-                <Pomodoro />
+                    <hr />
+                    <Pomodoro />
+                </DndProvider>
             </ErrorBoundary>
-        </div>       
-    ) 
+        </div>
+    )
 }
 
 export default App;

@@ -37,7 +37,7 @@ describe('fib function', () => {
     it('for 0 return 0', () => {
         expect(fib(0)).toEqual(0);
     });
-    it(' for 1 return 1', () => {
+    it('for 1 return 1', () => {
         expect(fib(1)).toEqual(1);
     });
     it('for 1  return 1', () => {
