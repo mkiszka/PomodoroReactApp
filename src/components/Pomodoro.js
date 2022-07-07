@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { instanceOf } from 'prop-types';
 import { v4 as uuidv4 } from 'uuid';
 import Timebox from "./Timebox";
@@ -10,22 +10,44 @@ import update from 'immutability-helper';
 import { DraggableItemTypes } from "./DraggableItemTypes";
 import { useDrop } from "react-dnd";
 
-function initialTimeboxes(cookies) {
-    return cookies.get('timeboxes') ||
-        [
-            { uid: uuidv4(), title: "Wywołanie eventów", totalTimeInMinutes: 3, isEditable: false },
-            { uid: uuidv4(), title: "KP-3034 Migracja z ver 1.14 do 1.15 usuwa powiązanie pacjent pracownik.", totalTimeInMinutes: 20, isEditable: false },
-            { uid: uuidv4(), title: "KP-3104 Deploy webserwisu zamówień dla 1.15", totalTimeInMinutes: 20, isEditable: false },
-        ];
+// function initialTimeboxes(cookies) {
+//     return cookies.get('timeboxes') ||
+//         [
+//             { uid: uuidv4(), title: "Wywołanie eventów", totalTimeInMinutes: 3, isEditable: false },
+//             { uid: uuidv4(), title: "KP-3034 Migracja z ver 1.14 do 1.15 usuwa powiązanie pacjent pracownik.", totalTimeInMinutes: 20, isEditable: false },
+//             { uid: uuidv4(), title: "KP-3104 Deploy webserwisu zamówień dla 1.15", totalTimeInMinutes: 20, isEditable: false },
+//         ];
+// }
+function wait(ms) {
+    return new Promise((resolve) => { setTimeout(() => resolve(), ms) });
+}
+async function getAllTimeboxes(cookies) {
+    await wait(100)
+    return cookies.get('timeboxes') ||  [
+        { uid: uuidv4(), title: "Wywołanie eventów", totalTimeInMinutes: 3, isEditable: false },
+        { uid: uuidv4(), title: "KP-3034 Migracja z ver 1.14 do 1.15 usuwa powiązanie pacjent pracownik.", totalTimeInMinutes: 20, isEditable: false },
+        { uid: uuidv4(), title: "KP-3104 Deploy webserwisu zamówień dla 1.15", totalTimeInMinutes: 20, isEditable: false },
+    ];
 }
 
 function Pomodoro({ cookies }) {
+    //initialTimeboxes(cookies)
+    const [timeboxes, setTimeboxes] = useState([]);
 
-    const [timeboxes, setTimeboxes] = useState(initialTimeboxes(cookies));
+    useEffect(() => { 
+        const getData = async () => {
+            const data = await getAllTimeboxes(cookies);
+            setTimeboxes(data);
+        }
+        getData();
+    },[]);
+
     const [title, setTitle] = useState("Ucze się tego i tamtego?");
     const [totalTimeInMinutes, setTotalTimeInMinutes] = useState(25);
     const [isEditable/*, setIsEditable*/] = useState(true);
     const [timeboxes_currentIndex, setTimeboxes_currentIndex] = useState(0);
+
+    
 
     function handleDelete(uid) {
         setTimeboxes(
@@ -38,8 +60,7 @@ function Pomodoro({ cookies }) {
     }
 
     function handleTitleChange(event) {
-        setTitle(event.target.value);
-        console.log("🚀 ~ file: Pomodoro.js ~ line 42 ~ handleTitleChange ~ event.target.value", event.target.value)
+        setTitle(event.target.value);        
     }
 
     function handleTotalTimeInMinutesChange(event) {
@@ -138,7 +159,7 @@ function Pomodoro({ cookies }) {
                 isEditable={true}
             />
             <TimeboxList timeboxes={timeboxes} ref={drop}>
-                {timeboxes.map((elem, index) => {
+                {timeboxes?.map((elem, index) => {
                     return (
                         <TimeboxListElement
                             key={elem.uid}
