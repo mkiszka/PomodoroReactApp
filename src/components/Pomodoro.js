@@ -39,6 +39,7 @@ function Pomodoro({ cookies }) {
 
     function handleTitleChange(event) {
         setTitle(event.target.value);
+        console.log("🚀 ~ file: Pomodoro.js ~ line 42 ~ handleTitleChange ~ event.target.value", event.target.value)
     }
 
     function handleTotalTimeInMinutesChange(event) {
@@ -66,15 +67,24 @@ function Pomodoro({ cookies }) {
         )
     }
 
-    function handleTitleElementChange(event, id) {
-        timeboxes[id].title = event.target.value;
-        setTimeboxes(timeboxes);
+    function handleTitleElementChange(event, id) {    
+        setTimeboxes(
+            (prevTimeboxes) =>
+                prevTimeboxes.map(
+                    (act_timebox, act_id) => { return act_id === id ? { ...act_timebox, title: event.target.value } : act_timebox }
+                )
+        );
     }
 
     function handleTimeElementChange(event, id) {
         timeboxes[id].totalTimeInMinutes = event.target.value;
 
-        setTimeboxes(() => { return timeboxes});
+        setTimeboxes(
+            (prevTimeboxes) =>
+                prevTimeboxes.map(
+                    (act_timebox, act_id) => { return act_id === id ? { ...act_timebox, totalTimeInMinutes: event.target.value } : act_timebox }
+                )
+        );
     }
 
     function handleStartTimeboxListElement(id) {
@@ -83,12 +93,12 @@ function Pomodoro({ cookies }) {
     }
 
     const findElement = useCallback(
-        (uid) => {            
+        (uid) => {
             const element = timeboxes.filter(
-                (element) => {                    
+                (element) => {
                     return `${element.uid}` === uid;
                 }
-                )[0]
+            )[0]
             return {
                 element,
                 index: timeboxes.indexOf(element),
@@ -99,8 +109,8 @@ function Pomodoro({ cookies }) {
 
     const moveElement = useCallback(
         (uid, atIndex) => {
-            
-            const { element, index } = findElement(uid)           
+
+            const { element, index } = findElement(uid)
             setTimeboxes(
                 update(timeboxes, {
                     $splice: [
@@ -114,9 +124,10 @@ function Pomodoro({ cookies }) {
     )
 
     const [collectedProps, drop] = useDrop(() => ({ accept: DraggableItemTypes.TimeboxListElement }))
+
     return (
         <>
-               <TimeboxCreator title={title}
+            <TimeboxCreator title={title}
                 totalTimeInMinutes={totalTimeInMinutes}
                 onTitleChange={handleTitleChange}
                 onTotalTimeInMinutesChange={handleTotalTimeInMinutesChange}
@@ -127,11 +138,11 @@ function Pomodoro({ cookies }) {
                 isEditable={true}
             />
             <TimeboxList timeboxes={timeboxes} ref={drop}>
-                {timeboxes.map((elem, index) => {                    
+                {timeboxes.map((elem, index) => {
                     return (
                         <TimeboxListElement
                             key={elem.uid}
-                            uid={elem.uid}/* change index to uid and then refactor handleStartTimeboxListElement */                          
+                            uid={elem.uid}/* change index to uid and then refactor handleStartTimeboxListElement */
                             timebox={elem}
                             onTitleChange={handleTitleElementChange}
                             onTimeChange={handleTimeElementChange}
