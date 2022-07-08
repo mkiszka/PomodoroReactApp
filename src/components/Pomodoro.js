@@ -74,7 +74,7 @@ function Pomodoro({ cookies }) {
         ];
     }
 
-    function handleDelete(uid) {
+    function handleDeleteTimeboxListElement(uid) {
         setTimeboxes(
             (prevTimeboxes) => {
                 let timeboxes = prevTimeboxes.filter((value, index) => value.uid === uid ? false : true);
@@ -84,14 +84,14 @@ function Pomodoro({ cookies }) {
         )
     }
 
-    function handleTitleChange(event) {
+    function handleTitleCreatorChange(event) {
         setTitle(event.target.value);
     }
 
-    function handleTotalTimeInMinutesChange(event) {
+    function handleTotalTimeInMinutesCreatorChange(event) {
         setTotalTimeInMinutes(event.target.value);
     }
-    function handleAdd(timeboxToAdd) {
+    function handleCreatorAdd(timeboxToAdd) {
         setTimeboxes(
             (prevTimeboxes) => {
                 let timeboxes = prevTimeboxes;
@@ -175,9 +175,9 @@ function Pomodoro({ cookies }) {
         <>
             <TimeboxCreator title={title}
                 totalTimeInMinutes={totalTimeInMinutes}
-                onTitleChange={handleTitleChange}
-                onTotalTimeInMinutesChange={handleTotalTimeInMinutesChange}
-                onAdd={handleAdd}
+                onTitleChange={handleTitleCreatorChange}
+                onTotalTimeInMinutesChange={handleTotalTimeInMinutesCreatorChange}
+                onAdd={handleCreatorAdd}
                 isEditable={isEditable} />
             {loadingError ? <ErrorMessage error={loadingError} /> : ""}
             {isLoading ? <Message summaryMessage="Loading ...." /> : ""}
@@ -196,7 +196,7 @@ function Pomodoro({ cookies }) {
                             onTitleChange={handleTitleElementChange}
                             onTimeChange={handleTimeElementChange}
                             onEdit={() => { handleEditTimeboxListElement(elem.uid) }}
-                            onDelete={() => { handleDelete(elem.uid) }}
+                            onDelete={() => { handleDeleteTimeboxListElement(elem.uid) }}
                             onStart={() => { handleStartTimeboxListElement(index) }}
                             moveElement={moveElement}
                             findElement={findElement}
