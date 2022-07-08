@@ -26,7 +26,27 @@ import ErrorMessage from "./ErrorMessage";
 function wait(ms) {
     return new Promise((resolve) => { setTimeout(() => resolve(), ms) });
 }
+//dodanie funkcji symulującej pobieranie danych z serwera
+//TimeboxesApi (symulowanie oóznienia)
+// pobieranie z api
+// dodawanie do api
+// podmianka przy aktualizacji
+//zadania
 
+const TimeboxAPI = {
+    getAllTimeboxes: async function () {
+
+    },
+    addTimebox: async function (timeboxToAdd) {
+
+    },
+    replaceTimebox: async function (timeboxToReplace) {
+
+    },
+    removeTimebox: async function (timeboxToRemove) {
+            //timeboxes.splice
+    }
+};
 
 function Pomodoro({ cookies }) {
     //initialTimeboxes(cookies)
