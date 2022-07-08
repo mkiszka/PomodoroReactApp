@@ -1,14 +1,18 @@
 import { useCallback, useEffect, useState } from 'react';
 import { instanceOf } from 'prop-types';
 import { v4 as uuidv4 } from 'uuid';
+import { withCookies, Cookies } from 'react-cookie';
+import { DraggableItemTypes } from "./DraggableItemTypes";
+import { useDrop } from "react-dnd";
+
+import update from 'immutability-helper';
+
 import Timebox from "./Timebox";
 import TimeboxList from "./TimeboxList";
 import TimeboxListElement from "./TimeboxListElement";
 import TimeboxCreator from "./TimeboxCreator";
-import { withCookies, Cookies } from 'react-cookie';
-import update from 'immutability-helper';
-import { DraggableItemTypes } from "./DraggableItemTypes";
-import { useDrop } from "react-dnd";
+import Message from "./Message";
+
 
 // function initialTimeboxes(cookies) {
 //     return cookies.get('timeboxes') ||
@@ -22,8 +26,8 @@ function wait(ms) {
     return new Promise((resolve) => { setTimeout(() => resolve(), ms) });
 }
 async function getAllTimeboxes(cookies) {
-    await wait(100)
-    return cookies.get('timeboxes') ||  [
+    await wait(3000)
+    return cookies.get('timeboxes') || [
         { uid: uuidv4(), title: "Wywołanie eventów", totalTimeInMinutes: 3, isEditable: false },
         { uid: uuidv4(), title: "KP-3034 Migracja z ver 1.14 do 1.15 usuwa powiązanie pacjent pracownik.", totalTimeInMinutes: 20, isEditable: false },
         { uid: uuidv4(), title: "KP-3104 Deploy webserwisu zamówień dla 1.15", totalTimeInMinutes: 20, isEditable: false },
@@ -33,21 +37,18 @@ async function getAllTimeboxes(cookies) {
 function Pomodoro({ cookies }) {
     //initialTimeboxes(cookies)
     const [timeboxes, setTimeboxes] = useState([]);
-
-    useEffect(() => { 
-        const getData = async () => {
-            const data = await getAllTimeboxes(cookies);
-            setTimeboxes(data);
-        }
-        getData();
-    },[]);
+    useEffect(() => {
+        getAllTimeboxes(cookies)
+            .then((timeboxes) => setTimeboxes(timeboxes))
+            .then(() => setIsLoding(false));
+    }, []);
 
     const [title, setTitle] = useState("Ucze się tego i tamtego?");
     const [totalTimeInMinutes, setTotalTimeInMinutes] = useState(25);
     const [isEditable/*, setIsEditable*/] = useState(true);
     const [timeboxes_currentIndex, setTimeboxes_currentIndex] = useState(0);
+    const [isLoading, setIsLoding] = useState(true);
 
-    
 
     function handleDelete(uid) {
         setTimeboxes(
@@ -60,7 +61,7 @@ function Pomodoro({ cookies }) {
     }
 
     function handleTitleChange(event) {
-        setTitle(event.target.value);        
+        setTitle(event.target.value);
     }
 
     function handleTotalTimeInMinutesChange(event) {
@@ -88,7 +89,7 @@ function Pomodoro({ cookies }) {
         )
     }
 
-    function handleTitleElementChange(event, id) {    
+    function handleTitleElementChange(event, id) {
         setTimeboxes(
             (prevTimeboxes) =>
                 prevTimeboxes.map(
@@ -145,7 +146,7 @@ function Pomodoro({ cookies }) {
     )
 
     const [collectedProps, drop] = useDrop(() => ({ accept: DraggableItemTypes.TimeboxListElement }))
-
+    console.log("🚀 ~ file: Pomodoro.js ~ line 159 ~ Pomodoro ~ isLoading", isLoading)
     return (
         <>
             <TimeboxCreator title={title}
@@ -154,10 +155,13 @@ function Pomodoro({ cookies }) {
                 onTotalTimeInMinutesChange={handleTotalTimeInMinutesChange}
                 onAdd={handleAdd}
                 isEditable={isEditable} />
-            <Timebox
-                timebox={timeboxes.length > 0 ? timeboxes[timeboxes_currentIndex] : {}}
-                isEditable={true}
-            />
+            {isLoading ? <Message summaryMessage="Loading ...." />
+                :
+                <Timebox
+                    timebox={timeboxes.length > 0 ? timeboxes[timeboxes_currentIndex] : {}}
+                    isEditable={true}
+                />
+            }
             <TimeboxList timeboxes={timeboxes} ref={drop}>
                 {timeboxes?.map((elem, index) => {
                     return (
