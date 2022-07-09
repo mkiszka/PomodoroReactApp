@@ -12,8 +12,8 @@ class RealTimeClock extends React.Component {
         const date = new Date();
         return {
             hours: date.getHours(), 
-            minutes: parseInt(new String(date.getMinutes()).padStart(2,0)), 
-            seconds: parseInt(new String(date.getSeconds()).padStart(2,0))};
+            minutes: parseInt(date.getMinutes().toString().padStart(2,0)), 
+            seconds: parseInt(date.getSeconds().toString().padStart(2,0))};
     }
 
     componentDidMount() {    
