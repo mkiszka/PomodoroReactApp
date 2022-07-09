@@ -11,9 +11,9 @@ import Timebox from "./Timebox";
 import TimeboxList from "./TimeboxList";
 import TimeboxListElement from "./TimeboxListElement";
 import TimeboxCreator from "./TimeboxCreator";
-import Message from "./Message";
 import ErrorMessage from "./ErrorMessage";
-
+import withAutoIndicator from "./AutoIndicator";
+import ProgressBar from './ProgressBar';
 
 // function initialTimeboxes(cookies) {
 //     return cookies.get('timeboxes') ||
@@ -35,16 +35,22 @@ function wait(ms) {
 
 const TimeboxAPI = {
     getAllTimeboxes: async function () {
-
+        await wait(3000);
+        return [
+            { uid: uuidv4(), title: "Wywołanie eventów", totalTimeInMinutes: 3, isEditable: false },
+            { uid: uuidv4(), title: "KP-3034 Migracja z ver 1.14 do 1.15 usuwa powiązanie pacjent pracownik.", totalTimeInMinutes: 20, isEditable: false },
+            { uid: uuidv4(), title: "KP-3104 Deploy webserwisu zamówień dla 1.15", totalTimeInMinutes: 20, isEditable: false },
+        ];
     },
     addTimebox: async function (timeboxToAdd) {
-
+        await wait(3000);
     },
     replaceTimebox: async function (timeboxToReplace) {
-
+        await wait(3000);
     },
     removeTimebox: async function (timeboxToRemove) {
-            //timeboxes.splice
+        await wait(3000);
+        //timeboxes.splice
     }
 };
 
@@ -52,7 +58,7 @@ function Pomodoro({ cookies }) {
     //initialTimeboxes(cookies)
     const [timeboxes, setTimeboxes] = useState([]);
     useEffect(() => {
-        getAllTimeboxes()
+        TimeboxAPI.getAllTimeboxes()
             .then((timeboxes) => setTimeboxes(timeboxes))
             .catch((error) => setLoadingError(error))
             .finally(() => setIsLoding(false));
@@ -64,15 +70,6 @@ function Pomodoro({ cookies }) {
     const [timeboxes_currentIndex, setTimeboxes_currentIndex] = useState(0);
     const [isLoading, setIsLoding] = useState(true);
     const [loadingError, setLoadingError] = useState(null);
-
-    async function getAllTimeboxes() {        
-        await wait(3000)
-        return cookies.get('timeboxes') || [
-            { uid: uuidv4(), title: "Wywołanie eventów", totalTimeInMinutes: 3, isEditable: false },
-            { uid: uuidv4(), title: "KP-3034 Migracja z ver 1.14 do 1.15 usuwa powiązanie pacjent pracownik.", totalTimeInMinutes: 20, isEditable: false },
-            { uid: uuidv4(), title: "KP-3104 Deploy webserwisu zamówień dla 1.15", totalTimeInMinutes: 20, isEditable: false },
-        ];
-    }
 
     function handleDeleteTimeboxListElement(uid) {
         setTimeboxes(
@@ -168,11 +165,13 @@ function Pomodoro({ cookies }) {
         },
         [findElement, timeboxes],
     )
+    const AutoIndicator = withAutoIndicator(ProgressBar); //TODO - fix the refresh bug
 
-    const [/*collectedProps*/, drop] = useDrop(() => ({ accept: DraggableItemTypes.TimeboxListElement }))
+    const [, drop] = useDrop(() => ({ accept: DraggableItemTypes.TimeboxListElement }))
     console.log("🚀 ~ file: Pomodoro.js ~ line 159 ~ Pomodoro ~ isLoading", isLoading)
     return (
         <>
+            {/* <AutoIndicator /> */}
             <TimeboxCreator title={title}
                 totalTimeInMinutes={totalTimeInMinutes}
                 onTitleChange={handleTitleCreatorChange}
@@ -180,12 +179,12 @@ function Pomodoro({ cookies }) {
                 onAdd={handleCreatorAdd}
                 isEditable={isEditable} />
             {loadingError ? <ErrorMessage error={loadingError} /> : ""}
-            {isLoading ? <Message summaryMessage="Loading ...." /> : ""}
+            {isLoading ? <AutoIndicator refresh="10"/> : ""}
             {timeboxes.length > 0 ? <Timebox
                 timebox={timeboxes.length > 0 ? timeboxes[timeboxes_currentIndex] : {}}
                 isEditable={true}
             /> : ""}
-            
+
             <TimeboxList timeboxes={timeboxes} ref={drop}>
                 {timeboxes?.map((elem, index) => {
                     return (
