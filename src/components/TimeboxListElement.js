@@ -11,7 +11,7 @@ import React from "react";
 
 //TODO split into TimeboxListElement and DragableTimeboxListElement
 //TODO remove uid and get it from timebox.uid
-function TimeboxListElement({ uid, timebox, onEdit, onDelete, onTitleChange, onTimeChange, onStart,moveElement, findElement }) {
+function TimeboxListElement({ uid, timebox, onEdit, onSave, onDelete, onTitleChange, onTimeChange, onStart,moveElement, findElement }) {
         
   const originalIndex = findElement(uid).index
 
@@ -57,7 +57,7 @@ function TimeboxListElement({ uid, timebox, onEdit, onDelete, onTitleChange, onT
       <div className="TimeboxListElementTitle"><textarea disabled={!timebox.isEditable} value={timebox.title} onChange={(event) => { onTitleChange(event, originalIndex) }} /></div>
       <div className="TimeboxListElementTime"><input disabled={!timebox.isEditable} value={timebox.totalTimeInMinutes} onChange={(event) => { onTimeChange(event, originalIndex) }} type="number" />min.</div>
       <div className="TimeboxListElementAction">
-        {timebox.isEditable ? (<IoSaveOutline title="zapisz" className="button-active" onClick={onEdit} />) : (<IoMenu title="edytuj" className="button-active" onClick={onEdit}></IoMenu>)}
+        {timebox.isEditable ? (<IoSaveOutline title="zapisz" className="button-active" onClick={onSave} />) : (<IoMenu title="edytuj" className="button-active" onClick={onEdit}></IoMenu>)}
 
         <IoTrashOutline title="usuń" className="button-active" onClick={onDelete} />
         <IoPushOutline title="start" className="button-active" onClick={onStart} />
@@ -69,6 +69,7 @@ TimeboxListElement.defaultProps = {
     uid: '0', /* to trzreba usunąć - refaktor*/
     timebox: { uid: uuidv4(), title: "Default title", totalTimeInMinutes: 3, isEditable: false },
     onEdit: () => { console.log("handle edit ") },
+    onSave: () => { console.log("handle save ") },
     onDelete: () => { console.log("handle delete ") },
     onTitleChange: () => { console.log("handle title change ") },
     onTimeChange: () => { console.log("handle time change ") },
@@ -79,6 +80,7 @@ TimeboxListElement.propTypes = {
   uid: PropTypes.string.isRequired,
   timebox: PropTypes.object.isRequired,
   onEdit: PropTypes.func.isRequired,
+  onSave: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
   onTitleChange: PropTypes.func.isRequired,
   onTimeChange: PropTypes.func.isRequired
