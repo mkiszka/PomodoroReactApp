@@ -30,11 +30,9 @@ export const TimeboxFakeAPI = {
         this.timeboxes = this.timeboxes.map((value) => value.uid === timeboxToReplace.uid ? timeboxToReplace : value)
         this.updateTimeboxesInsideCookie();        
     },
-    removeTimebox: async function (uid) {
-        console.log("Api.removetimebox 1");
+    removeTimebox: async function (uid) {        
         await wait(1000);
-        this.timeboxes = this.timeboxes.filter((value) => value.uid === uid ? false : true);
-        console.log("Api.removetimebox 2");
+        this.timeboxes = this.timeboxes.filter((value) => value.uid === uid ? false : true);        
         this.updateTimeboxesInsideCookie();
         console.log(cookies.get(COOKIE_TIMEBOXES, { path: '/' }));
     },
