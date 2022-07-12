@@ -14,6 +14,8 @@ import withAutoIndicator from "./AutoIndicator";
 import ProgressBar from './ProgressBar';
 import { TimeboxFakeAPI as TimeboxAPI } from '../api/TimeboxFakeAPI';
 
+const AutoIndicator = withAutoIndicator(ProgressBar);
+
 function Pomodoro() {
 
     const [timeboxes, setTimeboxes] = useState([]);
@@ -23,7 +25,7 @@ function Pomodoro() {
             .then((timeboxes) => { setTimeboxes(timeboxes) })
             .catch((error) => setLoadingError(error))
             .finally(() => setIsLoding(false));
-    }, []);
+    }, []); 
 
     const [title, setTitle] = useState("Ucze się tego i tamtego?");
     const [totalTimeInMinutes, setTotalTimeInMinutes] = useState(25);
@@ -91,7 +93,9 @@ function Pomodoro() {
         setTimeboxes(
             (prevTimeboxes) =>
                 prevTimeboxes.map(
-                    (act_timebox, act_id) => { return act_id === id ? { ...act_timebox, title: event.target.value } : act_timebox }
+                    (act_timebox, act_id) => { 
+                        return act_id === id ? { ...act_timebox, title: event.target.value } : act_timebox 
+                    }
                 )
         );
     }
@@ -143,13 +147,12 @@ function Pomodoro() {
         [findElement, timeboxes],
     )
     
-    const AutoIndicator = withAutoIndicator(ProgressBar); //TODO - fix the refresh bug    
 
     const [, drop] = useDrop(() => ({ accept: DraggableItemTypes.TimeboxListElement }))
     console.log("🚀 ~ file: Pomodoro.js ~ line 182 ~ Pomodoro ~ isLoading", isLoading)
     return (
         <>
-            {/* <AutoIndicator /> */}
+            <AutoIndicator />
             <TimeboxCreator title={title}
                 totalTimeInMinutes={totalTimeInMinutes}
                 onTitleChange={handleTitleCreatorChange}
