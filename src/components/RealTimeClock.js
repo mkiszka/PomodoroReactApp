@@ -1,37 +1,32 @@
 import React from "react";
 import Clock from "./Clock";
+import {formatTimestampToClockString} from "../utilities/time"
 
 
 
-class RealTimeClock extends React.Component {   
-    
-    constructor(props) {    
+class RealTimeClock extends React.Component {
+
+    constructor(props) {
         super(props);
-        this.state = this.getFormattedCurrentTime();
+        this.state = { timestamp: Date.now() };
+
     }
 
-    getFormattedCurrentTime() { //TODO wyciągnąć na zewnątrz
-        const date = new Date();
-        return {
-            hours: date.getHours(), 
-            minutes: parseInt(date.getMinutes().toString().padStart(2,0)), 
-            seconds: parseInt(date.getSeconds().toString().padStart(2,0))};
-    }
-
-    componentDidMount() {    
-        this.timer = setInterval( () => {
-            this.setState(this.getFormattedCurrentTime())
-        },500)
+    componentDidMount() {
+        this.timer = setInterval(() => {
+            this.setState({ timestamp: Date.now() })
+        }, 500)
     }
 
     componentWillUnmount() {
-        clearInterval(this.timer);        
+        clearInterval(this.timer);
     }
 
-    render () {
-        const { hours, minutes, seconds } = this.state; //na timestamp ?
+    render() {
+        const { timestamp } = this.state; 
+        const { hours, minutes, seconds } = formatTimestampToClockString(timestamp);
         return (
-            <Clock className="RealtimeClock" htmltag="h4" hours={hours} minutes={minutes} seconds={seconds}/>
+            <Clock className="RealtimeClock" htmltag="h4" hours={hours} minutes={minutes} seconds={seconds} />
         )
     }
 }

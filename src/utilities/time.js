@@ -8,5 +8,14 @@ function convertMiliSecondsToMiliSecondsSecondMinutesHours(timeInMiliSeconds) {
     return [miliseconds, seconds, minutes, hours];
 }
 
+function formatTimestampToClockString(timestamp) { 
+    let date = new Date();
+    date.setTime(timestamp);
+    return {
+        hours: date.getHours(),
+        minutes: parseInt(date.getMinutes().toString().padStart(2, 0)),
+        seconds: parseInt(date.getSeconds().toString().padStart(2, 0))
+    };
+};
 
-export { convertMiliSecondsToMiliSecondsSecondMinutesHours };
+export { convertMiliSecondsToMiliSecondsSecondMinutesHours, formatTimestampToClockString };
