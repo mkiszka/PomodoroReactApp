@@ -2,15 +2,21 @@ import { useEffect, useState } from 'react';
 
 export default function withAutoIndicator(ProgressBar) {
 
-  function AutoIndicator( props ) {
+function AutoIndicator( props ) {
+  console.log("render");
     const { refresh = 100} = props;
     let [percentage, setPercentage] = useState(0);
+
     useEffect(() => {
+      console.log("inside effect");
       const interval = setInterval(() => {
-        setPercentage(++percentage > 100 ? 0 : percentage);
+        setPercentage((prevPercentage) => 
+          ++prevPercentage % 100
+        );
+        console.log("inside setInterval");
       }, refresh)
       return () => clearInterval(interval);
-    }, [percentage, refresh]);
+    }, [refresh]);
 
     return <ProgressBar percent={percentage} />
   }
