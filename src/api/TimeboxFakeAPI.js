@@ -15,7 +15,7 @@ export const TimeboxFakeAPI = {
             { uid: uuidv4(), title: "KP-3104 Deploy webserwisu zamówień dla 1.15", totalTimeInMinutes: 20, isEditable: false },
         ],
     getAllTimeboxes: async function () {
-        await wait(300);        
+        await wait(2000);        
         return [...this.timeboxes];
     },
 

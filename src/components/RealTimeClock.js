@@ -1,14 +1,16 @@
 import React from "react";
 import Clock from "./Clock";
 
+
+
 class RealTimeClock extends React.Component {   
     
     constructor(props) {    
         super(props);
-        this.state = this.fetchTimerState();
+        this.state = this.getFormattedCurrentTime();
     }
 
-    fetchTimerState() {
+    getFormattedCurrentTime() { //TODO wyciągnąć na zewnątrz
         const date = new Date();
         return {
             hours: date.getHours(), 
@@ -18,7 +20,7 @@ class RealTimeClock extends React.Component {
 
     componentDidMount() {    
         this.timer = setInterval( () => {
-            this.setState(this.fetchTimerState())
+            this.setState(this.getFormattedCurrentTime())
         },500)
     }
 
@@ -27,7 +29,7 @@ class RealTimeClock extends React.Component {
     }
 
     render () {
-        const { hours, minutes, seconds } = this.state; 
+        const { hours, minutes, seconds } = this.state; //na timestamp ?
         return (
             <Clock className="RealtimeClock" htmltag="h4" hours={hours} minutes={minutes} seconds={seconds}/>
         )

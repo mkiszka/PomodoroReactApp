@@ -25,7 +25,7 @@ function Pomodoro() {
             .then((timeboxes) => { setTimeboxes(timeboxes) })
             .catch((error) => setLoadingError(error))
             .finally(() => setIsLoding(false));
-    }, []); 
+    }, []);
 
     const [title, setTitle] = useState("Ucze się tego i tamtego?");
     const [totalTimeInMinutes, setTotalTimeInMinutes] = useState(25);
@@ -46,7 +46,7 @@ function Pomodoro() {
         }
         );
     }
-
+//TODO customhook to co dotyka tablicy timeboxów (nagranie vip2 końcówka)
     function handleTitleCreatorChange(event) {
         setTitle(event.target.value);
     }
@@ -65,16 +65,17 @@ function Pomodoro() {
         });
     }
 
-    function handleEditTimeboxListElement(uid) {          
-            setTimeboxes(
-                (prevTimeboxes) => {
-                    return prevTimeboxes.map((value) => {
-                        return value.uid === uid ? { ...value, isEditable: true } : value
-                    })
-                }
-            )
+    function handleEditTimeboxListElement(uid) {
+        setTimeboxes(
+            (prevTimeboxes) => {
+                return prevTimeboxes.map((value) => {
+                    return value.uid === uid ? { ...value, isEditable: true } : value
+                })
+            }
+        )
     }
-
+//TODO nie wysyłać isEditable do backendu
+//iseditable przenieść do środka
     function handleSaveTimeboxListElement(uid) {
         const { element } = findElement(uid);
 
@@ -93,8 +94,8 @@ function Pomodoro() {
         setTimeboxes(
             (prevTimeboxes) =>
                 prevTimeboxes.map(
-                    (act_timebox, act_id) => { 
-                        return act_id === id ? { ...act_timebox, title: event.target.value } : act_timebox 
+                    (act_timebox, act_id) => {
+                        return act_id === id ? { ...act_timebox, title: event.target.value } : act_timebox
                     }
                 )
         );
@@ -131,7 +132,7 @@ function Pomodoro() {
         [timeboxes],
     )
 
-    const moveElement = useCallback(
+    const handleMoveElement = useCallback(
         (uid, atIndex) => {
 
             const { element, index } = findElement(uid)
@@ -146,13 +147,19 @@ function Pomodoro() {
         },
         [findElement, timeboxes],
     )
-    
 
-    const [, drop] = useDrop(() => ({ accept: DraggableItemTypes.TimeboxListElement }))
+
+    const [, drop] = useDrop(() => ({ accept: DraggableItemTypes.TimeboxListElement })) //przenieść do TimeboxList i nie róbić refa
     console.log("🚀 ~ file: Pomodoro.js ~ line 182 ~ Pomodoro ~ isLoading", isLoading)
     return (
         <>
-            <AutoIndicator />
+            {/* <AutoIndicator /> 
+            
+            */
+                //przenieść onTitleChange and onTotalTimeInMinutesChanges przenieś  do środka i 
+                //handleCreatorAdd przekazuje nowy timebox
+                //usunięcie isEditable
+            }
             <TimeboxCreator title={title}
                 totalTimeInMinutes={totalTimeInMinutes}
                 onTitleChange={handleTitleCreatorChange}
@@ -173,13 +180,13 @@ function Pomodoro() {
                             key={elem.uid}
                             uid={elem.uid}/* change index to uid and then refactor handleStartTimeboxListElement */
                             timebox={elem}
-                            onTitleChange={handleTitleElementChange}
-                            onTimeChange={handleTimeElementChange}
-                            onEdit={() => { handleEditTimeboxListElement(elem.uid) }}
-                            onSave={() => { handleSaveTimeboxListElement(elem.uid)}}
+                            onTitleChange={handleTitleElementChange /* do środka*/}
+                            onTimeChange={handleTimeElementChange/* do środka*/}
+                            onEdit={() => { handleEditTimeboxListElement(elem.uid) }/* do środka*/}
+                            onSave={() => { handleSaveTimeboxListElement(elem.uid) }/* kopia obiektu na zewnątrz*/}
                             onDelete={() => { handleDeleteTimeboxListElement(elem.uid) }}
-                            onStart={() => { handleStartTimeboxListElement(index) }}
-                            moveElement={moveElement}
+                            onStart={() => { handleStartTimeboxListElement(index) }} 
+                            onMoveElement={handleMoveElement}
                             findElement={findElement}
                         />
                     );

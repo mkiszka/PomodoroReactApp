@@ -11,7 +11,7 @@ import React from "react";
 
 //TODO split into TimeboxListElement and DragableTimeboxListElement
 //TODO remove uid and get it from timebox.uid
-function TimeboxListElement({ uid, timebox, onEdit, onSave, onDelete, onTitleChange, onTimeChange, onStart,moveElement, findElement }) {
+function TimeboxListElement({ uid, timebox, onEdit, onSave, onDelete, onTitleChange, onTimeChange, onStart, onMoveElement, findElement }) {
         
   const originalIndex = findElement(uid).index
 
@@ -26,11 +26,11 @@ function TimeboxListElement({ uid, timebox, onEdit, onSave, onDelete, onTitleCha
         const { uid: droppedId, originalIndex } = item
         const didDrop = monitor.didDrop()
         if (!didDrop) {
-          moveElement(droppedId, originalIndex)
+          onMoveElement(droppedId, originalIndex)
         }
       },
     }),
-    [uid, originalIndex, moveElement],
+    [uid, originalIndex, onMoveElement],
   )
 
   const [, drop] = useDrop(
@@ -39,14 +39,14 @@ function TimeboxListElement({ uid, timebox, onEdit, onSave, onDelete, onTitleCha
       hover({ uid: draggedId }) {
         if (draggedId !== uid) {
           const { index: overIndex } = findElement(uid)
-          moveElement(draggedId, overIndex)
+          onMoveElement(draggedId, overIndex) //przekazywać uid a onMoveElement ma wyszukać index
         }
       },
     }),
-    [findElement, moveElement],
+    [findElement, onMoveElement],
   )
   const opacity = isDragging ? 0 : 1
-
+//TODO jeden komponent renderuje nieedytowany timebox a drugi edytowalny (dostaje aktuanego timeboxa) 
   return (
     <div 
       ref={(node) => drag(drop(node))}
