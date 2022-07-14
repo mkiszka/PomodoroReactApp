@@ -29,7 +29,6 @@ function Pomodoro() {
 
     const [title, setTitle] = useState("Ucze się tego i tamtego?");
     const [totalTimeInMinutes, setTotalTimeInMinutes] = useState(25);
-    const [isEditable/*, setIsEditable*/] = useState(true);
     const [timeboxes_currentIndex, setTimeboxes_currentIndex] = useState(0);
     const [isLoading, setIsLoding] = useState(true);
     const [loadingError, setLoadingError] = useState(null);
@@ -65,52 +64,24 @@ function Pomodoro() {
         });
     }
 
-    function handleEditTimeboxListElement(uid) {
-        setTimeboxes(
-            (prevTimeboxes) => {
-                return prevTimeboxes.map((value) => {
-                    return value.uid === uid ? { ...value, isEditable: true } : value
-                })
+    //TODO nie wysyłać isEditable do backendu
+    //iseditable przenieść do środka
+    function handleSaveTimeboxListElement(editedTimebox) {
+        //const { element } = findElement(editedTimebox.uid);        
+        TimeboxAPI.replaceTimebox({ ...editedTimebox }).then(
+            () => {
+                setTimeboxes(
+                    (prevTimeboxes) => {
+                        return prevTimeboxes.map((value) => { //tego mapa spróbować zedytować według uwag z konsultacji
+                            return value.uid === editedTimebox.uid ? { ...editedTimebox } : value
+                        })
+                    }
+                )
             }
         )
     }
-//TODO nie wysyłać isEditable do backendu
-//iseditable przenieść do środka
-    function handleSaveTimeboxListElement(uid) {
-        const { element } = findElement(uid);
 
-        TimeboxAPI.replaceTimebox({ ...element, isEditable: false }).then(
-            setTimeboxes(
-                (prevTimeboxes) => {
-                    return prevTimeboxes.map((value) => {
-                        return value.uid === uid ? { ...value, isEditable: false } : value
-                    })
-                }
-            )
-        )
-    }
 
-    function handleTitleElementChange(event, id) {
-        setTimeboxes(
-            (prevTimeboxes) =>
-                prevTimeboxes.map(
-                    (act_timebox, act_id) => {
-                        return act_id === id ? { ...act_timebox, title: event.target.value } : act_timebox
-                    }
-                )
-        );
-    }
-
-    function handleTimeElementChange(event, id) {
-        timeboxes[id].totalTimeInMinutes = event.target.value;
-
-        setTimeboxes(
-            (prevTimeboxes) =>
-                prevTimeboxes.map(
-                    (act_timebox, act_id) => { return act_id === id ? { ...act_timebox, totalTimeInMinutes: event.target.value } : act_timebox }
-                )
-        );
-    }
 
     function handleStartTimeboxListElement(id) {
         setTimeboxes_currentIndex(id);
@@ -136,7 +107,7 @@ function Pomodoro() {
         (uid, atUid) => {
 
             const { element, index } = findElement(uid)
-            const { /*element: atElement,*/ index: atIndex} = findElement(atUid)
+            const { /*element: atElement,*/ index: atIndex } = findElement(atUid)
             setTimeboxes(
                 update(timeboxes, {
                     $splice: [
@@ -166,28 +137,23 @@ function Pomodoro() {
                 onTitleChange={handleTitleCreatorChange}
                 onTotalTimeInMinutesChange={handleTotalTimeInMinutesCreatorChange}
                 onAdd={handleCreatorAdd}
-                isEditable={isEditable} />
+            />
             {loadingError ? <ErrorMessage error={loadingError} /> : ""}
             {isLoading ? <AutoIndicator refresh="10" /> : ""}
             {timeboxes.length > 0 ? <Timebox
                 timebox={timeboxes.length > 0 ? timeboxes[timeboxes_currentIndex] : {}}
-                isEditable={true}
             /> : ""}
 
             <TimeboxList timeboxes={timeboxes} ref={drop}>
                 {timeboxes?.map((elem, index) => {
                     return (
                         <TimeboxListElement
-                            key={elem.uid}                           
+                            key={elem.uid}
                             timebox={elem}
-                            onTitleChange={handleTitleElementChange /* do środka*/}
-                            onTimeChange={handleTimeElementChange/* do środka*/}
-                            onEdit={() => { handleEditTimeboxListElement(elem.uid) }/* do środka*/}
-                            onSave={() => { handleSaveTimeboxListElement(elem.uid) }/* kopia obiektu na zewnątrz*/}
+                            onSave={handleSaveTimeboxListElement/* kopia obiektu na zewnątrz*/}
                             onDelete={() => { handleDeleteTimeboxListElement(elem.uid) }}
-                            onStart={() => { handleStartTimeboxListElement(index) }} 
+                            onStart={() => { handleStartTimeboxListElement(index) }}
                             onMoveElement={handleMoveElement}
-                            findElement={findElement}
                         />
                     );
                 })

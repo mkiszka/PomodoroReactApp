@@ -10,7 +10,7 @@ class TimeboxCreator extends React.Component {
     constructor(props) {
         super(props);
         this.formRef = React.createRef();
-        this.state = { hasError: false }
+        this.state = { hasError: false, }
     }
 
     handleSubmit = (event) => {
@@ -61,5 +61,7 @@ TimeboxCreator.propTypes = {
     onTitleChange: PropTypes.func.isRequired,
     onTotalTimeInMinutesChange: PropTypes.func.isRequired
 }
-
+TimeboxCreator.defaultProps = {
+    isEditable: true
+}
 export default TimeboxCreator;

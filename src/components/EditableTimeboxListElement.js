@@ -5,23 +5,37 @@ import {
 import PropTypes from "prop-types";
 import { v4 as uuidv4 } from "uuid"
 import React from "react";
+import { useState } from "react";
 
-//TODO split into TimeboxListElement and DragableTimeboxListElement
+function EditableTimeboxListElement({ timebox, onSave }) {
 
-function EditableTimeboxListElement({ timebox, onEdit, onSave, onDelete, onTitleChange, onTimeChange, onStart, onMoveElement, findElement }) {
-  const uid = timebox.uid;
+  const [insideTimebox, setInsideTimebox] = useState( timebox ); // <-- sprawdzić czy na pewno to się raz wykona jako default
+  console.log(insideTimebox);
   // const originalIndex = findElement(uid).index
 
-  const originalIndex = 0 ;//todo refactoring jako kopiwa obiektu wewnętrznego i on save przekazywać obiekt nowy timebox
-  //TODO jeden komponent renderuje nieedytowany timebox a drugi edytowalny (dostaje aktuanego timeboxa) 
+  function handleTitleChange(event) {
+    setInsideTimebox(
+      (prevInsideTimeboxes) => {
+        return { ...prevInsideTimeboxes, title: event.target.value };
+      }
+    );
+  }
+
+  function handleTotalTimeInMinutesChange(event) {
+    setInsideTimebox(
+      (prevInsideTimeboxes) => {
+        return { ...prevInsideTimeboxes, totalTimeInMinutes: event.target.value };
+      })
+  }
+
   return (
-    <div      
+    <div
       role={"listitem"}
-      className={"Timebox TimeboxListElement"}     
+      className={"Timebox TimeboxListElement"}
     >
-      <div className="TimeboxListElementTitle"><textarea disabled={!timebox.isEditable} value={timebox.title} onChange={(event) => { onTitleChange(event, originalIndex) }} /></div>
-      <div className="TimeboxListElementTime"><input disabled={!timebox.isEditable} value={timebox.totalTimeInMinutes} onChange={(event) => { onTimeChange(event, originalIndex) }} type="number" />min.</div>
-      <div className="TimeboxListElementAction"><IoSaveOutline title="zapisz" className="button-active" onClick={onSave} />
+      <div className="TimeboxListElementTitle"><textarea value={insideTimebox.title} onChange={(event) => { handleTitleChange(event) }} /></div>
+      <div className="TimeboxListElementTime"><input value={insideTimebox.totalTimeInMinutes} onChange={(event) => { handleTotalTimeInMinutesChange(event) }} type="number" />min.</div>
+      <div className="TimeboxListElementAction"><IoSaveOutline title="zapisz" className="button-active" onClick={() => onSave({ ...insideTimebox })} /> { /* vip3- czy poprawnie że kopie obiektu robię? */}
 
         {/* <IoTrashOutline title="usuń" className="button-active" onClick={onDelete} />
         <IoPushOutline title="start" className="button-active" onClick={onStart} /> */}
@@ -30,24 +44,13 @@ function EditableTimeboxListElement({ timebox, onEdit, onSave, onDelete, onTitle
   )
 }
 EditableTimeboxListElement.defaultProps = {
-  uid: '0', /* to trzreba usunąć - refaktor*/
   timebox: { uid: uuidv4(), title: "Default title", totalTimeInMinutes: 3, isEditable: false },
-  onEdit: () => { console.log("handle edit ") },
   onSave: () => { console.log("handle save ") },
-  onDelete: () => { console.log("handle delete ") },
-  onTitleChange: () => { console.log("handle title change ") },
-  onTimeChange: () => { console.log("handle time change ") },
-
 }
 
 EditableTimeboxListElement.propTypes = {
-  uid: PropTypes.string.isRequired,
   timebox: PropTypes.object.isRequired,
-  onEdit: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
-  onDelete: PropTypes.func.isRequired,
-  onTitleChange: PropTypes.func.isRequired,
-  onTimeChange: PropTypes.func.isRequired
 }
 
 export default EditableTimeboxListElement;

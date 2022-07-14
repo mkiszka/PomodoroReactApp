@@ -6,11 +6,8 @@ import PropTypes from "prop-types";
 import { v4 as uuidv4 } from "uuid"
 import React from "react";
 
-//TODO split into TimeboxListElement and DragableTimeboxListElement
-
 function NonEditableTimeboxListElement({ timebox, onEdit, onDelete, onStart }) {
   
-//TODO jeden komponent renderuje nieedytowany timebox a drugi edytowalny (dostaje aktuanego timeboxa) 
   return (
     <div      
       role={"listitem"}
