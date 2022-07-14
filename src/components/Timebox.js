@@ -27,7 +27,7 @@ class Timebox extends React.Component {
     }
 
     handleTogglePause = (event) => {
-        
+
         const pauseTime = new Date().getTime();
         this.setState(
             (prevState) => {
@@ -36,120 +36,119 @@ class Timebox extends React.Component {
                 return {
                     isPaused: !isPaused,
                     pausesCount: !isPaused ? pausesCount + 1 : pausesCount,
-                        elapsedTimeInMiliSeconds: (
-                            !isPaused ?
-                                elapsedTimeInMiliSeconds + pauseTime - lastIntervalTime
-                                :
-                                elapsedTimeInMiliSeconds
-                        )
-            }
+                    elapsedTimeInMiliSeconds: (
+                        !isPaused ?
+                            elapsedTimeInMiliSeconds + pauseTime - lastIntervalTime
+                            :
+                            elapsedTimeInMiliSeconds
+                    )
+                }
 
             },
             () => {
 
-    const { isPaused } = this.state;
-    if (isPaused) {
-        //console.log("stop");
-        this.stopTimer();
-    } else {
-        //console.log("start");
-        this.startTimer(false);
+                const { isPaused } = this.state;
+                if (isPaused) {
+                    //console.log("stop");
+                    this.stopTimer();
+                } else {
+                    //console.log("start");
+                    this.startTimer(false);
 
-    }
-}
+                }
+            }
         )
     }
 
-handleStop = (event) => {
-    //console.log("Stio");
-    this.setState((prevState) => {
-        return ({
-            isRunning: false,
-            isPaused: false,
-            pausesCount: 0,
-            elapsedTimeInMiliSeconds: 0
-        })
+    handleStop = (event) => {
+        //console.log("Stio");
+        this.setState((prevState) => {
+            return ({
+                isRunning: false,
+                isPaused: false,
+                pausesCount: 0,
+                elapsedTimeInMiliSeconds: 0
+            })
 
 
-    });
-    this.stopTimer();
-}
-
-stopTimer() {
-    window.clearInterval(this.intervalId);
-}
-
-startTimer(initializeStartTime = true) {
-
-    this.setState({ lastIntervalTime: new Date().getTime() });
-
-    this.intervalId = window.setInterval(
-        () => {
-            this.setState(
-                (prevState) => {
-                    const now = new Date().getTime();
-                    const elapsedTimeInMiliSeconds = prevState.elapsedTimeInMiliSeconds + new Date().getTime() - prevState.lastIntervalTime;
-                    const totalTimeInMiliSeconds = prevState.totalTimeInMinutes * 60000;
-                    //console.log(totalTimeInMiliSeconds, elapsedTimeInMiliSeconds);
-                    if (elapsedTimeInMiliSeconds >= totalTimeInMiliSeconds) {
-                        this.stopTimer();
-                    }
-                    return ({ elapsedTimeInMiliSeconds: elapsedTimeInMiliSeconds, lastIntervalTime: now });
-
-                }
-            );
-        },
-        100
-    )
-}
-
-render() {
-
-    //TODO too many render issue
-    const { timebox, isEditable } = this.props;
-
-    const { isRunning, isPaused, pausesCount, elapsedTimeInMiliSeconds } = this.state
-    let totalTimeInMiliSeconds, timeLeftInMiliSeconds, milisecondsLeft, minutesLeft;
-    let secondsLeft, hoursLeft;
-    let progressInPercent;
-    let timeboxEmpty = false;
-    if (timebox === null || Object.keys(timebox).length === 0) {
-        totalTimeInMiliSeconds = 0;
-        timeLeftInMiliSeconds = 0;
-        milisecondsLeft = 0;
-        secondsLeft = 0;
-        minutesLeft = 0;
-        hoursLeft = 0;
-        progressInPercent = 0;
-        timeboxEmpty = true;
-    } else {
-        totalTimeInMiliSeconds = timebox.totalTimeInMinutes * 60000;
-        timeLeftInMiliSeconds = totalTimeInMiliSeconds - elapsedTimeInMiliSeconds;
-        [milisecondsLeft, secondsLeft, minutesLeft, hoursLeft] = convertMiliSecondsToMiliSecondsSecondMinutesHours(timeLeftInMiliSeconds);
-
-        progressInPercent = ((totalTimeInMiliSeconds - elapsedTimeInMiliSeconds) / totalTimeInMiliSeconds) * 100;
+        });
+        this.stopTimer();
     }
 
-    return (<div data-testid={"Timebox"} className={`Timebox  ${isEditable ? "" : "inactive"}`}>
-        <h1>{timebox.title}</h1>
-        <h4>Liczba przerw: {pausesCount}</h4>
-        <Clock keyPrefix="clock1"
-            hours={hoursLeft}
-            minutes={minutesLeft}
-            seconds={secondsLeft}
-            miliseconds={milisecondsLeft}
-            className={"TimeboxClock " + (isPaused ? "inactive" : "")} />
-        <ProgressBar
-            percent={progressInPercent} className={isPaused ? "inactive" : ""} trackRemaining={false} />
-        <button onClick={!isPaused && !isRunning ? this.handlePlay : this.handleTogglePause} disabled={timeboxEmpty}>
-            {isRunning && !isPaused ? <IoPauseCircleOutline className={timeboxEmpty ? "button-inactive" : "button-active"} /> : <IoPlayCircleOutline className={timeboxEmpty ? "button-inactive" : "button-active"} />}
-        </button>
-        <button onClick={this.handleStop} disabled={!isRunning || timeboxEmpty} >
-            <IoStopCircleOutline className={timeboxEmpty ? "button-inactive" : "button-active"} />
-        </button>
+    stopTimer() {
+        window.clearInterval(this.intervalId);
+    }
 
-    </div >);
-}
+    startTimer(initializeStartTime = true) {
+
+        this.setState({ lastIntervalTime: new Date().getTime() });
+
+        this.intervalId = window.setInterval(
+            () => {
+                this.setState(
+                    (prevState) => {
+                        const now = new Date().getTime();
+                        const elapsedTimeInMiliSeconds = prevState.elapsedTimeInMiliSeconds + new Date().getTime() - prevState.lastIntervalTime;
+                        const totalTimeInMiliSeconds = prevState.totalTimeInMinutes * 60000;
+                        //console.log(totalTimeInMiliSeconds, elapsedTimeInMiliSeconds);
+                        if (elapsedTimeInMiliSeconds >= totalTimeInMiliSeconds) {
+                            this.stopTimer();
+                        }
+                        return ({ elapsedTimeInMiliSeconds: elapsedTimeInMiliSeconds, lastIntervalTime: now });
+
+                    }
+                );
+            },
+            100
+        )
+    }
+
+    render() {
+        
+        const { timebox, isEditable } = this.props;
+
+        const { isRunning, isPaused, pausesCount, elapsedTimeInMiliSeconds } = this.state
+        let totalTimeInMiliSeconds, timeLeftInMiliSeconds, milisecondsLeft, minutesLeft;
+        let secondsLeft, hoursLeft;
+        let progressInPercent;
+        let timeboxEmpty = false;
+        if (timebox === null || Object.keys(timebox).length === 0) {
+            totalTimeInMiliSeconds = 0;
+            timeLeftInMiliSeconds = 0;
+            milisecondsLeft = 0;
+            secondsLeft = 0;
+            minutesLeft = 0;
+            hoursLeft = 0;
+            progressInPercent = 0;
+            timeboxEmpty = true;
+        } else {
+            totalTimeInMiliSeconds = timebox.totalTimeInMinutes * 60000;
+            timeLeftInMiliSeconds = totalTimeInMiliSeconds - elapsedTimeInMiliSeconds;
+            [milisecondsLeft, secondsLeft, minutesLeft, hoursLeft] = convertMiliSecondsToMiliSecondsSecondMinutesHours(timeLeftInMiliSeconds);
+
+            progressInPercent = ((totalTimeInMiliSeconds - elapsedTimeInMiliSeconds) / totalTimeInMiliSeconds) * 100;
+        }
+
+        return (<div data-testid={"Timebox"} className={`Timebox  ${isEditable ? "" : "inactive"}`}>
+            <h1>{timebox.title}</h1>
+            <h4>Liczba przerw: {pausesCount}</h4>
+            <Clock keyPrefix="clock1"
+                hours={hoursLeft}
+                minutes={minutesLeft}
+                seconds={secondsLeft}
+                miliseconds={milisecondsLeft}
+                className={"TimeboxClock " + (isPaused ? "inactive" : "")} />
+            <ProgressBar
+                percent={progressInPercent} className={isPaused ? "inactive" : ""} trackRemaining={false} />
+            <button onClick={!isPaused && !isRunning ? this.handlePlay : this.handleTogglePause} disabled={timeboxEmpty}>
+                {isRunning && !isPaused ? <IoPauseCircleOutline className={timeboxEmpty ? "button-inactive" : "button-active"} /> : <IoPlayCircleOutline className={timeboxEmpty ? "button-inactive" : "button-active"} />}
+            </button>
+            <button onClick={this.handleStop} disabled={!isRunning || timeboxEmpty} >
+                <IoStopCircleOutline className={timeboxEmpty ? "button-inactive" : "button-active"} />
+            </button>
+
+        </div >);
+    }
 }
 
 Timebox.defaultProps = {

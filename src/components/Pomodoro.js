@@ -1,95 +1,77 @@
-import { useCallback, useState } from 'react';
-import { instanceOf } from 'prop-types';
-import { v4 as uuidv4 } from 'uuid';
+import { useCallback, useEffect, useState } from 'react';
+import update from 'immutability-helper';
 import Timebox from "./Timebox";
 import TimeboxList from "./TimeboxList";
 import TimeboxListElement from "./TimeboxListElement";
 import TimeboxCreator from "./TimeboxCreator";
-import { withCookies, Cookies } from 'react-cookie';
-import update from 'immutability-helper';
-import { DraggableItemTypes } from "./DraggableItemTypes";
-import { useDrop } from "react-dnd";
+import ErrorMessage from "./ErrorMessage";
+import withAutoIndicator from "./AutoIndicator";
+import ProgressBar from './ProgressBar';
+import { TimeboxFakeAPI as TimeboxAPI } from '../api/TimeboxFakeAPI';
 
-function initialTimeboxes(cookies) {
-    return cookies.get('timeboxes') ||
-        [
-            { uid: uuidv4(), title: "Wywołanie eventów", totalTimeInMinutes: 3, isEditable: false },
-            { uid: uuidv4(), title: "KP-3034 Migracja z ver 1.14 do 1.15 usuwa powiązanie pacjent pracownik.", totalTimeInMinutes: 20, isEditable: false },
-            { uid: uuidv4(), title: "KP-3104 Deploy webserwisu zamówień dla 1.15", totalTimeInMinutes: 20, isEditable: false },
-        ];
-}
+const AutoIndicator = withAutoIndicator(ProgressBar);
+function Pomodoro() {
 
-function Pomodoro({ cookies }) {
+    const [timeboxes, setTimeboxes] = useState([]);
+    useEffect(() => {
 
-    const [timeboxes, setTimeboxes] = useState(initialTimeboxes(cookies));
+        TimeboxAPI.getAllTimeboxes()
+            .then((timeboxes) => { setTimeboxes(timeboxes) })
+            .catch((error) => setLoadingError(error))
+            .finally(() => setIsLoding(false));
+    }, []);
+
     const [title, setTitle] = useState("Ucze się tego i tamtego?");
     const [totalTimeInMinutes, setTotalTimeInMinutes] = useState(25);
-    const [isEditable/*, setIsEditable*/] = useState(true);
     const [timeboxes_currentIndex, setTimeboxes_currentIndex] = useState(0);
+    const [isLoading, setIsLoding] = useState(true);
+    const [loadingError, setLoadingError] = useState(null);
 
-    function handleDelete(uid) {
-        setTimeboxes(
-            (prevTimeboxes) => {
-                let timeboxes = prevTimeboxes.filter((value, index) => value.uid === uid ? false : true);
-                cookies.set('timeboxes', timeboxes, { path: '/' });
-                return timeboxes;
-            }
-        )
+    function handleDeleteTimeboxListElement(uid) {
+        TimeboxAPI.removeTimebox(uid).then(() => {
+            console.log("removeTimebox.then");
+            setTimeboxes(
+                (prevTimeboxes) => {
+                    let timeboxes = prevTimeboxes.filter((value, index) => value.uid === uid ? false : true);
+                    return timeboxes;
+                }
+            )
+        }
+        );
     }
-
-    function handleTitleChange(event) {
+    //TODO customhook to co dotyka tablicy timeboxów (nagranie vip2 końcówka)
+    function handleTitleCreatorChange(event) {
         setTitle(event.target.value);
-        console.log("🚀 ~ file: Pomodoro.js ~ line 42 ~ handleTitleChange ~ event.target.value", event.target.value)
     }
-
-    function handleTotalTimeInMinutesChange(event) {
+    function handleTotalTimeInMinutesCreatorChange(event) {
         setTotalTimeInMinutes(event.target.value);
     }
-    function handleAdd(timeboxToAdd) {
-        setTimeboxes(
-            (prevTimeboxes) => {
-                let timeboxes = prevTimeboxes;
-                timeboxes = [...prevTimeboxes, timeboxToAdd];
-                cookies.set('timeboxes', timeboxes, { path: '/' });
-                return timeboxes;
+    function handleCreatorAdd(timeboxToAdd) {
+        TimeboxAPI.addTimebox({ ...timeboxToAdd }).then(() => {
+            setTimeboxes(
+                (prevTimeboxes) => {
+                    return [timeboxToAdd, ...prevTimeboxes];
+                }
+            )
+        });
+    }     
+    function handleSaveTimeboxListElement(editedTimebox) {
+        //const { element } = findElement(editedTimebox.uid);        
+        TimeboxAPI.replaceTimebox({ ...editedTimebox }).then(
+            () => {
+                setTimeboxes(
+                    (prevTimeboxes) => {
+                        return prevTimeboxes.map((value) => { //TODOa1 tego mapa spróbować zedytować według uwag z konsultacji
+                            return value.uid === editedTimebox.uid ? { ...editedTimebox } : value
+                        })
+                    }
+                )
             }
         )
     }
-
-    function handleEditTimeboxListElement(uid) {
-
-        setTimeboxes(
-            (prevTimeboxes) => {
-                return prevTimeboxes.map((value) => {
-                    return value.uid === uid ? { ...value, isEditable: !value.isEditable } : value
-                })
-            }
-        )
-    }
-
-    function handleTitleElementChange(event, id) {    
-        setTimeboxes(
-            (prevTimeboxes) =>
-                prevTimeboxes.map(
-                    (act_timebox, act_id) => { return act_id === id ? { ...act_timebox, title: event.target.value } : act_timebox }
-                )
-        );
-    }
-
-    function handleTimeElementChange(event, id) {
-        timeboxes[id].totalTimeInMinutes = event.target.value;
-
-        setTimeboxes(
-            (prevTimeboxes) =>
-                prevTimeboxes.map(
-                    (act_timebox, act_id) => { return act_id === id ? { ...act_timebox, totalTimeInMinutes: event.target.value } : act_timebox }
-                )
-        );
-    }
-
     function handleStartTimeboxListElement(id) {
         setTimeboxes_currentIndex(id);
-        //refactor w/w handlerów z (id) na findElement
+        //TODOa1 refactor w/w handlerów z (id) na findElement
     }
 
     const findElement = useCallback(
@@ -106,11 +88,11 @@ function Pomodoro({ cookies }) {
         },
         [timeboxes],
     )
-
-    const moveElement = useCallback(
-        (uid, atIndex) => {
+    const handleMoveElement = useCallback(
+        (uid, atUid) => {
 
             const { element, index } = findElement(uid)
+            const { /*element: atElement,*/ index: atIndex } = findElement(atUid)
             setTimeboxes(
                 update(timeboxes, {
                     $splice: [
@@ -123,34 +105,39 @@ function Pomodoro({ cookies }) {
         [findElement, timeboxes],
     )
 
-    const [collectedProps, drop] = useDrop(() => ({ accept: DraggableItemTypes.TimeboxListElement }))
 
+  
+    console.log("🚀 ~ file: Pomodoro.js ~ line 182 ~ Pomodoro ~ isLoading", isLoading)
     return (
         <>
+            {/* <AutoIndicator /> 
+            
+            */                
+                //TODO handleCreatorAdd przekazuje nowy timebox                
+            }
             <TimeboxCreator title={title}
                 totalTimeInMinutes={totalTimeInMinutes}
-                onTitleChange={handleTitleChange}
-                onTotalTimeInMinutesChange={handleTotalTimeInMinutesChange}
-                onAdd={handleAdd}
-                isEditable={isEditable} />
-            <Timebox
-                timebox={timeboxes.length > 0 ? timeboxes[timeboxes_currentIndex] : {}}
-                isEditable={true}
+                onTitleChange={handleTitleCreatorChange}
+                onTotalTimeInMinutesChange={handleTotalTimeInMinutesCreatorChange}
+                onAdd={handleCreatorAdd}
             />
-            <TimeboxList timeboxes={timeboxes} ref={drop}>
-                {timeboxes.map((elem, index) => {
+            {loadingError ? <ErrorMessage error={loadingError} /> : ""}
+            {isLoading ? <AutoIndicator refresh="10" /> : ""}
+            {timeboxes.length > 0 ? <Timebox
+                timebox={timeboxes.length > 0 ? timeboxes[timeboxes_currentIndex] : {}}
+            /> : ""}
+
+            <TimeboxList timeboxes={timeboxes}>
+                {timeboxes?.map((elem, index) => {
                     return (
                         <TimeboxListElement
                             key={elem.uid}
-                            uid={elem.uid}/* change index to uid and then refactor handleStartTimeboxListElement */
                             timebox={elem}
-                            onTitleChange={handleTitleElementChange}
-                            onTimeChange={handleTimeElementChange}
-                            onEdit={() => { handleEditTimeboxListElement(elem.uid) }}
-                            onDelete={() => { handleDelete(elem.uid) }}
+                            onSave={handleSaveTimeboxListElement/*vip3 onSave inaczej wygląda i onDelete inaczej, jak to uogólnićm z kąd wiedzieć co pisać ?
+                                                                    a może powinienem przez event dawać ?*/}
+                            onDelete={() => { handleDeleteTimeboxListElement(elem.uid) }}
                             onStart={() => { handleStartTimeboxListElement(index) }}
-                            moveElement={moveElement}
-                            findElement={findElement}
+                            onMoveElement={handleMoveElement}
                         />
                     );
                 })
@@ -160,7 +147,5 @@ function Pomodoro({ cookies }) {
 
     )
 }
-Pomodoro.propTypes = {
-    cookies: instanceOf(Cookies).isRequired
-}
-export default withCookies(Pomodoro);
+
+export default Pomodoro;

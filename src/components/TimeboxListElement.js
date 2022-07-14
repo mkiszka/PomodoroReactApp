@@ -1,87 +1,96 @@
 import { useDrag } from 'react-dnd';
 import { useDrop } from 'react-dnd';
-import {
-  IoTrashOutline, IoMenu, IoSaveOutline,
-  IoPlayOutline as IoPushOutline
-} from "react-icons/io5";
 import PropTypes from "prop-types";
 import { v4 as uuidv4 } from "uuid"
 import { DraggableItemTypes } from "./DraggableItemTypes";
-import React from "react";
-
+import React, {useState} from "react";
+import EditableTimeboxListElement from './EditableTimeboxListElement';
+import NonEditableTimeboxListElement from './NonEditableTimeboxListElement';
+//vip3 czy o to chodziło ? komponent główny i w środku dwa, edytowalny i nie edytowlny??
+//     czy TimeboxListElement wywalić i ....
 //TODO split into TimeboxListElement and DragableTimeboxListElement
-//TODO remove uid and get it from timebox.uid
-function TimeboxListElement({ uid, timebox, onEdit, onDelete, onTitleChange, onTimeChange, onStart,moveElement, findElement }) {
-        
-  const originalIndex = findElement(uid).index
+
+function TimeboxListElement({ timebox, onSave, onDelete, onStart, onMoveElement}) {
+  
+  const [ isEditable, setIsEditable ] = useState(false);  
+  const uid = timebox.uid;
+  
+  function handleEdit() {    
+    setIsEditable((prevIsEditable) => {      
+        return !prevIsEditable;
+    })
+  }
+
+  function handleSave(newTimebox) {
+      handleEdit();
+      onSave(newTimebox)
+  }
 
   const [{ isDragging }, drag] = useDrag(
     () => ({
       type: DraggableItemTypes.TimeboxListElement,
-      item: { uid, originalIndex },
+      item: { uid },
       collect: (monitor) => ({
         isDragging: monitor.isDragging(),
       }),
       end: (item, monitor) => {
-        const { uid: droppedId, originalIndex } = item
+        const { uid: droppedUid, } = item
         const didDrop = monitor.didDrop()
         if (!didDrop) {
-          moveElement(droppedId, originalIndex)
+          onMoveElement(droppedUid, uid)
         }
       },
     }),
-    [uid, originalIndex, moveElement],
+    [uid, onMoveElement],
   )
 
   const [, drop] = useDrop(
     () => ({
       accept: DraggableItemTypes.TimeboxListElement,
-      hover({ uid: draggedId }) {
-        if (draggedId !== uid) {
-          const { index: overIndex } = findElement(uid)
-          moveElement(draggedId, overIndex)
+      hover({ uid: draggedUid }) {
+        if (draggedUid !== uid) {          
+          onMoveElement(draggedUid, uid) 
         }
       },
     }),
-    [findElement, moveElement],
+    [onMoveElement],
   )
   const opacity = isDragging ? 0 : 1
-
+  
+  //VIP3 0 niestety przy zostawieniu drag tutaj, i wyciągnięciu diva tutaj, komponenty podrzędne stają się niereużywalne,
+  //przez chwile myślałem o HOC ? żeby dodać drag and drop, ale jeszcze nie ogarniam
+  //opcja - div tylko dla dragging ? ale jak lepiej ?
   return (
-    <div 
+    <div
       ref={(node) => drag(drop(node))}
-      role={"listitem"}
-      className={"Timebox TimeboxListElement"}
-      style={{opacity}}
-      >
-      <div className="TimeboxListElementTitle"><textarea disabled={!timebox.isEditable} value={timebox.title} onChange={(event) => { onTitleChange(event, originalIndex) }} /></div>
-      <div className="TimeboxListElementTime"><input disabled={!timebox.isEditable} value={timebox.totalTimeInMinutes} onChange={(event) => { onTimeChange(event, originalIndex) }} type="number" />min.</div>
-      <div className="TimeboxListElementAction">
-        {timebox.isEditable ? (<IoSaveOutline title="zapisz" className="button-active" onClick={onEdit} />) : (<IoMenu title="edytuj" className="button-active" onClick={onEdit}></IoMenu>)}
-
-        <IoTrashOutline title="usuń" className="button-active" onClick={onDelete} />
-        <IoPushOutline title="start" className="button-active" onClick={onStart} />
-      </div>
+      style={{ opacity }}
+    >
+      {isEditable ?
+        <EditableTimeboxListElement
+          timebox={timebox}          
+          onSave={handleSave}
+          />
+        : <NonEditableTimeboxListElement
+          timebox={timebox}
+          onEdit={handleEdit}
+          onDelete={onDelete}
+          onStart={onStart}
+        />}
     </div>
   )
 }
 TimeboxListElement.defaultProps = {
-    uid: '0', /* to trzreba usunąć - refaktor*/
-    timebox: { uid: uuidv4(), title: "Default title", totalTimeInMinutes: 3, isEditable: false },
-    onEdit: () => { console.log("handle edit ") },
-    onDelete: () => { console.log("handle delete ") },
-    onTitleChange: () => { console.log("handle title change ") },
-    onTimeChange: () => { console.log("handle time change ") },
+
+  timebox: { uid: uuidv4(), title: "Default title", totalTimeInMinutes: 3 },  
+  onSave: () => { console.log("handle save ") },
+  onDelete: () => { console.log("handle delete ") },  
 
 }
 
 TimeboxListElement.propTypes = {
-  uid: PropTypes.string.isRequired,
-  timebox: PropTypes.object.isRequired,
-  onEdit: PropTypes.func.isRequired,
-  onDelete: PropTypes.func.isRequired,
-  onTitleChange: PropTypes.func.isRequired,
-  onTimeChange: PropTypes.func.isRequired
+  timebox: PropTypes.object.isRequired,  
+  onSave: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired,  
 }
 
 export default TimeboxListElement;

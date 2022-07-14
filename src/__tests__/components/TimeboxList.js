@@ -91,16 +91,16 @@ describe('TimeboxList', () => {
             expect(editButtons.length).toEqual(3);
             expect(deleteButtons.length).toEqual(3);
 
-            editButtons.forEach(element => {
+            editButtons.forEach((element) => {
                 fireEvent.click(element);
             });
 
-            deleteButtons.forEach(element => {
+            deleteButtons.forEach((element) => {
                 fireEvent.click(element);
             });
 
-            expect(onEdit).toBeCalledTimes(3);
-            expect(onDelete).toBeCalledTimes(3);
+            expect(onEdit).toBeCalledTimes(3,'onEdit');
+            expect(onDelete).toBeCalledTimes(3,'onDelete');
 
         });
         it('should handle TimeboxListElement start button', () => {
@@ -118,6 +118,7 @@ describe('TimeboxList', () => {
         let onTitleChange;
         let onTimeChange;
         let onEdit;
+        let onSave;
         let onDelete;
         let onStart;
         let findElement;
@@ -132,8 +133,10 @@ describe('TimeboxList', () => {
             onTitleChange = jest.fn();
             onTimeChange = jest.fn();
             onEdit = jest.fn();
+            onSave = jest.fn();
             onDelete = jest.fn();
             onStart = jest.fn();
+            
             findElement = jest.fn().mockReturnValue({ index: 0 });
 
             timeboxList = <DndProvider backend={HTML5Backend}><TimeboxList>{
@@ -147,6 +150,7 @@ describe('TimeboxList', () => {
                             onTitleChange={onTitleChange}
                             onTimeChange={onTimeChange}
                             onEdit={() => { onEdit(elem.uid) }}
+                            onSave={()=> { onSave(elem.uid)}}
                             onDelete={() => { onDelete(elem.uid) }}
                             onStart={() => { onStart(index) }}
                             findElement={findElement}
@@ -201,7 +205,7 @@ describe('TimeboxList', () => {
                 fireEvent.click(element);
             });
 
-            expect(onEdit).toBeCalledTimes(3);
+            expect(onSave).toBeCalledTimes(3);
             expect(onDelete).toBeCalledTimes(3);
 
         });
