@@ -10,9 +10,9 @@ const cookies = new CookiesApi();
 export const TimeboxFakeAPI = {
     timeboxes: cookies.get(COOKIE_TIMEBOXES, { path: '/' }) ||
         [
-            { uid: uuidv4(), title: "Wywołanie eventów", totalTimeInMinutes: 3, isEditable: false },
-            { uid: uuidv4(), title: "KP-3034 Migracja z ver 1.14 do 1.15 usuwa powiązanie pacjent pracownik.", totalTimeInMinutes: 20, isEditable: false },
-            { uid: uuidv4(), title: "KP-3104 Deploy webserwisu zamówień dla 1.15", totalTimeInMinutes: 20, isEditable: false },
+            { uid: uuidv4(), title: "Wywołanie eventów", totalTimeInMinutes: 3 },
+            { uid: uuidv4(), title: "KP-3034 Migracja z ver 1.14 do 1.15 usuwa powiązanie pacjent pracownik.", totalTimeInMinutes: 20 },
+            { uid: uuidv4(), title: "KP-3104 Deploy webserwisu zamówień dla 1.15", totalTimeInMinutes: 20 },
         ],
     getAllTimeboxes: async function () {
         await wait(200);        
