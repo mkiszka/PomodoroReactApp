@@ -11,10 +11,11 @@ function App() {
             <ErrorBoundary>
                 <DndProvider backend={HTML5Backend}>
                     <div className="AppHeader" >
-                        <div>
+                        <div> {/*TODO span */}
                             <h1>Pomodoro Application</h1>
                         </div>
-                        <div><RealTimeClock hours="10" minutes="20" />
+                        <div>
+                            <RealTimeClock hours="10" minutes="20" />
                         </div>
                     </div>
                     <hr />
