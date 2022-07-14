@@ -1,10 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-
-import { DraggableItemTypes } from "./DraggableItemTypes";
-import { useDrop } from "react-dnd";
-
 import update from 'immutability-helper';
-
 import Timebox from "./Timebox";
 import TimeboxList from "./TimeboxList";
 import TimeboxListElement from "./TimeboxListElement";
@@ -111,7 +106,7 @@ function Pomodoro() {
     )
 
 
-    const [, drop] = useDrop(() => ({ accept: DraggableItemTypes.TimeboxListElement })) //przenieść do TimeboxList i nie róbić refa
+  
     console.log("🚀 ~ file: Pomodoro.js ~ line 182 ~ Pomodoro ~ isLoading", isLoading)
     return (
         <>
@@ -132,7 +127,7 @@ function Pomodoro() {
                 timebox={timeboxes.length > 0 ? timeboxes[timeboxes_currentIndex] : {}}
             /> : ""}
 
-            <TimeboxList timeboxes={timeboxes} ref={drop}>
+            <TimeboxList timeboxes={timeboxes}>
                 {timeboxes?.map((elem, index) => {
                     return (
                         <TimeboxListElement
