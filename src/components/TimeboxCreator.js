@@ -59,7 +59,8 @@ TimeboxCreator.propTypes = {
     totalTimeInMinutes: PropTypes.number,
     isEditable: PropTypes.bool,
     onTitleChange: PropTypes.func.isRequired,
-    onTotalTimeInMinutesChange: PropTypes.func.isRequired
+    onTotalTimeInMinutesChange: PropTypes.func.isRequired,
+    onAdd: PropTypes.func.isRequired
 }
 TimeboxCreator.defaultProps = {
     isEditable: true
