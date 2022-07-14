@@ -46,7 +46,7 @@ function Pomodoro() {
         }
         );
     }
-//TODO customhook to co dotyka tablicy timeboxów (nagranie vip2 końcówka)
+    //TODO customhook to co dotyka tablicy timeboxów (nagranie vip2 końcówka)
     function handleTitleCreatorChange(event) {
         setTitle(event.target.value);
     }
@@ -177,8 +177,7 @@ function Pomodoro() {
                 {timeboxes?.map((elem, index) => {
                     return (
                         <TimeboxListElement
-                            key={elem.uid}
-                            uid={elem.uid}/* change index to uid and then refactor handleStartTimeboxListElement */
+                            key={elem.uid}                           
                             timebox={elem}
                             onTitleChange={handleTitleElementChange /* do środka*/}
                             onTimeChange={handleTimeElementChange/* do środka*/}

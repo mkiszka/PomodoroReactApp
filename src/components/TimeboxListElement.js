@@ -10,13 +10,15 @@ import { DraggableItemTypes } from "./DraggableItemTypes";
 import React from "react";
 import EditableTimeboxListElement from './EditableTimeboxListElement';
 import NonEditableTimeboxListElement from './NonEditableTimeboxListElement';
-
+// czy o to chodziło ? komponent główny i w środku dwa, edytowalny i nie edytowlny??
+//czy TimeboxListElement wywalić i ....
 //TODO split into TimeboxListElement and DragableTimeboxListElement
 //TODO remove uid and get it from timebox.uid
-function TimeboxListElement({ uid, timebox, onEdit, onSave, onDelete, onTitleChange, onTimeChange, onStart, onMoveElement, findElement }) {
+function TimeboxListElement({ timebox, onEdit, onSave, onDelete, onTitleChange, onTimeChange, onStart, onMoveElement, findElement }) {
   //TODO tutaj ma być isEditable a nie w timebox całym obiekcie. 
   //do zdarzeń przekazywać uid wtedy findElement nie będzie potrzebny
   //ontitle change i on time change do środka
+  const uid = timebox.uid;
   const originalIndex = findElement(uid).index
 
   const [{ isDragging }, drag] = useDrag(
