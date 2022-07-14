@@ -1,7 +1,4 @@
-import {
-  IoTrashOutline, IoMenu, IoSaveOutline,
-  IoPlayOutline as IoPushOutline
-} from "react-icons/io5";
+import { IoSaveOutline } from "react-icons/io5";
 import PropTypes from "prop-types";
 import { v4 as uuidv4 } from "uuid"
 import React from "react";
@@ -9,7 +6,7 @@ import { useState } from "react";
 
 function EditableTimeboxListElement({ timebox, onSave }) {
 
-  const [insideTimebox, setInsideTimebox] = useState( timebox ); // <-- sprawdzić czy na pewno to się raz wykona jako default
+  const [insideTimebox, setInsideTimebox] = useState(timebox); //VIP <-- sprawdzić czy na pewno to się raz wykona jako default
   console.log(insideTimebox);
   // const originalIndex = findElement(uid).index
 

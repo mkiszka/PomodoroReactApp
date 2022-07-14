@@ -63,16 +63,14 @@ function Pomodoro() {
             )
         });
     }
-
-    //TODO nie wysyłać isEditable do backendu
-    //iseditable przenieść do środka
+    
     function handleSaveTimeboxListElement(editedTimebox) {
         //const { element } = findElement(editedTimebox.uid);        
         TimeboxAPI.replaceTimebox({ ...editedTimebox }).then(
             () => {
                 setTimeboxes(
                     (prevTimeboxes) => {
-                        return prevTimeboxes.map((value) => { //tego mapa spróbować zedytować według uwag z konsultacji
+                        return prevTimeboxes.map((value) => { //TODOa1 tego mapa spróbować zedytować według uwag z konsultacji
                             return value.uid === editedTimebox.uid ? { ...editedTimebox } : value
                         })
                     }
@@ -85,7 +83,7 @@ function Pomodoro() {
 
     function handleStartTimeboxListElement(id) {
         setTimeboxes_currentIndex(id);
-        //refactor w/w handlerów z (id) na findElement
+        //TODOa1 refactor w/w handlerów z (id) na findElement
     }
 
     const findElement = useCallback(
@@ -128,9 +126,8 @@ function Pomodoro() {
             {/* <AutoIndicator /> 
             
             */
-                //przenieść onTitleChange and onTotalTimeInMinutesChanges przenieś  do środka i 
-                //handleCreatorAdd przekazuje nowy timebox
-                //usunięcie isEditable
+                //TODO przenieść onTitleChange and onTotalTimeInMinutesChanges przenieś  do środka i 
+                //TODO handleCreatorAdd przekazuje nowy timebox                
             }
             <TimeboxCreator title={title}
                 totalTimeInMinutes={totalTimeInMinutes}
