@@ -14,7 +14,6 @@ function TimeboxListElement({ timebox, onSave, onDelete, onStart, onMoveElement}
   
   const [ isEditable, setIsEditable ] = useState(false);  
   const uid = timebox.uid;
-  // const originalIndex = findElement(uid).index
   
   function handleEdit() {    
     setIsEditable((prevIsEditable) => {      
@@ -50,7 +49,7 @@ function TimeboxListElement({ timebox, onSave, onDelete, onStart, onMoveElement}
       accept: DraggableItemTypes.TimeboxListElement,
       hover({ uid: draggedUid }) {
         if (draggedUid !== uid) {          
-          onMoveElement(draggedUid, uid) //przekazywać uid a onMoveElement ma wyszukać index
+          onMoveElement(draggedUid, uid) 
         }
       },
     }),
