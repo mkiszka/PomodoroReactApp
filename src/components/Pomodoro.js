@@ -150,7 +150,8 @@ function Pomodoro() {
                         <TimeboxListElement
                             key={elem.uid}
                             timebox={elem}
-                            onSave={handleSaveTimeboxListElement/* kopia obiektu na zewnątrz*/}
+                            onSave={handleSaveTimeboxListElement/*vip3 onSave inaczej wygląda i onDelete inaczej, jak to uogólnićm z kąd wiedzieć co pisać ?
+                                                                    a może powinienem przez event dawać ?*/}
                             onDelete={() => { handleDeleteTimeboxListElement(elem.uid) }}
                             onStart={() => { handleStartTimeboxListElement(index) }}
                             onMoveElement={handleMoveElement}
