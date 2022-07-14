@@ -15,7 +15,6 @@ import ProgressBar from './ProgressBar';
 import { TimeboxFakeAPI as TimeboxAPI } from '../api/TimeboxFakeAPI';
 
 const AutoIndicator = withAutoIndicator(ProgressBar);
-
 function Pomodoro() {
 
     const [timeboxes, setTimeboxes] = useState([]);
@@ -49,11 +48,9 @@ function Pomodoro() {
     function handleTitleCreatorChange(event) {
         setTitle(event.target.value);
     }
-
     function handleTotalTimeInMinutesCreatorChange(event) {
         setTotalTimeInMinutes(event.target.value);
     }
-
     function handleCreatorAdd(timeboxToAdd) {
         TimeboxAPI.addTimebox({ ...timeboxToAdd }).then(() => {
             setTimeboxes(
@@ -62,8 +59,7 @@ function Pomodoro() {
                 }
             )
         });
-    }
-    
+    }     
     function handleSaveTimeboxListElement(editedTimebox) {
         //const { element } = findElement(editedTimebox.uid);        
         TimeboxAPI.replaceTimebox({ ...editedTimebox }).then(
@@ -78,9 +74,6 @@ function Pomodoro() {
             }
         )
     }
-
-
-
     function handleStartTimeboxListElement(id) {
         setTimeboxes_currentIndex(id);
         //TODOa1 refactor w/w handlerów z (id) na findElement
@@ -100,7 +93,6 @@ function Pomodoro() {
         },
         [timeboxes],
     )
-
     const handleMoveElement = useCallback(
         (uid, atUid) => {
 
@@ -125,8 +117,7 @@ function Pomodoro() {
         <>
             {/* <AutoIndicator /> 
             
-            */
-                //TODO przenieść onTitleChange and onTotalTimeInMinutesChanges przenieś  do środka i 
+            */                
                 //TODO handleCreatorAdd przekazuje nowy timebox                
             }
             <TimeboxCreator title={title}
