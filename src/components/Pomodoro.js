@@ -133,9 +133,10 @@ function Pomodoro() {
     )
 
     const handleMoveElement = useCallback(
-        (uid, atIndex) => {
+        (uid, atUid) => {
 
             const { element, index } = findElement(uid)
+            const { /*element: atElement,*/ index: atIndex} = findElement(atUid)
             setTimeboxes(
                 update(timeboxes, {
                     $splice: [

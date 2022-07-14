@@ -19,24 +19,24 @@ function TimeboxListElement({ timebox, onEdit, onSave, onDelete, onTitleChange, 
   //do zdarzeń przekazywać uid wtedy findElement nie będzie potrzebny
   //ontitle change i on time change do środka
   const uid = timebox.uid;
-  const originalIndex = findElement(uid).index
+  // const originalIndex = findElement(uid).index
 
   const [{ isDragging }, drag] = useDrag(
     () => ({
       type: DraggableItemTypes.TimeboxListElement,
-      item: { uid, originalIndex },
+      item: { uid },
       collect: (monitor) => ({
         isDragging: monitor.isDragging(),
       }),
       end: (item, monitor) => {
-        const { uid: droppedId, originalIndex } = item
+        const { uid: droppedUid, } = item
         const didDrop = monitor.didDrop()
         if (!didDrop) {
-          onMoveElement(droppedId, originalIndex)
+          onMoveElement(droppedUid, uid)
         }
       },
     }),
-    [uid, originalIndex, onMoveElement],
+    [uid, onMoveElement],
   )
 
   const [, drop] = useDrop(
@@ -44,31 +44,38 @@ function TimeboxListElement({ timebox, onEdit, onSave, onDelete, onTitleChange, 
       accept: DraggableItemTypes.TimeboxListElement,
       hover({ uid: draggedId }) {
         if (draggedId !== uid) {
-          const { index: overIndex } = findElement(uid)
-          onMoveElement(draggedId, overIndex) //przekazywać uid a onMoveElement ma wyszukać index
+          //          const { index: overIndex } = findElement(uid)
+          onMoveElement(draggedId, uid) //przekazywać uid a onMoveElement ma wyszukać index
         }
       },
     }),
-    [findElement, onMoveElement],
+    [onMoveElement],
   )
   const opacity = isDragging ? 0 : 1
   //TODO jeden komponent renderuje nieedytowany timebox a drugi edytowalny (dostaje aktuanego timeboxa) 
-  return (<>
-    {timebox.isEditable?<EditableTimeboxListElement
-      timebox={timebox}
-      onEdit={onEdit}
-      onSave={onSave}
-      onTitleChange={onTitleChange}
-      onTimeChange={onTimeChange}
-      onMoveElement={onMoveElement}
-      findElement={findElement} />
-    : <NonEditableTimeboxListElement
-      timebox={timebox}
-      onEdit={onEdit}
-      onDelete={onDelete}
-      onStart={onStart}
-    />}
-  </>
+  //VIP3 0 niestety przy zostawieniu drag tutaj, i wyciągnięciu diva tutaj, komponenty podrzędne stają się niereużywalne,
+  //przez chwile myślałem o HOC ? żeby dodać drag and drop, ale jeszcze nie ogarniam
+  //opcja - div tylko dla dragging ? ale jak lepiej ?
+  return (
+    <div
+      ref={(node) => drag(drop(node))}
+      style={{ opacity }}
+      >
+      {timebox.isEditable ? <EditableTimeboxListElement
+        timebox={timebox}
+        onEdit={onEdit}
+        onSave={onSave}
+        onTitleChange={onTitleChange}
+        onTimeChange={onTimeChange}
+        onMoveElement={onMoveElement}
+        findElement={findElement} />
+        : <NonEditableTimeboxListElement
+          timebox={timebox}
+          onEdit={onEdit}
+          onDelete={onDelete}
+          onStart={onStart}
+        />}
+    </div>  
   )
 }
 TimeboxListElement.defaultProps = {

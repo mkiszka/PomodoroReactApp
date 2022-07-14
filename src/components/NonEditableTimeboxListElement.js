@@ -1,5 +1,3 @@
-import { useDrag } from 'react-dnd';
-import { useDrop } from 'react-dnd';
 import {
   IoTrashOutline, IoMenu, IoSaveOutline,
   IoPlayOutline as IoPushOutline

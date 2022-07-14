@@ -1,60 +1,24 @@
-import { useDrag } from 'react-dnd';
-import { useDrop } from 'react-dnd';
 import {
   IoTrashOutline, IoMenu, IoSaveOutline,
   IoPlayOutline as IoPushOutline
 } from "react-icons/io5";
 import PropTypes from "prop-types";
 import { v4 as uuidv4 } from "uuid"
-import { DraggableItemTypes } from "./DraggableItemTypes";
 import React from "react";
-
 
 //TODO split into TimeboxListElement and DragableTimeboxListElement
 
 function EditableTimeboxListElement({ timebox, onEdit, onSave, onDelete, onTitleChange, onTimeChange, onStart, onMoveElement, findElement }) {
   const uid = timebox.uid;
-  const originalIndex = findElement(uid).index
+  // const originalIndex = findElement(uid).index
 
-  const [{ isDragging }, drag] = useDrag(
-    () => ({
-      type: DraggableItemTypes.TimeboxListElement,
-      item: { uid, originalIndex },
-      collect: (monitor) => ({
-        isDragging: monitor.isDragging(),
-      }),
-      end: (item, monitor) => {
-        const { uid: droppedId, originalIndex } = item
-        const didDrop = monitor.didDrop()
-        if (!didDrop) {
-          onMoveElement(droppedId, originalIndex)
-        }
-      },
-    }),
-    [uid, originalIndex, onMoveElement],
-  )
-
-  const [, drop] = useDrop(
-    () => ({
-      accept: DraggableItemTypes.TimeboxListElement,
-      hover({ uid: draggedId }) {
-        if (draggedId !== uid) {
-          const { index: overIndex } = findElement(uid)
-          onMoveElement(draggedId, overIndex) //przekazywać uid a onMoveElement ma wyszukać index
-        }
-      },
-    }),
-    [findElement, onMoveElement],
-  )
-  const opacity = isDragging ? 0 : 1
-//TODO jeden komponent renderuje nieedytowany timebox a drugi edytowalny (dostaje aktuanego timeboxa) 
+  const originalIndex = 0 ;//todo refactoring jako kopiwa obiektu wewnętrznego i on save przekazywać obiekt nowy timebox
+  //TODO jeden komponent renderuje nieedytowany timebox a drugi edytowalny (dostaje aktuanego timeboxa) 
   return (
-    <div 
-      ref={(node) => drag(drop(node))}
+    <div      
       role={"listitem"}
-      className={"Timebox TimeboxListElement"}
-      style={{opacity}}
-      >
+      className={"Timebox TimeboxListElement"}     
+    >
       <div className="TimeboxListElementTitle"><textarea disabled={!timebox.isEditable} value={timebox.title} onChange={(event) => { onTitleChange(event, originalIndex) }} /></div>
       <div className="TimeboxListElementTime"><input disabled={!timebox.isEditable} value={timebox.totalTimeInMinutes} onChange={(event) => { onTimeChange(event, originalIndex) }} type="number" />min.</div>
       <div className="TimeboxListElementAction"><IoSaveOutline title="zapisz" className="button-active" onClick={onSave} />
@@ -66,13 +30,13 @@ function EditableTimeboxListElement({ timebox, onEdit, onSave, onDelete, onTitle
   )
 }
 EditableTimeboxListElement.defaultProps = {
-    uid: '0', /* to trzreba usunąć - refaktor*/
-    timebox: { uid: uuidv4(), title: "Default title", totalTimeInMinutes: 3, isEditable: false },
-    onEdit: () => { console.log("handle edit ") },
-    onSave: () => { console.log("handle save ") },
-    onDelete: () => { console.log("handle delete ") },
-    onTitleChange: () => { console.log("handle title change ") },
-    onTimeChange: () => { console.log("handle time change ") },
+  uid: '0', /* to trzreba usunąć - refaktor*/
+  timebox: { uid: uuidv4(), title: "Default title", totalTimeInMinutes: 3, isEditable: false },
+  onEdit: () => { console.log("handle edit ") },
+  onSave: () => { console.log("handle save ") },
+  onDelete: () => { console.log("handle delete ") },
+  onTitleChange: () => { console.log("handle title change ") },
+  onTimeChange: () => { console.log("handle time change ") },
 
 }
 
