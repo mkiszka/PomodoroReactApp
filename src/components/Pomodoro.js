@@ -113,6 +113,7 @@ function Pomodoro() {
             */                
                 //TODO handleCreatorAdd przekazuje nowy timebox                
             }
+     
             <TimeboxCreator title={title}
                 totalTimeInMinutes={totalTimeInMinutes}
                 onTitleChange={handleTitleCreatorChange}
