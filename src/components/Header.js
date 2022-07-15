@@ -1,12 +1,12 @@
 import React from 'react'
 import UserGreeting from './UserGreeting';
 
-function Header({accesToken, onLogout}) {
+function Header({onLogout}) {
 
     return <>
         <h1>Pomodoro Application</h1>
         <header className="header">
-            <UserGreeting accesToken={accesToken} /><br />
+            <UserGreeting /><br />
             <a onClick={onLogout} className="header__logout-link" href="#">Wyloguj się</a>
         </header>
     </>;

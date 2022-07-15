@@ -2,13 +2,14 @@ import React, { useState } from "react";
 import ErrorBoundary from "./ErrorBoundary";
 import LoginForm from "./LoginForm";
 import AuthenticatedApp from "./AuthenticatedApp";
+import AuthenticationContext from "../contexts/AuthenticationContext";
 
 
 
 //IMPORTANT ! The login functionality is only a simulation.
 function App() {
     const [isLogged, setIsLogged] = useState();
-    const [accesToken, setAccessToken] = useState();
+    const [accessToken, setAccessToken] = useState('aa-bb-cc');
 
     function handleLogout() {
         setIsLogged(false);
@@ -22,8 +23,10 @@ function App() {
     return (
         <div id="App" className="App">
             <ErrorBoundary>
-                {isLogged ? 
-                    <AuthenticatedApp accesToken={accesToken} onLogout={handleLogout}/>
+                {isLogged ?
+                    <AuthenticationContext.Provider value={{accessToken: accessToken }}>
+                        <AuthenticatedApp onLogout={handleLogout} />
+                    </AuthenticationContext.Provider>
                     :
                     <LoginForm onLoginAttempt={handleLogin} />
                 }

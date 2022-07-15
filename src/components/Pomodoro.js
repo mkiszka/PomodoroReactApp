@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, useContext } from 'react';
 import update from 'immutability-helper';
 import Timebox from "./Timebox";
 import TimeboxList from "./TimeboxList";
@@ -8,14 +8,15 @@ import ErrorMessage from "./ErrorMessage";
 import withAutoIndicator from "./AutoIndicator";
 import ProgressBar from './ProgressBar';
 import { TimeboxFakeAPI as TimeboxAPI } from '../api/TimeboxFakeAPI';
+import AuthenticationContext from '../contexts/AuthenticationContext';
 
 const AutoIndicator = withAutoIndicator(ProgressBar);
 function Pomodoro() {
-
+    const authenticationContext = useContext(AuthenticationContext);
     const [timeboxes, setTimeboxes] = useState([]);
     useEffect(() => {
 
-        TimeboxAPI.getAllTimeboxes()
+        TimeboxAPI.getAllTimeboxes(authenticationContext.accessToken)
             .then((timeboxes) => { setTimeboxes(timeboxes) })
             .catch((error) => setLoadingError(error))
             .finally(() => setIsLoding(false));
@@ -28,7 +29,7 @@ function Pomodoro() {
     const [loadingError, setLoadingError] = useState(null);
 
     function handleDeleteTimeboxListElement(uid) {
-        TimeboxAPI.removeTimebox(uid).then(() => {
+        TimeboxAPI.removeTimebox(authenticationContext.accessToken, uid).then(() => {
             console.log("removeTimebox.then");
             setTimeboxes(
                 (prevTimeboxes) => {
@@ -47,7 +48,7 @@ function Pomodoro() {
         setTotalTimeInMinutes(event.target.value);
     }
     function handleCreatorAdd(timeboxToAdd) {
-        TimeboxAPI.addTimebox({ ...timeboxToAdd }).then(() => {
+        TimeboxAPI.addTimebox(authenticationContext.accessToken, { ...timeboxToAdd }).then(() => {
             setTimeboxes(
                 (prevTimeboxes) => {
                     return [timeboxToAdd, ...prevTimeboxes];
@@ -57,7 +58,7 @@ function Pomodoro() {
     }     
     function handleSaveTimeboxListElement(editedTimebox) {
         //const { element } = findElement(editedTimebox.uid);        
-        TimeboxAPI.replaceTimebox({ ...editedTimebox }).then(
+        TimeboxAPI.replaceTimebox(authenticationContext.accessToken, { ...editedTimebox }).then(
             () => {
                 setTimeboxes(
                     (prevTimeboxes) => {

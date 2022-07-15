@@ -6,6 +6,7 @@ import { DraggableItemTypes } from "./DraggableItemTypes";
 import React, {useState} from "react";
 import EditableTimeboxListElement from './EditableTimeboxListElement';
 import NonEditableTimeboxListElement from './NonEditableTimeboxListElement';
+import AuthenticationContext from '../contexts/AuthenticationContext';
 //vip3 czy o to chodziło ? komponent główny i w środku dwa, edytowalny i nie edytowlny??
 //     czy TimeboxListElement wywalić i ....
 //TODO split into TimeboxListElement and DragableTimeboxListElement
@@ -79,6 +80,8 @@ function TimeboxListElement({ timebox, onSave, onDelete, onStart, onMoveElement}
     </div>
   )
 }
+
+TimeboxListElement.contextType = AuthenticationContext;
 TimeboxListElement.defaultProps = {
 
   timebox: { uid: uuidv4(), title: "Default title", totalTimeInMinutes: 3 },  
