@@ -104,8 +104,6 @@ function Pomodoro() {
         },
         [findElement, timeboxes],
     )
-
-
   
     console.log("🚀 ~ file: Pomodoro.js ~ line 182 ~ Pomodoro ~ isLoading", isLoading)
     return (
