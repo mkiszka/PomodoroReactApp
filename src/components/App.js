@@ -1,11 +1,11 @@
-import React, { useState } from "react";
-import ErrorBoundary from "./ErrorBoundary";
-import LoginForm from "./LoginForm";
-import AuthenticatedApp from "./AuthenticatedApp";
-import AuthenticationContext from "../contexts/AuthenticationContext";
-import UnauthenticationContext from "../contexts/UnauthenticationContext";
+import React, { useState } from 'react';
+import ErrorBoundary from './ErrorBoundary';
+import LoginForm from './LoginForm';
 
+import AuthenticationContext from '../contexts/AuthenticationContext';
+import UnauthenticationContext from '../contexts/UnauthenticationContext';
 
+const AuthenticatedApp = React.lazy(() => import('./AuthenticatedApp'));
 
 //IMPORTANT ! The login functionality is only a simulation.
 function App() {
@@ -25,9 +25,11 @@ function App() {
     return (
         <div id="App" className="App">
             <ErrorBoundary>
-                {isLogged ? 
+                {isLogged ?
                     <AuthenticationContext.Provider value={{accessToken: accessToken, onLogout: handleLogout }}>
-                        <AuthenticatedApp/>
+                        <React.Suspense fallback={'Loading ...'}>
+                            <AuthenticatedApp/>
+                        </React.Suspense>
                     </AuthenticationContext.Provider>
                     :
                     // vip3 pytanie o w8 l3 i haczyk
