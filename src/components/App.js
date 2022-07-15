@@ -3,6 +3,7 @@ import ErrorBoundary from "./ErrorBoundary";
 import LoginForm from "./LoginForm";
 import AuthenticatedApp from "./AuthenticatedApp";
 import AuthenticationContext from "../contexts/AuthenticationContext";
+import UnauthenticationContext from "../contexts/UnauthenticationContext";
 
 
 
@@ -16,7 +17,8 @@ function App() {
     }
 
 
-    function handleLogin() {
+    function handleLogin(data) {
+        console.log(data);
         setIsLogged(true);
     }
 
@@ -28,7 +30,10 @@ function App() {
                         <AuthenticatedApp/>
                     </AuthenticationContext.Provider>
                     :
-                    <LoginForm onLoginAttempt={handleLogin} />
+                    // vip3 pytanie o w8 l3 i haczyk
+                    <UnauthenticationContext.Provider value={{onLoginAttempt: handleLogin}}>
+                        <LoginForm />
+                    </UnauthenticationContext.Provider>
                 }
             </ErrorBoundary>
         </div>

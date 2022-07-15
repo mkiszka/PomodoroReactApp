@@ -1,4 +1,5 @@
 import React from "react";
+import UnauthenticationContext from "../contexts/UnauthenticationContext";
 
 class LoginForm extends React.Component {
     constructor(props) {
@@ -8,7 +9,7 @@ class LoginForm extends React.Component {
     }
     handleSubmit = (event) => {
         event.preventDefault(); 
-        this.props.onLoginAttempt({ 
+        this.context.onLoginAttempt({ 
             email: this.emailInput.current.value, 
             password: this.passwordInput.current.value
         });
@@ -45,5 +46,5 @@ class LoginForm extends React.Component {
         )
     }
 }
-
+LoginForm.contextType = UnauthenticationContext;
 export default LoginForm;
