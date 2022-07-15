@@ -5,11 +5,11 @@ import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import Header from "./Header";
 
-function AuthenticatedApp({accesToken, onLogout }) {
+function AuthenticatedApp() {
         
     return <DndProvider backend={HTML5Backend}>
         <div className="AppHeader" >
-            <Header accesToken={accesToken} onLogout={onLogout} />
+            <Header/>
             <RealTimeClock hours="10" minutes="20" />
         </div>
         <hr />

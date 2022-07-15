@@ -10,7 +10,7 @@ import AuthenticationContext from "../contexts/AuthenticationContext";
 function App() {
     const [isLogged, setIsLogged] = useState();
     const [accessToken, setAccessToken] = useState('aa-bb-cc');
-
+    //https://stackoverflow.com/questions/41030361/how-to-update-react-context-from-inside-a-child-component
     function handleLogout() {
         setIsLogged(false);
     }
@@ -24,8 +24,8 @@ function App() {
         <div id="App" className="App">
             <ErrorBoundary>
                 {isLogged ?
-                    <AuthenticationContext.Provider value={{accessToken: accessToken }}>
-                        <AuthenticatedApp onLogout={handleLogout} />
+                    <AuthenticationContext.Provider value={{accessToken: accessToken, onLogout: handleLogout }}>
+                        <AuthenticatedApp/>
                     </AuthenticationContext.Provider>
                     :
                     <LoginForm onLoginAttempt={handleLogin} />
