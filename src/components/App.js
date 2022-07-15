@@ -25,7 +25,7 @@ function App() {
     return (
         <div id="App" className="App">
             <ErrorBoundary>
-                {isLogged ?
+                {isLogged ? 
                     <AuthenticationContext.Provider value={{accessToken: accessToken, onLogout: handleLogout }}>
                         <AuthenticatedApp/>
                     </AuthenticationContext.Provider>

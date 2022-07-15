@@ -4,6 +4,7 @@ import RealTimeClock from "./RealTimeClock";
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import Header from "./Header";
+import InspirationQuote from './InspirationQuote';
 
 function AuthenticatedApp() {
         
@@ -14,6 +15,7 @@ function AuthenticatedApp() {
         </div>
         <hr />
         <Pomodoro />
+        <InspirationQuote />
     </DndProvider>;
 }
 
