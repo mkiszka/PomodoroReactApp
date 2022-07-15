@@ -1,19 +1,19 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 function InspirationQuote(props) {
     const [quote, setQuote] = useState();
-    import('inspirational-quotes').then((Quotes) => {
-        setQuote(Quotes.getQuote());
-    }).catch(()=> console.log("Couldn't load quotes"))
-
-    
-    //const { text, author } = Quotes.getQuote();
+    useEffect(() => {
+        import('inspirational-quotes').then((Quotes) => {          
+            setQuote(Quotes.getQuote());
+        }).catch(() => console.log("Couldn't load quotes"))
+    }, []);
+ 
     return (<>
-        {quote ?          
-            <figure>            
+        {quote ?
+            <figure>
                 <blockquote>{quote.text}</blockquote>
                 <figcaption><cite>{quote.author}</cite></figcaption>
-            </figure >        
+            </figure >
             :
             "..."
         }
