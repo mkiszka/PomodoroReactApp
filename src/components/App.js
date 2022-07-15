@@ -9,16 +9,17 @@ const AuthenticatedApp = React.lazy(() => import('./AuthenticatedApp'));
 
 //IMPORTANT ! The login functionality is only a simulation.
 function App() {
-    const [isLogged, setIsLogged] = useState();
+    const [isLogged, setIsLogged] = useState(false);
     const [accessToken/*, setAccessToken*/] = useState('aa-bb-cc');
     //https://stackoverflow.com/questions/41030361/how-to-update-react-context-from-inside-a-child-component
     function handleLogout() {
+        //console.log('logout');
         setIsLogged(false);
     }
 
 
     function handleLogin(data) {
-        console.log(data);
+        //console.log(data);
         setIsLogged(true);
     }
 
@@ -26,15 +27,15 @@ function App() {
         <div id="App" className="App">
             <ErrorBoundary>
                 {isLogged ?
-                    <AuthenticationContext.Provider value={{accessToken: accessToken, onLogout: handleLogout }}>
+                    <AuthenticationContext.Provider value={{ accessToken: accessToken, onLogout: handleLogout }}>
                         <React.Suspense fallback={'Loading ...'}>
-                            <AuthenticatedApp/>
+                            <AuthenticatedApp />
                         </React.Suspense>
                     </AuthenticationContext.Provider>
                     :
                     // vip3 pytanie o w8 l3 i haczyk
-                    <UnauthenticationContext.Provider value={{onLoginAttempt: handleLogin}}>
-                        <LoginForm />
+                    <UnauthenticationContext.Provider value={{ onLoginAttempt: handleLogin }}>                        
+                            <LoginForm />                   
                     </UnauthenticationContext.Provider>
                 }
             </ErrorBoundary>

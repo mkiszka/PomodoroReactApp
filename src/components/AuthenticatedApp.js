@@ -7,13 +7,13 @@ import Header from "./Header";
 import InspirationQuote from './InspirationQuote';
 
 function AuthenticatedApp() {
-        
+    console.log("AuthenticatedApp");
     return <DndProvider backend={HTML5Backend}>
         <div className="AppHeader" >
             <Header/>
             <RealTimeClock hours="10" minutes="20" />
         </div>
-        <hr />
+        <hr />         
         <Pomodoro />
         <InspirationQuote />
     </DndProvider>;

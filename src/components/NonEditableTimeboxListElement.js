@@ -1,5 +1,5 @@
 import {
-  IoTrashOutline, IoMenu, IoSaveOutline,
+  IoTrashOutline, IoMenu,
   IoPlayOutline as IoPushOutline
 } from "react-icons/io5";
 import PropTypes from "prop-types";

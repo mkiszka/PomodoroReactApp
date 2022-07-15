@@ -17,7 +17,7 @@ function UserGreeting({ accesToken }) {
 export default UserGreeting;
 
 function getUserEmail(accesToken) {
-    console.log(`abc ${accesToken}`);
+    //console.log(`abc ${accesToken}`);
     if (accesToken === 'aa-bb-cc')
         return 'test@test.pl';
     throw new Error('Wrong access')
