@@ -29,8 +29,7 @@ function Pomodoro() {
     const [loadingError, setLoadingError] = useState(null);
 
     function handleDeleteTimeboxListElement(uid) {
-        TimeboxAPI.removeTimebox(authenticationContext.accessToken, uid).then(() => {
-            console.log("removeTimebox.then");
+        TimeboxAPI.removeTimebox(authenticationContext.accessToken, uid).then(() => {         
             setTimeboxes(
                 (prevTimeboxes) => {
                     let timeboxes = prevTimeboxes.filter((value, index) => value.uid === uid ? false : true);
@@ -105,8 +104,7 @@ function Pomodoro() {
         },
         [findElement, timeboxes],
     )
-  
-    console.log("🚀 ~ file: Pomodoro.js ~ line 182 ~ Pomodoro ~ isLoading", isLoading)
+      
     return (
         <>
             {/* <AutoIndicator /> 

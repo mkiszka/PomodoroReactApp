@@ -52,8 +52,7 @@ export const TimeboxFakeAPI = {
             return;
         }
         this.timeboxes = this.timeboxes.filter((value) => value.uid === uid ? false : true);
-        this.updateTimeboxesInsideCookie();
-        console.log(cookies.get(COOKIE_TIMEBOXES, { path: '/' }));
+        this.updateTimeboxesInsideCookie();       
     },
     updateTimeboxesInsideCookie: function () {
         cookies.set(COOKIE_TIMEBOXES, this.timeboxes, { path: '/' });
