@@ -15,12 +15,12 @@ function Pomodoro() {
     const authenticationContext = useContext(AuthenticationContext);
     const [timeboxes, setTimeboxes] = useState([]);
     useEffect(() => {
-
+        //vip3 
         TimeboxAPI.getAllTimeboxes(authenticationContext.accessToken)
             .then((timeboxes) => { setTimeboxes(timeboxes) })
             .catch((error) => setLoadingError(error))
             .finally(() => setIsLoding(false));
-    }, []);
+    }, [authenticationContext.accessToken]);
 
     const [title, setTitle] = useState("Ucze się tego i tamtego?");
     const [totalTimeInMinutes, setTotalTimeInMinutes] = useState(25);

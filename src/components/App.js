@@ -9,7 +9,7 @@ import AuthenticationContext from "../contexts/AuthenticationContext";
 //IMPORTANT ! The login functionality is only a simulation.
 function App() {
     const [isLogged, setIsLogged] = useState();
-    const [accessToken, setAccessToken] = useState('aa-bb-cc');
+    const [accessToken/*, setAccessToken*/] = useState('aa-bb-cc');
     //https://stackoverflow.com/questions/41030361/how-to-update-react-context-from-inside-a-child-component
     function handleLogout() {
         setIsLogged(false);
