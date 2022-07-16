@@ -1,0 +1,35 @@
+.InpirationalQuote,
+.ButtonMassage,
+.DetailedMessage {
+    padding: 10px;
+    margin-top: $margin-top;
+    margin-bottom: $margin-top;
+    border: $default-border;
+    border-radius: $border-radius;
+    text-align: left;       
+}
+.ButtonMassage,
+.DetailedMessage {
+    background-color: #F2BD41;
+    color: #1A18A1
+}
+.InpirationalQuote {
+    background-color: #005958;
+    color: #FFC745;
+    display: block;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0;
+    margin-inline-end: 0px;
+}
+
+.DetailedMessage > p {
+    margin-left: 30px;
+}
+
+.ButtonMassage {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;    
+    align-items: center;
+}

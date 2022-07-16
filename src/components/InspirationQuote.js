@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-function InspirationQuote(props) {
+function InspirationQuote({className}) {
     const [quote, setQuote] = useState();
     useEffect(() => {
         import('inspirational-quotes').then((Quotes) => {          
@@ -10,7 +10,7 @@ function InspirationQuote(props) {
  
     return (<>
         {quote ?
-            <figure>
+            <figure className={className}>
                 <blockquote>{quote.text}</blockquote>
                 <figcaption><cite>{quote.author}</cite></figcaption>
             </figure >

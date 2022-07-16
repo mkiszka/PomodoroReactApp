@@ -15,7 +15,7 @@ function AuthenticatedApp() {
         </div>
         <hr />         
         <Pomodoro />
-        <InspirationQuote />
+        <InspirationQuote className={'InpirationalQuote'}/>
     </DndProvider>;
 }
 
