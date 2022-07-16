@@ -4,6 +4,9 @@ import LoginForm from './LoginForm';
 
 import AuthenticationContext from '../contexts/AuthenticationContext';
 import UnauthenticationContext from '../contexts/UnauthenticationContext';
+import ButtonMessage from './ButtonMessage';
+import Portal from './Portal';
+import ModalComponent from './ModalComponent';
 
 const AuthenticatedApp = React.lazy(() => import('./AuthenticatedApp'));
 
@@ -25,6 +28,11 @@ function App() {
 
     return (
         <div id="App" className="App">
+            <Portal>
+                <ModalComponent>
+                    <ButtonMessage message="ala" />
+                </ModalComponent>
+            </Portal>
             <ErrorBoundary>
                 {isLogged ?
                     <AuthenticationContext.Provider value={{ accessToken: accessToken, onLogout: handleLogout }}>
@@ -34,8 +42,8 @@ function App() {
                     </AuthenticationContext.Provider>
                     :
                     // vip3 pytanie o w8 l3 i haczyk
-                    <UnauthenticationContext.Provider value={{ onLoginAttempt: handleLogin }}>                        
-                            <LoginForm />                   
+                    <UnauthenticationContext.Provider value={{ onLoginAttempt: handleLogin }}>
+                        <LoginForm />
                     </UnauthenticationContext.Provider>
                 }
             </ErrorBoundary>

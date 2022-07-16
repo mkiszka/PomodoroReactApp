@@ -4,9 +4,9 @@ import PropTypes from 'prop-types';
 class Message extends React.Component {
 
     render() {
-        const { children } = this.props;
+        const { children, className } = this.props;
         return (
-            <p role="textbox">
+            <p role="textbox" className={className}>
                 {children}
             </p>
         );

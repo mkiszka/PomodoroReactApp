@@ -7,7 +7,7 @@ class DetailedMessage extends React.Component {
     render() {
         const { summaryMessage, detailsMessage } = this.props;
         return (            
-                <details className='Message'>
+                <details className='DetailedMessage'>
                     <summary role="button">{summaryMessage}</summary>
                     <Message>
                         {detailsMessage}
