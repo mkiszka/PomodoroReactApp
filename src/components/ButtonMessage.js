@@ -1,13 +1,17 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Message from './Message'
+import { MdCheckCircleOutline, MdOutlineCancel } from 'react-icons/md'
 
-const ButtonMessage = ({message, buttonTitle}) => {
+const ButtonMessage = ({message, buttonTitle, onCancel, onAction}) => {
   return (<div className='ButtonMassage'>
         <Message>
             {message}            
         </Message>
-        <button>{buttonTitle}</button>
+        <div>
+        {onAction?<MdCheckCircleOutline role="button" onClick={onAction}/>:""}
+        {onCancel?<MdOutlineCancel role="button" onClick={onCancel}/>:""}        
+        </div>
     </div>    
   )
 }
@@ -18,7 +22,9 @@ ButtonMessage.propTypes = {
 }
 
 ButtonMessage.defaultProps = {
-    buttonTitle: 'close'
+    buttonTitle: 'close',
+    onAction: null,
+    onCancel: null
 }
 
 export default ButtonMessage
