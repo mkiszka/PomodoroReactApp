@@ -4,9 +4,6 @@ import LoginForm from './LoginForm';
 
 import AuthenticationContext from '../contexts/AuthenticationContext';
 import UnauthenticationContext from '../contexts/UnauthenticationContext';
-import ButtonMessage from './ButtonMessage';
-import Portal from './Portal';
-import ModalComponent from './ModalComponent';
 
 const AuthenticatedApp = React.lazy(() => import('./AuthenticatedApp'));
 
@@ -15,24 +12,17 @@ function App() {
     const [isLogged, setIsLogged] = useState(false);
     const [accessToken/*, setAccessToken*/] = useState('aa-bb-cc');
     //https://stackoverflow.com/questions/41030361/how-to-update-react-context-from-inside-a-child-component
-    function handleLogout() {
-        //console.log('logout');
+    function handleLogout() {        
         setIsLogged(false);
     }
 
 
-    function handleLogin(data) {
-        //console.log(data);
+    function handleLogin(data) {        
         setIsLogged(true);
     }
 
     return (
-        <div id="App" className="App">
-            <Portal>
-                <ModalComponent>
-                    <ButtonMessage message="ala" />
-                </ModalComponent>
-            </Portal>
+        <div id="App" className="App">           
             <ErrorBoundary>
                 {isLogged ?
                     <AuthenticationContext.Provider value={{ accessToken: accessToken, onLogout: handleLogout }}>
