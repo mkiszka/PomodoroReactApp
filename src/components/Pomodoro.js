@@ -18,7 +18,9 @@ function Pomodoro() {
     const authenticationContext = useContext(AuthenticationContext);
     const [timeboxes, setTimeboxes] = useState([]);
     useEffect(() => {
-        //vip3 
+        //vip3 - czy tutaj dostęp do Api w zasadzie taki singleton troszkę
+        //którego nie da się zamocować przy testach, czy nie powinien być 
+        //przekazywany z zewnątrz ?
         TimeboxAPI.getAllTimeboxes(authenticationContext.accessToken)
             .then((timeboxes) => { setTimeboxes(timeboxes) })
             .catch((error) => setLoadingError(error))
