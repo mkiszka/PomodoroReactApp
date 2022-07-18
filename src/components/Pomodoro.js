@@ -18,7 +18,7 @@ function Pomodoro() {
     const authenticationContext = useContext(AuthenticationContext);
     const [timeboxes, setTimeboxes] = useState([]);
     useEffect(() => {
-        //vip3 - czy tutaj dostęp do Api w zasadzie taki singleton troszkę
+        //ki3 - czy tutaj dostęp do Api w zasadzie taki singleton troszkę
         //którego nie da się zamocować przy testach, czy nie powinien być 
         //przekazywany z zewnątrz ?
         TimeboxAPI.getAllTimeboxes(authenticationContext.accessToken)
@@ -32,7 +32,7 @@ function Pomodoro() {
     const [timeboxes_currentIndex, setTimeboxes_currentIndex] = useState(0);
     const [isLoading, setIsLoding] = useState(true);
     const [loadingError, setLoadingError] = useState(null);
-    //vip3 - 
+    //ki3 - 
     //1. poprawność tworzenia zapytania z portlem,
     //czy jako zmienna stanowa i wyświetlanie bądź nie ?
     //2. przekazywanie tekstu do wyświetlenia ?
@@ -57,7 +57,7 @@ function Pomodoro() {
         setTimeboxToDelete(null);
     }
 
-    //TODO customhook to co dotyka tablicy timeboxów (nagranie vip2 końcówka)
+    //TODO customhook to co dotyka tablicy timeboxów (nagranie ki2 końcówka)
     function handleTitleCreatorChange(event) {
         setTitle(event.target.value);
     }
@@ -149,7 +149,7 @@ function Pomodoro() {
                         <TimeboxListElement
                             key={elem.uid}
                             timebox={elem}
-                            onSave={handleSaveTimeboxListElement/*vip3 onSave inaczej wygląda i onDelete inaczej, jak to uogólnićm z kąd wiedzieć co pisać ?
+                            onSave={handleSaveTimeboxListElement/*ki3 onSave inaczej wygląda i onDelete inaczej, jak to uogólnićm z kąd wiedzieć co pisać ?
                                                                     a może powinienem przez event dawać ?*/}
                             onDelete={() => { handleConfirmDeletion(elem.uid) }}
                             onStart={() => { handleStartTimeboxListElement(index) }}

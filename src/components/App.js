@@ -31,7 +31,7 @@ function App() {
                         </React.Suspense>
                     </AuthenticationContext.Provider>
                     :
-                    // vip3 pytanie o w8 l3 i haczyk
+                    // ki3 pytanie o w8 l3 i haczyk
                     <UnauthenticationContext.Provider value={{ onLoginAttempt: handleLogin }}>
                         <LoginForm />
                     </UnauthenticationContext.Provider>
