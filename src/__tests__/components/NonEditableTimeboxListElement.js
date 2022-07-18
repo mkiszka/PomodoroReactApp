@@ -1,7 +1,5 @@
 import React from "react";
 import { screen, render, cleanup } from '@testing-library/react';
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
 import NonEditableTimeboxListElement from "../../components/NonEditableTimeboxListElement";
 import { v4 as uuid } from 'uuid';
 
