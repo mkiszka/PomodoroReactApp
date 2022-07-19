@@ -13,10 +13,10 @@ describe('Timebox', () => {
         expect(h4.innerHTML).toEqual('Liczba przerw: 0');
 
     });
-    it('should be noneditable isEditable = false', () => {
+    it('should be nonclickable if isEditable = false', () => {
         const timebox = { uid: 'aaaa-dddd-cccc', title: 'Wywołanie eventów', totalTimeInMinutes: 3 }
         render(<Timebox timebox={timebox} isEditable='false' />)
-
+        
         
 
     });

@@ -139,7 +139,7 @@ function Pomodoro() {
             />
             {loadingError ? <ErrorMessage error={loadingError} /> : ""}
             {isLoading ? <AutoIndicator refresh="10" /> : ""}
-            {timeboxes.length > 0 ? <Timebox
+            {timeboxes.length > 0 ? <Timebox /*isEditable={false}*/
                 timebox={timeboxes.length > 0 ? timeboxes[timeboxes_currentIndex] : {}}
             /> : ""}
 
