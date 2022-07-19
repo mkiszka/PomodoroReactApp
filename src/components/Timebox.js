@@ -128,6 +128,8 @@ class Timebox extends React.Component {
 
             progressInPercent = ((totalTimeInMiliSeconds - elapsedTimeInMiliSeconds) / totalTimeInMiliSeconds) * 100;
         }
+        const trulyIsEditable = !timeboxEmpty && isEditable;
+        const classNameOfButton = trulyIsEditable ? "button-active" : "button-inactive";
 
         return (<div data-testid={"Timebox"} className={`Timebox  ${isEditable ? "" : "inactive"}`}>
             <h1>{timebox.title}</h1>
@@ -140,11 +142,11 @@ class Timebox extends React.Component {
                 className={"TimeboxClock " + (isPaused ? "inactive" : "")} />
             <ProgressBar
                 percent={progressInPercent} className={isPaused ? "inactive" : ""} trackRemaining={false} />
-            <button onClick={!isPaused && !isRunning ? this.handlePlay : this.handleTogglePause} disabled={timeboxEmpty}>
-                {isRunning && !isPaused ? <IoPauseCircleOutline className={timeboxEmpty ? "button-inactive" : "button-active"} /> : <IoPlayCircleOutline className={timeboxEmpty ? "button-inactive" : "button-active"} />}
+            <button onClick={!isPaused && !isRunning ? this.handlePlay : this.handleTogglePause} disabled={!trulyIsEditable}>
+                {isRunning && !isPaused ? <IoPauseCircleOutline className={classNameOfButton} /> : <IoPlayCircleOutline className={classNameOfButton} />}
             </button>
-            <button onClick={this.handleStop} disabled={!isRunning || timeboxEmpty} >
-                <IoStopCircleOutline className={timeboxEmpty ? "button-inactive" : "button-active"} />
+            <button onClick={this.handleStop} disabled={!isRunning || !trulyIsEditable} >
+                <IoStopCircleOutline className={classNameOfButton} />
             </button>
 
         </div >);
