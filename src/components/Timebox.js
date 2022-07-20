@@ -104,7 +104,7 @@ class Timebox extends React.Component {
     }
 
     render() {
-        
+
         const { timebox, isEditable } = this.props;
 
         const { isRunning, isPaused, pausesCount, elapsedTimeInMiliSeconds } = this.state
@@ -142,10 +142,16 @@ class Timebox extends React.Component {
                 className={"TimeboxClock " + (isPaused ? "inactive" : "")} />
             <ProgressBar
                 percent={progressInPercent} className={isPaused ? "inactive" : ""} trackRemaining={false} />
-            <button onClick={!isPaused && !isRunning ? this.handlePlay : this.handleTogglePause} disabled={!trulyIsEditable}>
-                {isRunning && !isPaused ? <IoPauseCircleOutline className={classNameOfButton} /> : <IoPlayCircleOutline className={classNameOfButton} />}
-            </button>
-            <button onClick={this.handleStop} disabled={!isRunning || !trulyIsEditable} >
+            {isPaused || !isRunning ?
+                <button aria-label='Play' onClick={this.handlePlay} disabled={!trulyIsEditable}>
+                   <IoPlayCircleOutline className={classNameOfButton} />
+                </button>
+                :
+                <button aria-label='Pause' onClick={this.handleTogglePause} disabled={!trulyIsEditable}>
+                   <IoPauseCircleOutline className={classNameOfButton} /> 
+                </button>
+            }
+            <button aria-label='Stop' onClick={this.handleStop} disabled={!isRunning || !trulyIsEditable} >
                 <IoStopCircleOutline className={classNameOfButton} />
             </button>
 
