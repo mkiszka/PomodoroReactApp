@@ -17,7 +17,7 @@ describe('Timebox', () => {
     });
     it('should have pause button after click on play button', async () => {
         const timebox = { uid: 'aaaa-dddd-cccc', title: 'Wywołanie eventów', totalTimeInMinutes: 3 }
-
+        
         render(<Timebox timebox={timebox} isEditable={true} />)
 
         const playButton = screen.getByRole('button', { name: /play/i });
