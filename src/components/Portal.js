@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 
 
 function Portal(props) {
-    const [container] = useState(document.createElement('div'));
+    const [container] = useState(() => { document.createElement('div') });
     useEffect(() => {
         document.body.appendChild(container);
         return () => {
