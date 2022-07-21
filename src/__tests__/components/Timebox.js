@@ -17,7 +17,7 @@ describe('Timebox', () => {
     });
     it('should have pause button after click on play button', async () => {
         const timebox = { uid: 'aaaa-dddd-cccc', title: 'Wywołanie eventów', totalTimeInMinutes: 3 }
-        
+
         render(<Timebox timebox={timebox} isEditable={true} />)
 
         const playButton = screen.getByRole('button', { name: /play/i });
@@ -65,51 +65,57 @@ describe('Timebox', () => {
         it('should render proper time string', () => {
             const timebox = { uid: 'aaaa-dddd-cccc', title: 'Wywołanie eventów', totalTimeInMinutes: 3 }
 
-            const { debug } = render(<Timebox timebox={timebox} isEditable={true} />)
-            const playButton = screen.getByRole('button', { name: /play/i });            
-            let clock = screen.queryByText(/00:03:00.000/i);
+            render(<Timebox timebox={timebox} isEditable={true} />)
+            const playButton = screen.getByRole('button', { name: /play/i });
+            let clock = screen.queryByText(/00:03:00\.000/i);
             expect(clock).not.toBeNull();
 
-            userEvent.click(playButton);            
+            userEvent.click(playButton);
             act(() => {
                 jest.advanceTimersByTime(60000)
             })
 
-            clock = screen.queryByText(/00:02:00.000/i);
+            clock = screen.queryByText(/00:02:00\.000/i); //Getting it again isn't necessary.
             expect(clock).not.toBeNull();
 
             act(() => {
                 jest.advanceTimersByTime(120000)
             })
-            
-            clock = screen.queryByText(/00:00:00.000/i);
+
+            clock = screen.queryByText(/00:00:00\.000/i);
             expect(clock).not.toBeNull();
-          
+
         });
-        it.skip('should render proper progressbar length', () => {
-            const timebox = { uid: 'aaaa-dddd-cccc', title: 'Wywołanie eventów', totalTimeInMinutes: 3 }
+        it('should render proper progressbar length', () => {
+            const timebox = { uid: 'aaaa-dddd-cccc', title: 'Wywołanie eventów', totalTimeInMinutes: 10 }
 
-            const { debug } = render(<Timebox timebox={timebox} isEditable={true} />)
-            const playButton = screen.getByRole('button', { name: /play/i });            
-            let clock = screen.queryByText(/00:03:00.000/i);
-            expect(clock).not.toBeNull();
+            const { debug } = render(<Timebox timebox={timebox} isEditable={true} progressBarAriaLabel='Postęp ładowania timeboxów' />)
+            const playButton = screen.getByRole('button', { name: /play/i });
+            let progressbar = screen.getByLabelText('Postęp ładowania timeboxów')
+            let style = window.getComputedStyle(progressbar);
 
-            userEvent.click(playButton);            
-            act(() => {
-                jest.advanceTimersByTime(60000)
-            })
-
-            clock = screen.queryByText(/00:02:00.000/i);
-            expect(clock).not.toBeNull();
+            expect(style._values['--width']).toEqual('100%');
+            userEvent.click(playButton);
 
             act(() => {
-                jest.advanceTimersByTime(120000)
+                jest.advanceTimersByTime(300000);
             })
-            debug();
-            clock = screen.queryByText(/00:00:00.000/i);
-            expect(clock).not.toBeNull();
-          
+
+            style = window.getComputedStyle(progressbar);
+            expect(style._values['--width']).toEqual('50%');
+
+            act(() => {
+                jest.advanceTimersByTime(300000);
+            })
+
+            style = window.getComputedStyle(progressbar);
+            expect(style._values['--width']).toEqual('0%');
+
+
         });
+        it.skip('TODO - move timers on disabled component and check if progress bar will change. It should\'t', () => {
+            //TODO
+        })
         afterEach(() => {
             jest.runOnlyPendingTimers();
             jest.useRealTimers();

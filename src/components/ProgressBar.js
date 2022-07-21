@@ -1,10 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-function ProgressBar({ color, percent, trackRemaining, className }) {
+function ProgressBar({ color, percent, trackRemaining, className, ariaLabel = "ProgressBar" }) {
 
     return (
-        <div  data-testid='ProgressBar-div' className={
+        //TODO remove data-testid, use aria-label
+        <div  data-testid='ProgressBar-div' aria-label={ariaLabel} className={
             `ProgressBar ProgressBar_trackRemaining_${trackRemaining} ${className} `
         }
             style={{ '--width': `${percent}%`, '--background-color': color }}>

@@ -105,7 +105,7 @@ class Timebox extends React.Component {
 
     render() {
 
-        const { timebox, isEditable } = this.props;
+        const { timebox, isEditable, progressBarAriaLabel } = this.props;
 
         const { isRunning, isPaused, pausesCount, elapsedTimeInMiliSeconds } = this.state
         let totalTimeInMiliSeconds, timeLeftInMiliSeconds, milisecondsLeft, minutesLeft;
@@ -141,7 +141,7 @@ class Timebox extends React.Component {
                 miliseconds={milisecondsLeft}
                 className={"TimeboxClock " + (isPaused ? "inactive" : "")} />
             <ProgressBar
-                percent={progressInPercent} className={isPaused ? "inactive" : ""} trackRemaining={false} />
+                percent={progressInPercent} className={isPaused ? "inactive" : ""} trackRemaining={false} ariaLabel={progressBarAriaLabel}/>
             {isPaused || !isRunning ?
                 <button aria-label='Play' onClick={this.handlePlay} disabled={!trulyIsEditable}>
                    <IoPlayCircleOutline className={classNameOfButton} />
