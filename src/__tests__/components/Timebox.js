@@ -82,14 +82,14 @@ describe('Timebox', () => {
                 jest.advanceTimersByTime(120000)
             })
 
-            clock = screen.queryByText(/00:00:00\.000/i);
+            clock = screen.queryByText(/00:00:00\.000/i); //Getting it again isn't necessary.
             expect(clock).not.toBeNull();
 
         });
         it('should render proper progressbar length', () => {
             const timebox = { uid: 'aaaa-dddd-cccc', title: 'Wywołanie eventów', totalTimeInMinutes: 10 }
 
-            const { debug } = render(<Timebox timebox={timebox} isEditable={true} progressBarAriaLabel='Postęp ładowania timeboxów' />)
+            render(<Timebox timebox={timebox} isEditable={true} progressBarAriaLabel='Postęp ładowania timeboxów' />)
             const playButton = screen.getByRole('button', { name: /play/i });
             let progressbar = screen.getByLabelText('Postęp ładowania timeboxów')
             let style = window.getComputedStyle(progressbar);
@@ -113,8 +113,30 @@ describe('Timebox', () => {
 
 
         });
-        it.skip('TODO - move timers on disabled component and check if progress bar will change. It should\'t', () => {
-            //TODO
+        it('should not change progress bar as component is not editable', () => {
+            const timebox = { uid: 'aaaa-dddd-cccc', title: 'Wywołanie eventów', totalTimeInMinutes: 10 }
+
+            const { debug } = render(<Timebox timebox={timebox} isEditable={false} progressBarAriaLabel='Postęp ładowania timeboxów' />)
+            const playButton = screen.getByRole('button', { name: /play/i });
+            let progressbar = screen.getByLabelText('Postęp ładowania timeboxów')
+            let style = window.getComputedStyle(progressbar);
+
+            expect(style._values['--width']).toEqual('100%');
+            userEvent.click(playButton);
+
+            act(() => {
+                jest.advanceTimersByTime(300000);
+            })
+
+            style = window.getComputedStyle(progressbar);
+            expect(style._values['--width']).toEqual('100%');
+
+            act(() => {
+                jest.advanceTimersByTime(300000);
+            })
+
+            style = window.getComputedStyle(progressbar);
+            expect(style._values['--width']).toEqual('100%');
         })
         afterEach(() => {
             jest.runOnlyPendingTimers();
