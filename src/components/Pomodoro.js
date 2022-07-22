@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState, useContext } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import update from 'immutability-helper';
 import Timebox from "./Timebox";
 import TimeboxList from "./TimeboxList";
@@ -18,7 +18,7 @@ import { useTimeboxAPI } from '../hooks/useTimeboxAPI';
 
 const AutoIndicator = withAutoIndicator(ProgressBar);
 function Pomodoro() {
-    const [accessToken] = useAuthenticationContext();
+    const { accessToken } = useAuthenticationContext();
     const [timeboxes, setTimeboxes] = useState([]);
     const [TimeboxAPI] = useTimeboxAPI();
     

@@ -3,6 +3,6 @@ import UnauthenticationContext from "../contexts/UnauthenticationContext"
 
 function useUnauthicationContext() {
     const { onLoginAttempt } = useContext(UnauthenticationContext);
-    return [onLoginAttempt];
+    return { onLoginAttempt };
 }
 export { useUnauthicationContext }

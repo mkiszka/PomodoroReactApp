@@ -3,7 +3,7 @@ import { useUnauthicationContext } from "../hooks/useUnauthenticationContext";
 
 function LoginForm(props) {
     //ki3 - sprawdzić refactor do funkcyjnego    
-    const [onLoginAttempt] = useUnauthicationContext();
+    const { onLoginAttempt } = useUnauthicationContext();
     const emailInput = useRef();
     const passwordInput = useRef();
 

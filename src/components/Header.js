@@ -4,6 +4,7 @@ import UserGreeting from './UserGreeting';
 
 function Header() {
     const { onLogout } = useAuthenticationContext();
+    debugger;
     return <>
         <h1>Pomodoro Application</h1>
         <header className="header">

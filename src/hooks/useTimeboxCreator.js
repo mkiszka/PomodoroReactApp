@@ -6,7 +6,7 @@ import { useTimeboxAPI } from "./useTimeboxAPI";
 
 function useTimeboxCreator(setTimeboxes) {
 
-    const [accessToken] = useAuthenticationContext();
+    const { accessToken } = useAuthenticationContext();
     const [title, setTitle] = useState("Ucze się tego i tamtego?");
     const [totalTimeInMinutes, setTotalTimeInMinutes] = useState('25');
     const [TimeboxApi] = useTimeboxAPI();
