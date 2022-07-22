@@ -80,7 +80,7 @@ describe('TimeboxList', () => {
 
         it('should fire events 3 times', async () => {
 
-            const { debug } = render(timeboxList);
+            render(timeboxList);
 
             const editButtons = screen.getAllByTitle("edytuj");
             const deleteButtons = screen.getAllByTitle("usuń");
@@ -95,7 +95,7 @@ describe('TimeboxList', () => {
             deleteButtons.forEach((element) => {
                 userEvent.click(element);
             });
-debug();
+
             expect(onEdit).toBeCalledTimes(3,'onEdit');
             expect(onDelete).toBeCalledTimes(3,'onDelete');
 
