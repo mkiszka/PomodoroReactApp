@@ -7,7 +7,6 @@ import TimeboxCreator from "./TimeboxCreator";
 import ErrorMessage from "./ErrorMessage";
 import withAutoIndicator from "./AutoIndicator";
 import ProgressBar from './ProgressBar';
-import { TimeboxFakeAPI as TimeboxAPI } from '../api/TimeboxFakeAPI';
 import Portal from './Portal';
 import ModalComponent from './ModalComponent';
 import ButtonMessage from './ButtonMessage';
@@ -15,11 +14,13 @@ import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { useAuthenticationContext } from '../hooks/useAuthenticationContext';
 import { useTimeboxCreator } from '../hooks/useTimeboxCreator';
+import { useTimeboxApi } from '../hooks/useTimeboxApi';
 
 const AutoIndicator = withAutoIndicator(ProgressBar);
 function Pomodoro() {
     const [accessToken] = useAuthenticationContext();
     const [timeboxes, setTimeboxes] = useState([]);
+    const [TimeboxAPI] = useTimeboxApi();
     useEffect(() => {
         //ki3 - czy tutaj dostęp do Api w zasadzie taki singleton troszkę
         //którego nie da się zamocować przy testach, czy nie powinien być 
@@ -28,7 +29,7 @@ function Pomodoro() {
             .then((timeboxes) => { setTimeboxes(timeboxes) })
             .catch((error) => setLoadingError(error))
             .finally(() => setIsLoding(false));
-    }, [accessToken]);
+    }, [accessToken, TimeboxAPI]); //ki3 po przejściu na hooka wymusza mi tutaj dodanie TimeboxAPI, czy to naprawde musi być?
 
     const [timeboxes_currentIndex, setTimeboxes_currentIndex] = useState(0);    
     const [isLoading, setIsLoding] = useState(true);
