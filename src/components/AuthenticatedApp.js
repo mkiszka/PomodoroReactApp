@@ -13,7 +13,7 @@ function AuthenticatedApp() {
         </div>
         <hr />
         <Pomodoro />
-        <InspirationQuoteManager className={'InpirationalQuote'} />
+        <InspirationQuoteManager/>
     </>;
 }
 
