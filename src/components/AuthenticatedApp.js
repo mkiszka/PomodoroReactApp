@@ -2,7 +2,7 @@ import React from 'react';
 import Pomodoro from "./Pomodoro";
 import RealTimeClock from "./RealTimeClock";
 import Header from "./Header";
-import InspirationQuote from './InspirationQuote';
+import InspirationQuoteManager from './InspirationQuoteManager';
 
 function AuthenticatedApp() {
     console.log("AuthenticatedApp");
@@ -13,7 +13,7 @@ function AuthenticatedApp() {
         </div>
         <hr />
         <Pomodoro />
-        <InspirationQuote className={'InpirationalQuote'} />
+        <InspirationQuoteManager className={'InpirationalQuote'} />
     </>;
 }
 
