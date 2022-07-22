@@ -14,13 +14,14 @@ import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { useAuthenticationContext } from '../hooks/useAuthenticationContext';
 import { useTimeboxCreator } from '../hooks/useTimeboxCreator';
-import { useTimeboxApi } from '../hooks/useTimeboxApi';
+import { useTimeboxAPI } from '../hooks/useTimeboxAPI';
 
 const AutoIndicator = withAutoIndicator(ProgressBar);
 function Pomodoro() {
     const [accessToken] = useAuthenticationContext();
     const [timeboxes, setTimeboxes] = useState([]);
-    const [TimeboxAPI] = useTimeboxApi();
+    const [TimeboxAPI] = useTimeboxAPI();
+    
     useEffect(() => {
         //ki3 - czy tutaj dostęp do Api w zasadzie taki singleton troszkę
         //którego nie da się zamocować przy testach, czy nie powinien być 

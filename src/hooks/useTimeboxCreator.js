@@ -2,14 +2,14 @@
 
 import { useState } from "react";
 import { useAuthenticationContext } from "./useAuthenticationContext";
-import { useTimeboxApi } from "./useTimeboxApi";
+import { useTimeboxAPI } from "./useTimeboxAPI";
 
 function useTimeboxCreator(setTimeboxes) {
 
     const [accessToken] = useAuthenticationContext();
     const [title, setTitle] = useState("Ucze się tego i tamtego?");
     const [totalTimeInMinutes, setTotalTimeInMinutes] = useState('25');
-    const [TimeboxApi] = useTimeboxApi();
+    const [TimeboxApi] = useTimeboxAPI();
 
     function handleTitleCreatorChange(event) {
         setTitle(event.target.value);

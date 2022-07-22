@@ -1,7 +1,7 @@
 import { TimeboxFakeAPI } from "../api/TimeboxFakeAPI";
 
-function useTimeboxApi() {
+function useTimeboxAPI() {
     return [TimeboxFakeAPI];
 }
 
-export { useTimeboxApi };
+export { useTimeboxAPI };
