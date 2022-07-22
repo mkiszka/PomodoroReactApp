@@ -1,10 +1,8 @@
 import React from "react";
 import { render, fireEvent, within, screen } from "@testing-library/react";
 import Pomodoro from "../../components/Pomodoro";
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
 import AuthenticationContext from "../../contexts/AuthenticationContext";
-import AuthenticatedApp from "../../components/AuthenticatedApp";
+
 
 describe('Pomodoro', () => {
     it('should change element position on enter',async () => {
