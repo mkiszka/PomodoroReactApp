@@ -6,9 +6,7 @@ import { useState } from "react";
 
 function EditableTimeboxListElement({ timebox, onSave }) {
 
-  const [insideTimebox, setInsideTimebox] = useState(timebox); //VIP <-- sprawdzić czy na pewno to się raz wykona jako default
-  console.log(insideTimebox);
-  // const originalIndex = findElement(uid).index
+  const [insideTimebox, setInsideTimebox] = useState(timebox); //ki3 <-- sprawdzić czy na pewno to się raz wykona jako default
 
   function handleTitleChange(event) {
     setInsideTimebox(
@@ -32,7 +30,7 @@ function EditableTimeboxListElement({ timebox, onSave }) {
     >
       <div className="TimeboxListElementTitle"><textarea value={insideTimebox.title} onChange={(event) => { handleTitleChange(event) }} /></div>
       <div className="TimeboxListElementTime"><input value={insideTimebox.totalTimeInMinutes} onChange={(event) => { handleTotalTimeInMinutesChange(event) }} type="number" />min.</div>
-      <div className="TimeboxListElementAction"><IoSaveOutline title="zapisz" className="button-active" onClick={() => onSave({ ...insideTimebox })} /> { /* vip3- czy poprawnie że kopie obiektu robię? */}
+      <div className="TimeboxListElementAction"><IoSaveOutline title="zapisz" className="button-active" onClick={() => onSave({ ...insideTimebox })} /> { /* ki3- czy poprawnie że kopie obiektu robię? */}
 
         {/* <IoTrashOutline title="usuń" className="button-active" onClick={onDelete} />
         <IoPushOutline title="start" className="button-active" onClick={onStart} /> */}

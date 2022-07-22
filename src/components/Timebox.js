@@ -104,8 +104,8 @@ class Timebox extends React.Component {
     }
 
     render() {
-        
-        const { timebox, isEditable } = this.props;
+
+        const { timebox, isEditable, progressBarAriaLabel } = this.props;
 
         const { isRunning, isPaused, pausesCount, elapsedTimeInMiliSeconds } = this.state
         let totalTimeInMiliSeconds, timeLeftInMiliSeconds, milisecondsLeft, minutesLeft;
@@ -128,6 +128,8 @@ class Timebox extends React.Component {
 
             progressInPercent = ((totalTimeInMiliSeconds - elapsedTimeInMiliSeconds) / totalTimeInMiliSeconds) * 100;
         }
+        const trulyIsEditable = !timeboxEmpty && isEditable;
+        const classNameOfButton = trulyIsEditable ? "button-active" : "button-inactive";
 
         return (<div data-testid={"Timebox"} className={`Timebox  ${isEditable ? "" : "inactive"}`}>
             <h1>{timebox.title}</h1>
@@ -139,12 +141,18 @@ class Timebox extends React.Component {
                 miliseconds={milisecondsLeft}
                 className={"TimeboxClock " + (isPaused ? "inactive" : "")} />
             <ProgressBar
-                percent={progressInPercent} className={isPaused ? "inactive" : ""} trackRemaining={false} />
-            <button onClick={!isPaused && !isRunning ? this.handlePlay : this.handleTogglePause} disabled={timeboxEmpty}>
-                {isRunning && !isPaused ? <IoPauseCircleOutline className={timeboxEmpty ? "button-inactive" : "button-active"} /> : <IoPlayCircleOutline className={timeboxEmpty ? "button-inactive" : "button-active"} />}
-            </button>
-            <button onClick={this.handleStop} disabled={!isRunning || timeboxEmpty} >
-                <IoStopCircleOutline className={timeboxEmpty ? "button-inactive" : "button-active"} />
+                percent={progressInPercent} className={isPaused ? "inactive" : ""} trackRemaining={false} ariaLabel={progressBarAriaLabel}/>
+            {isPaused || !isRunning ?
+                <button aria-label='Play' onClick={this.handlePlay} disabled={!trulyIsEditable}>
+                   <IoPlayCircleOutline className={classNameOfButton} />
+                </button>
+                :
+                <button aria-label='Pause' onClick={this.handleTogglePause} disabled={!trulyIsEditable}>
+                   <IoPauseCircleOutline className={classNameOfButton} /> 
+                </button>
+            }
+            <button aria-label='Stop' onClick={this.handleStop} disabled={!isRunning || !trulyIsEditable} >
+                <IoStopCircleOutline className={classNameOfButton} />
             </button>
 
         </div >);

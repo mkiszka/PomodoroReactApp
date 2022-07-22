@@ -6,7 +6,8 @@ import { DraggableItemTypes } from "./DraggableItemTypes";
 import React, {useState} from "react";
 import EditableTimeboxListElement from './EditableTimeboxListElement';
 import NonEditableTimeboxListElement from './NonEditableTimeboxListElement';
-//vip3 czy o to chodziło ? komponent główny i w środku dwa, edytowalny i nie edytowlny??
+
+//ki3 czy o to chodziło ? komponent główny i w środku dwa, edytowalny i nie edytowlny??
 //     czy TimeboxListElement wywalić i ....
 //TODO split into TimeboxListElement and DragableTimeboxListElement
 
@@ -57,7 +58,7 @@ function TimeboxListElement({ timebox, onSave, onDelete, onStart, onMoveElement}
   )
   const opacity = isDragging ? 0 : 1
   
-  //VIP3 0 niestety przy zostawieniu drag tutaj, i wyciągnięciu diva tutaj, komponenty podrzędne stają się niereużywalne,
+  //ki3 0 niestety przy zostawieniu drag tutaj, i wyciągnięciu diva tutaj, komponenty podrzędne stają się niereużywalne,
   //przez chwile myślałem o HOC ? żeby dodać drag and drop, ale jeszcze nie ogarniam
   //opcja - div tylko dla dragging ? ale jak lepiej ?
   return (
@@ -79,6 +80,7 @@ function TimeboxListElement({ timebox, onSave, onDelete, onStart, onMoveElement}
     </div>
   )
 }
+
 TimeboxListElement.defaultProps = {
 
   timebox: { uid: uuidv4(), title: "Default title", totalTimeInMinutes: 3 },  

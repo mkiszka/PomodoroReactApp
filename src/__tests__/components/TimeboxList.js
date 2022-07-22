@@ -1,213 +1,129 @@
 import React from "react";
-import { render, fireEvent, screen} from "@testing-library/react";
+import { render, fireEvent, screen } from "@testing-library/react";
 import TimeboxList from "../../components/TimeboxList";
 import TimeboxListElement from "../../components/TimeboxListElement";
 import { v4 as uuidv4 } from "uuid";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import userEvent from "@testing-library/user-event";
 
 describe('TimeboxList', () => {
-    describe('isEditable == false', () => {
-        let timeboxes;
-        let timeboxList;
-        let onTitleChange;
-        let onTimeChange;
-        let onEdit;
-        let onDelete;
-        let onStart;
-        let findElement;
+    let timeboxes;
+    let timeboxList;
+    let onSave;
+    let onDelete;
+    let onStart;
 
-        beforeEach(() => {
-            timeboxes = [
-                { uid: uuidv4(), title: "Wywołanie eventów", totalTimeInMinutes: 3, isEditable: false },
-                { uid: uuidv4(), title: "KP-3034 Migracja z ver 1.14 do 1.15 usuwa powiązanie pacjent pracownik.", totalTimeInMinutes: 20, isEditable: false },
-                { uid: uuidv4(), title: "KP-3104 Deploy webserwisu zamówień dla 1.15", totalTimeInMinutes: 20, isEditable: false },
-            ];
+    beforeEach(() => {
+        timeboxes = [
+            { uid: uuidv4(), title: "Wywołanie eventów", totalTimeInMinutes: 3, isEditable: false },
+            { uid: uuidv4(), title: "KP-3034 Migracja z ver 1.14 do 1.15 usuwa powiązanie pacjent pracownik.", totalTimeInMinutes: 20, isEditable: false },
+            { uid: uuidv4(), title: "KP-3104 Deploy webserwisu zamówień dla 1.15", totalTimeInMinutes: 20, isEditable: false },
+        ];
 
-            onTitleChange = jest.fn();
-            onTimeChange = jest.fn();
-            onEdit = jest.fn();
-            onDelete = jest.fn();
-            onStart = jest.fn();
-            findElement = jest.fn().mockReturnValue({ index: 0 });
+        onDelete = jest.fn();
+        onStart = jest.fn();
+        onSave = jest.fn();
 
-            timeboxList = <DndProvider backend={HTML5Backend}><TimeboxList>{
-                timeboxes.map((elem, index) => {
-                    return (
+        timeboxList = <DndProvider backend={HTML5Backend}><TimeboxList>{
+            timeboxes.map((elem, index) => {
+                return (
 
-                        <TimeboxListElement
-                            key={elem.uid}
-                            index={index}
-                            timebox={elem}
-                            onTitleChange={onTitleChange}
-                            onTimeChange={onTimeChange}
-                            onEdit={() => { onEdit(elem.uid) }}
-                            onDelete={() => { onDelete(elem.uid) }}
-                            onStart={() => { onStart(index) }}
-                            findElement={findElement}
-                        />
+                    <TimeboxListElement
+                        key={elem.uid}
+                        index={index}
+                        timebox={elem}
+                        onDelete={() => { onDelete(elem.uid) }}
+                        onStart={() => { onStart(index) }}
+                        onSave={() => { onSave(index) }}
+                    />
 
-                    );
-                })
-            }</TimeboxList></DndProvider>
-        })
+                );
+            })
+        }</TimeboxList></DndProvider>
+    })
 
-        it('should generate as 3 textboxes and 3 spinbuttons', () => {
-            render(timeboxList);
+    it('should generate 3 listitms', () => {
+        render(timeboxList);
 
-            const timeboxesList = screen.getAllByRole("textbox");
-            expect(timeboxesList.length).toEqual(3);
-            const timeInput = screen.getAllByRole("spinbutton");
-            expect(timeInput.length).toEqual(3);
+        const timeboxesList = screen.getAllByRole("listitem");
+        expect(timeboxesList.length).toEqual(3);
+    })
+    it('should be noneditable', () => {
 
+        render(timeboxList);
 
-        })
-        it('should be disabled', async () => {
+        const textareas = screen.queryAllByRole("textbox");
+        const spinbuttons = screen.queryAllByRole("spinbutton");
 
-            render(timeboxList);
+        expect(textareas.length).toEqual(0);
+        expect(spinbuttons.length).toEqual(0);
 
-            const textareas = screen.getAllByRole("textbox");
-            const spinbuttons = screen.getAllByRole("spinbutton");
-
-            expect(textareas.length).toEqual(3);
-            expect(spinbuttons.length).toEqual(3);
-
-            textareas.forEach(element => {
-                expect(element).toBeDisabled();
-            });
-
-            spinbuttons.forEach(element => {
-                expect(element).toBeDisabled();
-            });
-        });
-
-        it('should fire events 3 times', async () => {
-
-            render(timeboxList);
-
-            const editButtons = screen.getAllByTitle("edytuj");
-            const deleteButtons = screen.getAllByTitle("usuń");
-
-            expect(editButtons.length).toEqual(3);
-            expect(deleteButtons.length).toEqual(3);
-
-            editButtons.forEach((element) => {
-                fireEvent.click(element);
-            });
-
-            deleteButtons.forEach((element) => {
-                fireEvent.click(element);
-            });
-
-            expect(onEdit).toBeCalledTimes(3,'onEdit');
-            expect(onDelete).toBeCalledTimes(3,'onDelete');
-
-        });
-        it('should handle TimeboxListElement start button', () => {
-
-            render(timeboxList);
-
-            const startButtons = screen.getAllByTitle("start");
-            fireEvent.click(startButtons[1]);
-            expect(onStart).toBeCalledTimes(1);
-        })
     });
-    describe('isEditable == true', () => {
-        let timeboxes;
-        let timeboxList;
-        let onTitleChange;
-        let onTimeChange;
-        let onEdit;
-        let onSave;
-        let onDelete;
-        let onStart;
-        let findElement;
+    it('should fire Delete.onClick 3 times', async () => {
 
-        beforeEach(() => {
-            timeboxes = [
-                { uid: uuidv4(), title: "Wywołanie eventów", totalTimeInMinutes: 3, isEditable: true },
-                { uid: uuidv4(), title: "KP-3034 Migracja z ver 1.14 do 1.15 usuwa powiązanie pacjent pracownik.", totalTimeInMinutes: 20, isEditable: true },
-                { uid: uuidv4(), title: "KP-3104 Deploy webserwisu zamówień dla 1.15", totalTimeInMinutes: 20, isEditable: true },
-            ];
+        render(timeboxList);
 
-            onTitleChange = jest.fn();
-            onTimeChange = jest.fn();
-            onEdit = jest.fn();
-            onSave = jest.fn();
-            onDelete = jest.fn();
-            onStart = jest.fn();
-            
-            findElement = jest.fn().mockReturnValue({ index: 0 });
+        const deleteButtons = screen.getAllByTitle("usuń");
 
-            timeboxList = <DndProvider backend={HTML5Backend}><TimeboxList>{
-                timeboxes.map((elem, index) => {
-                    return (
+        expect(deleteButtons.length).toEqual(3);
 
-                        <TimeboxListElement
-                            key={elem.uid}
-                            index={index}
-                            timebox={elem}
-                            onTitleChange={onTitleChange}
-                            onTimeChange={onTimeChange}
-                            onEdit={() => { onEdit(elem.uid) }}
-                            onSave={()=> { onSave(elem.uid)}}
-                            onDelete={() => { onDelete(elem.uid) }}
-                            onStart={() => { onStart(index) }}
-                            findElement={findElement}
-                        />
-
-                    );
-                })
-            }</TimeboxList></DndProvider>
-
-        })      
-        it('should be enabled', () => {
-
-            render(timeboxList);
-
-            const textareas = screen.getAllByRole("textbox");
-            const spinbuttons = screen.getAllByRole("spinbutton");
-
-            expect(textareas.length).toEqual(3);
-            expect(spinbuttons.length).toEqual(3);
-
-            textareas.forEach(element => {
-                expect(element).not.toBeDisabled();
-            });
-
-            spinbuttons.forEach(element => {
-                expect(element).not.toBeDisabled();
-            });
+        deleteButtons.forEach((element) => {
+            userEvent.click(element);
         });
-        it('has save button', () => {
-            render(timeboxList);
 
-            const saveButtons = screen.getAllByTitle("zapisz");
+        expect(onDelete).toBeCalledTimes(3, 'onDelete');
 
-
-            expect(saveButtons.length).toEqual(3);
-        });
-        it('should fire events 3 times', async () => {
-
-            render(timeboxList);
-
-            const saveButtons = screen.getAllByTitle("zapisz");
-            const deleteButtons = screen.getAllByTitle("usuń");
-
-            expect(saveButtons.length).toEqual(3);
-            expect(deleteButtons.length).toEqual(3);
-
-            saveButtons.forEach(element => {
-                fireEvent.click(element);
-            });
-
-            deleteButtons.forEach(element => {
-                fireEvent.click(element);
-            });
-
-            expect(onSave).toBeCalledTimes(3);
-            expect(onDelete).toBeCalledTimes(3);
-
-        });
     });
+    it('should change list item to editable version', async () => {
+
+        render(timeboxList);
+
+        const editButtons = screen.getAllByTitle("edytuj");
+
+        expect(editButtons.length).toEqual(3);
+
+        editButtons.forEach((element) => {
+            userEvent.click(element);
+        });
+
+        const saveButtons = screen.getAllByTitle("zapisz");
+        const textareas = screen.getAllByRole('textbox');
+        const spinbutton = screen.getAllByRole('spinbutton');
+        expect(saveButtons.length).toEqual(3);
+        expect(textareas.length).toEqual(3);
+        expect(spinbutton.length).toEqual(3);
+
+    });
+
+    it('should fire save event 3 times', async () => {
+
+        render(timeboxList);
+
+        const editButtons = screen.getAllByTitle("edytuj");
+
+        expect(editButtons.length).toEqual(3);
+
+        editButtons.forEach((button) => {
+            userEvent.click(button);
+        });
+
+        const saveButtons = screen.getAllByTitle("zapisz");
+
+        saveButtons.forEach((button) => {
+            userEvent.click(button);
+        })
+
+        expect(onSave).toBeCalledTimes(3);
+
+    });
+    it('should handle TimeboxListElement start button', () => {
+
+        render(timeboxList);
+
+        const startButtons = screen.getAllByTitle("start");
+        fireEvent.click(startButtons[1]);
+        expect(onStart).toBeCalledTimes(1);
+    })
+
 });

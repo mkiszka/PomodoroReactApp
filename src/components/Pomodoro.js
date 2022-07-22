@@ -7,29 +7,46 @@ import TimeboxCreator from "./TimeboxCreator";
 import ErrorMessage from "./ErrorMessage";
 import withAutoIndicator from "./AutoIndicator";
 import ProgressBar from './ProgressBar';
-import { TimeboxFakeAPI as TimeboxAPI } from '../api/TimeboxFakeAPI';
+import Portal from './Portal';
+import ModalComponent from './ModalComponent';
+import ButtonMessage from './ButtonMessage';
+import { DndProvider } from 'react-dnd'
+import { HTML5Backend } from 'react-dnd-html5-backend'
+import { useAuthenticationContext } from '../hooks/useAuthenticationContext';
+import { useTimeboxCreator } from '../hooks/useTimeboxCreator';
+import { useTimeboxAPI } from '../hooks/useTimeboxAPI';
 
 const AutoIndicator = withAutoIndicator(ProgressBar);
 function Pomodoro() {
-
+    const { accessToken } = useAuthenticationContext();
     const [timeboxes, setTimeboxes] = useState([]);
+    const [TimeboxAPI] = useTimeboxAPI();
+    
     useEffect(() => {
-
-        TimeboxAPI.getAllTimeboxes()
+        //ki3 - czy tutaj dostęp do Api w zasadzie taki singleton troszkę
+        //którego nie da się zamocować przy testach, czy nie powinien być 
+        //przekazywany z zewnątrz ?
+        TimeboxAPI.getAllTimeboxes(accessToken)
             .then((timeboxes) => { setTimeboxes(timeboxes) })
             .catch((error) => setLoadingError(error))
             .finally(() => setIsLoding(false));
-    }, []);
+    }, [accessToken, TimeboxAPI]); //ki3 po przejściu na hooka wymusza mi tutaj dodanie TimeboxAPI, czy to naprawde musi być?
 
-    const [title, setTitle] = useState("Ucze się tego i tamtego?");
-    const [totalTimeInMinutes, setTotalTimeInMinutes] = useState(25);
-    const [timeboxes_currentIndex, setTimeboxes_currentIndex] = useState(0);
+    const [timeboxes_currentIndex, setTimeboxes_currentIndex] = useState(0);    
     const [isLoading, setIsLoding] = useState(true);
     const [loadingError, setLoadingError] = useState(null);
+    //ki3 - 
+    //1. poprawność tworzenia zapytania z portlem,
+    //czy jako zmienna stanowa i wyświetlanie bądź nie ?
+    //2. przekazywanie tekstu do wyświetlenia ?
+    const [timeboxToDelete, setTimeboxToDelete] = useState(null);
+    function handleConfirmDeletion(uid) {
+        setTimeboxToDelete(findElement(uid).element);
+    }
 
     function handleDeleteTimeboxListElement(uid) {
-        TimeboxAPI.removeTimebox(uid).then(() => {
-            console.log("removeTimebox.then");
+        setTimeboxToDelete(null);
+        TimeboxAPI.removeTimebox(accessToken, uid).then(() => {
             setTimeboxes(
                 (prevTimeboxes) => {
                     let timeboxes = prevTimeboxes.filter((value, index) => value.uid === uid ? false : true);
@@ -39,25 +56,17 @@ function Pomodoro() {
         }
         );
     }
-    //TODO customhook to co dotyka tablicy timeboxów (nagranie vip2 końcówka)
-    function handleTitleCreatorChange(event) {
-        setTitle(event.target.value);
+    function handleCancelConfirmDeletion() {
+        setTimeboxToDelete(null);
     }
-    function handleTotalTimeInMinutesCreatorChange(event) {
-        setTotalTimeInMinutes(event.target.value);
-    }
-    function handleCreatorAdd(timeboxToAdd) {
-        TimeboxAPI.addTimebox({ ...timeboxToAdd }).then(() => {
-            setTimeboxes(
-                (prevTimeboxes) => {
-                    return [timeboxToAdd, ...prevTimeboxes];
-                }
-            )
-        });
-    }     
+
+    //TODO customhook to co dotyka tablicy timeboxów (nagranie ki2 końcówka)
+   
+
+
     function handleSaveTimeboxListElement(editedTimebox) {
         //const { element } = findElement(editedTimebox.uid);        
-        TimeboxAPI.replaceTimebox({ ...editedTimebox }).then(
+        TimeboxAPI.replaceTimebox(accessToken, { ...editedTimebox }).then(
             () => {
                 setTimeboxes(
                     (prevTimeboxes) => {
@@ -104,45 +113,58 @@ function Pomodoro() {
         },
         [findElement, timeboxes],
     )
-
-
-  
-    console.log("🚀 ~ file: Pomodoro.js ~ line 182 ~ Pomodoro ~ isLoading", isLoading)
+    const [title,
+        totalTimeInMinutes,
+        onTitleChange,
+        onTotalTimeInMinutesChange,
+        onAdd] = useTimeboxCreator(setTimeboxes);
     return (
         <>
-            {/* <AutoIndicator /> 
+            <DndProvider backend={HTML5Backend}>
+                {/* <AutoIndicator /> 
             
-            */                
-                //TODO handleCreatorAdd przekazuje nowy timebox                
-            }
-            <TimeboxCreator title={title}
-                totalTimeInMinutes={totalTimeInMinutes}
-                onTitleChange={handleTitleCreatorChange}
-                onTotalTimeInMinutesChange={handleTotalTimeInMinutesCreatorChange}
-                onAdd={handleCreatorAdd}
-            />
-            {loadingError ? <ErrorMessage error={loadingError} /> : ""}
-            {isLoading ? <AutoIndicator refresh="10" /> : ""}
-            {timeboxes.length > 0 ? <Timebox
-                timebox={timeboxes.length > 0 ? timeboxes[timeboxes_currentIndex] : {}}
-            /> : ""}
-
-            <TimeboxList timeboxes={timeboxes}>
-                {timeboxes?.map((elem, index) => {
-                    return (
-                        <TimeboxListElement
-                            key={elem.uid}
-                            timebox={elem}
-                            onSave={handleSaveTimeboxListElement/*vip3 onSave inaczej wygląda i onDelete inaczej, jak to uogólnićm z kąd wiedzieć co pisać ?
-                                                                    a może powinienem przez event dawać ?*/}
-                            onDelete={() => { handleDeleteTimeboxListElement(elem.uid) }}
-                            onStart={() => { handleStartTimeboxListElement(index) }}
-                            onMoveElement={handleMoveElement}
-                        />
-                    );
-                })
+            */
+                    //TODO handleCreatorAdd przekazuje nowy timebox                
                 }
-            </TimeboxList>
+
+                <TimeboxCreator title={title}
+                    totalTimeInMinutes={totalTimeInMinutes}
+                    onTitleChange={onTitleChange}
+                    onTotalTimeInMinutesChange={onTotalTimeInMinutesChange}
+                    onAdd={onAdd}
+                />
+                {loadingError ? <ErrorMessage error={loadingError} /> : ""}
+                {isLoading ? <AutoIndicator refresh="10" /> : ""}
+                {timeboxes.length > 0 ? <Timebox /*isEditable={false}*/
+                    timebox={timeboxes.length > 0 ? timeboxes[timeboxes_currentIndex] : {}}
+                /> : ""}
+
+                <TimeboxList timeboxes={timeboxes}>
+                    {timeboxes?.map((elem, index) => {
+                        return (
+                            <TimeboxListElement
+                                key={elem.uid}
+                                timebox={elem}
+                                onSave={handleSaveTimeboxListElement/*ki3 onSave inaczej wygląda i onDelete inaczej, jak to uogólnićm z kąd wiedzieć co pisać ?
+                                                                    a może powinienem przez event dawać ?*/}
+                                onDelete={() => { handleConfirmDeletion(elem.uid) }}
+                                onStart={() => { handleStartTimeboxListElement(index) }}
+                                onMoveElement={handleMoveElement}
+                            />
+                        );
+                    })
+                    }
+                </TimeboxList>
+                {timeboxToDelete ?
+                    <Portal>
+                        <ModalComponent>
+                            <ButtonMessage
+                                message={`Czy chcesz usunąć: "${timeboxToDelete.title}"`}
+                                onAction={() => { handleDeleteTimeboxListElement(timeboxToDelete.uid) }}
+                                onCancel={handleCancelConfirmDeletion} />
+                        </ModalComponent>
+                    </Portal> : ""}
+            </DndProvider>
         </>
 
     )

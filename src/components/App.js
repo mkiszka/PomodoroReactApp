@@ -1,26 +1,41 @@
-import React from "react";
-import Pomodoro from "./Pomodoro";
-import RealTimeClock from "./RealTimeClock";
-import ErrorBoundary from "./ErrorBoundary";
-import { DndProvider } from 'react-dnd'
-import { HTML5Backend } from 'react-dnd-html5-backend'
+import React, { useState } from 'react';
+import ErrorBoundary from './ErrorBoundary';
+import LoginForm from './LoginForm';
 
-function App() {    
+import AuthenticationContext from '../contexts/AuthenticationContext';
+import UnauthenticationContext from '../contexts/UnauthenticationContext';
+
+const AuthenticatedApp = React.lazy(() => import('./AuthenticatedApp'));
+
+//IMPORTANT ! The login functionality is only a simulation.
+function App() {
+    const [isLogged, setIsLogged] = useState(false);
+    const [accessToken/*, setAccessToken*/] = useState('aa-bb-cc');
+    //https://stackoverflow.com/questions/41030361/how-to-update-react-context-from-inside-a-child-component
+    function handleLogout() {        
+        setIsLogged(false);
+    }
+
+
+    function handleLogin(data) {        
+        setIsLogged(true);
+    }
+
     return (
-        <div id="App" className="App">
+        <div id="App" className="App">           
             <ErrorBoundary>
-                <DndProvider backend={HTML5Backend}>
-                    <div className="AppHeader" >
-                        <div> {/*TODO span */}
-                            <h1>Pomodoro Application</h1>
-                        </div>
-                        <div>
-                            <RealTimeClock hours="10" minutes="20" />
-                        </div>
-                    </div>
-                    <hr />
-                    <Pomodoro />
-                </DndProvider>
+                {isLogged ?
+                    <AuthenticationContext.Provider value={{ accessToken: accessToken, onLogout: handleLogout }}>
+                        <React.Suspense fallback={'Loading ...'}>
+                            <AuthenticatedApp />
+                        </React.Suspense>
+                    </AuthenticationContext.Provider>
+                    :
+                    // ki3 pytanie o w8 l3 i haczyk
+                    <UnauthenticationContext.Provider value={{ onLoginAttempt: handleLogin }}>
+                        <LoginForm />
+                    </UnauthenticationContext.Provider>
+                }
             </ErrorBoundary>
         </div>
     )

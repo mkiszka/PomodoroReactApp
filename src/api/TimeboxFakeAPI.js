@@ -7,6 +7,7 @@ function wait(ms) {
 
 const COOKIE_TIMEBOXES = 'timeboxes';
 const cookies = new CookiesApi();
+//TODO reakcja aplikacji na błędny accessToken
 export const TimeboxFakeAPI = {
     timeboxes: cookies.get(COOKIE_TIMEBOXES, { path: '/' }) ||
         [
@@ -14,28 +15,44 @@ export const TimeboxFakeAPI = {
             { uid: uuidv4(), title: "KP-3034 Migracja z ver 1.14 do 1.15 usuwa powiązanie pacjent pracownik.", totalTimeInMinutes: 20 },
             { uid: uuidv4(), title: "KP-3104 Deploy webserwisu zamówień dla 1.15", totalTimeInMinutes: 20 },
         ],
-    getAllTimeboxes: async function () {
-        await wait(200);        
-        return [...this.timeboxes];
+    checkAccessToken: async function (accessToken) {
+        if (accessToken === 'aa-bb-cc') {
+            return true;
+        }
+        return false;
+    },
+    getAllTimeboxes: async function (accessToken) {
+        await wait(200);
+        if (await this.checkAccessToken(accessToken)) {
+            return [...this.timeboxes];
+        }
+        return [];
     },
 
-    addTimebox: async function (timeboxToAdd) {
+    addTimebox: async function (accessToken, timeboxToAdd) {
         await wait(200);
+        if (! await this.checkAccessToken(accessToken)) {
+            return;
+        }
         this.timeboxes.splice(0, 0, timeboxToAdd)
         this.updateTimeboxesInsideCookie();
 
     },
-    replaceTimebox: async function (timeboxToReplace) {        
+    replaceTimebox: async function (accessToken, timeboxToReplace) {
         await wait(200);
-        debugger;
+        if (! await this.checkAccessToken(accessToken)) {
+            return;
+        }        
         this.timeboxes = this.timeboxes.map((value) => value.uid === timeboxToReplace.uid ? timeboxToReplace : value)
-        this.updateTimeboxesInsideCookie();        
-    },
-    removeTimebox: async function (uid) {        
-        await wait(200);
-        this.timeboxes = this.timeboxes.filter((value) => value.uid === uid ? false : true);        
         this.updateTimeboxesInsideCookie();
-        console.log(cookies.get(COOKIE_TIMEBOXES, { path: '/' }));
+    },
+    removeTimebox: async function (accessToken, uid) {
+        await wait(200);
+        if (! await this.checkAccessToken(accessToken)) {
+            return;
+        }
+        this.timeboxes = this.timeboxes.filter((value) => value.uid === uid ? false : true);
+        this.updateTimeboxesInsideCookie();       
     },
     updateTimeboxesInsideCookie: function () {
         cookies.set(COOKIE_TIMEBOXES, this.timeboxes, { path: '/' });

@@ -1,5 +1,5 @@
 import React from 'react';
-import Message from './Message';
+import DetailedMessage from './DetailedMessage';
 
 class ErrorMessage extends React.Component {
 
@@ -11,7 +11,7 @@ class ErrorMessage extends React.Component {
         } else {
             summary = error;
         }
-        return (<Message summaryMessage={summary} />);
+        return (<DetailedMessage summaryMessage={summary} />);
     }
 }
 
