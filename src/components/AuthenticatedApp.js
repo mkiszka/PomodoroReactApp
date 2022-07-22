@@ -1,22 +1,20 @@
 import React from 'react';
 import Pomodoro from "./Pomodoro";
 import RealTimeClock from "./RealTimeClock";
-import { DndProvider } from 'react-dnd'
-import { HTML5Backend } from 'react-dnd-html5-backend'
 import Header from "./Header";
 import InspirationQuote from './InspirationQuote';
 
 function AuthenticatedApp() {
     console.log("AuthenticatedApp");
-    return <DndProvider backend={HTML5Backend}>
+    return <>
         <div className="AppHeader" >
-            <Header/>
+            <Header />
             <RealTimeClock hours="10" minutes="20" />
         </div>
-        <hr />         
+        <hr />
         <Pomodoro />
-        <InspirationQuote className={'InpirationalQuote'}/>
-    </DndProvider>;
+        <InspirationQuote className={'InpirationalQuote'} />
+    </>;
 }
 
 export default AuthenticatedApp;
