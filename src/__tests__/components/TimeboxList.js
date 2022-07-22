@@ -5,6 +5,7 @@ import TimeboxListElement from "../../components/TimeboxListElement";
 import { v4 as uuidv4 } from "uuid";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import userEvent from "@testing-library/user-event";
 
 describe('TimeboxList', () => {
     describe('isEditable == false', () => {
@@ -14,8 +15,7 @@ describe('TimeboxList', () => {
         let onTimeChange;
         let onEdit;
         let onDelete;
-        let onStart;
-        let findElement;
+        let onStart;       
 
         beforeEach(() => {
             timeboxes = [
@@ -25,11 +25,9 @@ describe('TimeboxList', () => {
             ];
 
             onTitleChange = jest.fn();
-            onTimeChange = jest.fn();
-            onEdit = jest.fn();
+            onTimeChange = jest.fn();            
             onDelete = jest.fn();
-            onStart = jest.fn();
-            findElement = jest.fn().mockReturnValue({ index: 0 });
+            onStart = jest.fn();            
 
             timeboxList = <DndProvider backend={HTML5Backend}><TimeboxList>{
                 timeboxes.map((elem, index) => {
@@ -40,11 +38,10 @@ describe('TimeboxList', () => {
                             index={index}
                             timebox={elem}
                             onTitleChange={onTitleChange}
-                            onTimeChange={onTimeChange}
-                            onEdit={() => { onEdit(elem.uid) }}
+                            onTimeChange={onTimeChange}                           
                             onDelete={() => { onDelete(elem.uid) }}
                             onStart={() => { onStart(index) }}
-                            findElement={findElement}
+                            
                         />
 
                     );
@@ -83,7 +80,7 @@ describe('TimeboxList', () => {
 
         it('should fire events 3 times', async () => {
 
-            render(timeboxList);
+            const { debug } = render(timeboxList);
 
             const editButtons = screen.getAllByTitle("edytuj");
             const deleteButtons = screen.getAllByTitle("usuń");
@@ -92,13 +89,13 @@ describe('TimeboxList', () => {
             expect(deleteButtons.length).toEqual(3);
 
             editButtons.forEach((element) => {
-                fireEvent.click(element);
+                userEvent.click(element);
             });
 
             deleteButtons.forEach((element) => {
-                fireEvent.click(element);
+                userEvent.click(element);
             });
-
+debug();
             expect(onEdit).toBeCalledTimes(3,'onEdit');
             expect(onDelete).toBeCalledTimes(3,'onDelete');
 
@@ -116,12 +113,10 @@ describe('TimeboxList', () => {
         let timeboxes;
         let timeboxList;
         let onTitleChange;
-        let onTimeChange;
-        let onEdit;
+        let onTimeChange;        
         let onSave;
         let onDelete;
-        let onStart;
-        let findElement;
+        let onStart;        
 
         beforeEach(() => {
             timeboxes = [
@@ -131,13 +126,10 @@ describe('TimeboxList', () => {
             ];
 
             onTitleChange = jest.fn();
-            onTimeChange = jest.fn();
-            onEdit = jest.fn();
+            onTimeChange = jest.fn();            
             onSave = jest.fn();
             onDelete = jest.fn();
-            onStart = jest.fn();
-            
-            findElement = jest.fn().mockReturnValue({ index: 0 });
+            onStart = jest.fn();            
 
             timeboxList = <DndProvider backend={HTML5Backend}><TimeboxList>{
                 timeboxes.map((elem, index) => {
@@ -148,12 +140,11 @@ describe('TimeboxList', () => {
                             index={index}
                             timebox={elem}
                             onTitleChange={onTitleChange}
-                            onTimeChange={onTimeChange}
-                            onEdit={() => { onEdit(elem.uid) }}
+                            onTimeChange={onTimeChange}                            
                             onSave={()=> { onSave(elem.uid)}}
                             onDelete={() => { onDelete(elem.uid) }}
                             onStart={() => { onStart(index) }}
-                            findElement={findElement}
+                            
                         />
 
                     );
