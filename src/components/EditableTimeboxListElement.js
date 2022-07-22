@@ -6,7 +6,7 @@ import { useState } from "react";
 
 function EditableTimeboxListElement({ timebox, onSave }) {
 
-  const [insideTimebox, setInsideTimebox] = useState(timebox); //VIP <-- sprawdzić czy na pewno to się raz wykona jako default
+  const [insideTimebox, setInsideTimebox] = useState(timebox); //ki3 <-- sprawdzić czy na pewno to się raz wykona jako default
 
   function handleTitleChange(event) {
     setInsideTimebox(

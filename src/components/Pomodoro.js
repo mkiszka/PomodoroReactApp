@@ -14,6 +14,7 @@ import ButtonMessage from './ButtonMessage';
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { useAuthenticationContext } from '../hooks/useAuthenticationContext';
+import { useTimeboxCreator } from '../hooks/useTimeboxCreator';
 
 const AutoIndicator = withAutoIndicator(ProgressBar);
 function Pomodoro() {
@@ -29,9 +30,7 @@ function Pomodoro() {
             .finally(() => setIsLoding(false));
     }, [accessToken]);
 
-    const [title, setTitle] = useState("Ucze się tego i tamtego?");
-    const [totalTimeInMinutes, setTotalTimeInMinutes] = useState(25);
-    const [timeboxes_currentIndex, setTimeboxes_currentIndex] = useState(0);
+    const [timeboxes_currentIndex, setTimeboxes_currentIndex] = useState(0);    
     const [isLoading, setIsLoding] = useState(true);
     const [loadingError, setLoadingError] = useState(null);
     //ki3 - 
@@ -60,21 +59,9 @@ function Pomodoro() {
     }
 
     //TODO customhook to co dotyka tablicy timeboxów (nagranie ki2 końcówka)
-    function handleTitleCreatorChange(event) {
-        setTitle(event.target.value);
-    }
-    function handleTotalTimeInMinutesCreatorChange(event) {
-        setTotalTimeInMinutes(event.target.value);
-    }
-    function handleCreatorAdd(timeboxToAdd) {
-        TimeboxAPI.addTimebox(accessToken, { ...timeboxToAdd }).then(() => {
-            setTimeboxes(
-                (prevTimeboxes) => {
-                    return [timeboxToAdd, ...prevTimeboxes];
-                }
-            )
-        });
-    }
+   
+
+
     function handleSaveTimeboxListElement(editedTimebox) {
         //const { element } = findElement(editedTimebox.uid);        
         TimeboxAPI.replaceTimebox(accessToken, { ...editedTimebox }).then(
@@ -124,7 +111,11 @@ function Pomodoro() {
         },
         [findElement, timeboxes],
     )
-    
+    const [title,
+        totalTimeInMinutes,
+        onTitleChange,
+        onTotalTimeInMinutesChange,
+        onAdd] = useTimeboxCreator(setTimeboxes);
     return (
         <>
             <DndProvider backend={HTML5Backend}>
@@ -136,9 +127,9 @@ function Pomodoro() {
 
                 <TimeboxCreator title={title}
                     totalTimeInMinutes={totalTimeInMinutes}
-                    onTitleChange={handleTitleCreatorChange}
-                    onTotalTimeInMinutesChange={handleTotalTimeInMinutesCreatorChange}
-                    onAdd={handleCreatorAdd}
+                    onTitleChange={onTitleChange}
+                    onTotalTimeInMinutesChange={onTotalTimeInMinutesChange}
+                    onAdd={onAdd}
                 />
                 {loadingError ? <ErrorMessage error={loadingError} /> : ""}
                 {isLoading ? <AutoIndicator refresh="10" /> : ""}

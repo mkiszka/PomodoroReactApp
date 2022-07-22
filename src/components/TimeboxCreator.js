@@ -54,7 +54,7 @@ class TimeboxCreator extends React.Component {
 }
 TimeboxCreator.propTypes = {
     title: PropTypes.string,
-    totalTimeInMinutes: PropTypes.number,
+    totalTimeInMinutes: PropTypes.string,
     isEditable: PropTypes.bool,
     onTitleChange: PropTypes.func.isRequired,
     onTotalTimeInMinutesChange: PropTypes.func.isRequired,
