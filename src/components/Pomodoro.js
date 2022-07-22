@@ -8,26 +8,26 @@ import ErrorMessage from "./ErrorMessage";
 import withAutoIndicator from "./AutoIndicator";
 import ProgressBar from './ProgressBar';
 import { TimeboxFakeAPI as TimeboxAPI } from '../api/TimeboxFakeAPI';
-import AuthenticationContext from '../contexts/AuthenticationContext';
 import Portal from './Portal';
 import ModalComponent from './ModalComponent';
 import ButtonMessage from './ButtonMessage';
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
+import { useAuthenticationContext } from '../hooks/useAuthenticationContext';
 
 const AutoIndicator = withAutoIndicator(ProgressBar);
 function Pomodoro() {
-    const authenticationContext = useContext(AuthenticationContext);
+    const [accessToken] = useAuthenticationContext();
     const [timeboxes, setTimeboxes] = useState([]);
     useEffect(() => {
         //ki3 - czy tutaj dostęp do Api w zasadzie taki singleton troszkę
         //którego nie da się zamocować przy testach, czy nie powinien być 
         //przekazywany z zewnątrz ?
-        TimeboxAPI.getAllTimeboxes(authenticationContext.accessToken)
+        TimeboxAPI.getAllTimeboxes(accessToken)
             .then((timeboxes) => { setTimeboxes(timeboxes) })
             .catch((error) => setLoadingError(error))
             .finally(() => setIsLoding(false));
-    }, [authenticationContext.accessToken]);
+    }, [accessToken]);
 
     const [title, setTitle] = useState("Ucze się tego i tamtego?");
     const [totalTimeInMinutes, setTotalTimeInMinutes] = useState(25);
@@ -45,7 +45,7 @@ function Pomodoro() {
 
     function handleDeleteTimeboxListElement(uid) {
         setTimeboxToDelete(null);
-        TimeboxAPI.removeTimebox(authenticationContext.accessToken, uid).then(() => {
+        TimeboxAPI.removeTimebox(accessToken, uid).then(() => {
             setTimeboxes(
                 (prevTimeboxes) => {
                     let timeboxes = prevTimeboxes.filter((value, index) => value.uid === uid ? false : true);
@@ -67,7 +67,7 @@ function Pomodoro() {
         setTotalTimeInMinutes(event.target.value);
     }
     function handleCreatorAdd(timeboxToAdd) {
-        TimeboxAPI.addTimebox(authenticationContext.accessToken, { ...timeboxToAdd }).then(() => {
+        TimeboxAPI.addTimebox(accessToken, { ...timeboxToAdd }).then(() => {
             setTimeboxes(
                 (prevTimeboxes) => {
                     return [timeboxToAdd, ...prevTimeboxes];
@@ -77,7 +77,7 @@ function Pomodoro() {
     }
     function handleSaveTimeboxListElement(editedTimebox) {
         //const { element } = findElement(editedTimebox.uid);        
-        TimeboxAPI.replaceTimebox(authenticationContext.accessToken, { ...editedTimebox }).then(
+        TimeboxAPI.replaceTimebox(accessToken, { ...editedTimebox }).then(
             () => {
                 setTimeboxes(
                     (prevTimeboxes) => {
@@ -124,7 +124,7 @@ function Pomodoro() {
         },
         [findElement, timeboxes],
     )
-
+    
     return (
         <>
             <DndProvider backend={HTML5Backend}>

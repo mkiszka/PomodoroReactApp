@@ -1,15 +1,15 @@
-import React, { useContext, useRef } from "react";
-import UnauthenticationContext from "../contexts/UnauthenticationContext";
+import React, { useRef } from "react";
+import { useUnauthicationContext } from "../hooks/useUnauthenticationContext";
 
 function LoginForm(props) {
-    //ki3 - sprawdzić refactor do funkcyjnego
-    const unauthenticationContext = useContext(UnauthenticationContext);
+    //ki3 - sprawdzić refactor do funkcyjnego    
+    const [onLoginAttempt] = useUnauthicationContext();
     const emailInput = useRef();
     const passwordInput = useRef();
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        unauthenticationContext.onLoginAttempt({
+        onLoginAttempt({
             email: emailInput.current.value,
             password: passwordInput.current.value
         });
