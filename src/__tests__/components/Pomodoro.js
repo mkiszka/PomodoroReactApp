@@ -2,7 +2,7 @@ import React from "react";
 import { render, fireEvent, within, screen, waitFor } from "@testing-library/react";
 import Pomodoro from "../../components/Pomodoro";
 import AuthenticationContext from "../../contexts/AuthenticationContext";
-import { useTimeboxAPI } from "../../hooks/useTimeboxAPI";
+
 
 //https://stackoverflow.com/a/60669731
 /*
@@ -106,7 +106,7 @@ describe('Pomodoro', () => {
         //         <AuthenticatedApp />
         //     </React.Suspense>
         // </AuthenticationContext.Provider>)
-        const { debug } = render(<AuthenticationContext.Provider value={{ accessToken: 'aa-bb-cc', onLogout: () => { } }}>
+        render(<AuthenticationContext.Provider value={{ accessToken: 'aa-bb-cc', onLogout: () => { } }}>
             <Pomodoro />
         </AuthenticationContext.Provider>)
 

@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import Timebox from "./Timebox";
 import TimeboxList from "./TimeboxList";
 import TimeboxListElement from "./TimeboxListElement";
@@ -11,10 +10,9 @@ import ModalComponent from './ModalComponent';
 import ButtonMessage from './ButtonMessage';
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
-import { useAuthenticationContext } from '../hooks/useAuthenticationContext';
 import { useTimeboxCreator } from '../hooks/useTimeboxCreator';
-import { useTimeboxAPI } from '../hooks/useTimeboxAPI';
 import { useTimeboxes } from '../hooks/useTimeboxes';
+import { useState } from "react";
 
 const AutoIndicator = withAutoIndicator(ProgressBar);
 function Pomodoro() {
@@ -34,9 +32,9 @@ function Pomodoro() {
     // const TimeboxAPI= useTimeboxAPI();
    
     //ki3 - 
-    //1. poprawność tworzenia zapytania z portlem,
-    //czy jako zmienna stanowa i wyświetlanie bądź nie ?
-    //2. przekazywanie tekstu do wyświetlenia ?
+    //1. poprawność tworzenia renderu z portlem - czy tak ułożone componenty w portalu ok?,
+    //czy jako zmienna stanowa sterująca wyświetlaniem jest ok?
+    //2. przekazywanie tekstu do wyświetlenia, czy forma ok?
     const [timeboxToDelete, setTimeboxToDelete] = useState(null);
     function handleConfirmDeletion(uid) {
         setTimeboxToDelete(findElement(uid).element);
