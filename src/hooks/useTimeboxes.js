@@ -76,7 +76,7 @@ function useTimeboxes() {
         },
         [timeboxes],
     )
-    const handleMoveElement = useCallback(
+    const handleMoveListElement = useCallback(
         (uid, atUid) => {
 
             const { element, index } = findElement(uid)
@@ -103,10 +103,8 @@ function useTimeboxes() {
         handleDeleteTimeboxListElement,
         handleSaveTimeboxListElement,
         handleStartTimeboxListElement,
+        handleMoveListElement,
         findElement,
-        handleMoveElement
-        
-
     ]
 };
 

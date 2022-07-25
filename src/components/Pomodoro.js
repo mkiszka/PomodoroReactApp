@@ -24,6 +24,11 @@ function Pomodoro() {
         setTimeboxes, //ki3 setTimeboxes pobierane z useTimebox i przekazyane do useTimeboxCreator. Obawiam się, że zamiszałem ?
         currentTimebox,
 
+        handleDeleteTimeboxListElement, //ki3 trzy poniższe i pytanie
+        handleSaveTimeboxListElement, //czy tu handle*
+        onStartTimeboxListElement, //czy on*coś tam
+        handleMoveListElement,
+        findElement
         handleDeleteTimeboxListElement,
         handleSaveTimeboxListElement,
         onStartTimeboxListElement,
@@ -51,7 +56,7 @@ function Pomodoro() {
     //TODO customhook to co dotyka tablicy timeboxów (nagranie ki2 końcówka)
        
     const [ onAdd ] = useTimeboxCreator(setTimeboxes);
-        console.log('render')
+  
     return (
         <>
             <DndProvider backend={HTML5Backend}>
@@ -62,9 +67,9 @@ function Pomodoro() {
                 }
 
                 <TimeboxCreator onAdd={onAdd} />
+
                 {loadingError ? <ErrorMessage error={loadingError} /> : ""}
-                {isLoading ? <AutoIndicator refresh="10" /> : ""}
-                
+                {isLoading ? <AutoIndicator refresh="10" /> : ""}                
                 <Timebox timebox={currentTimebox}/> 
 
                 <TimeboxList timeboxes={timeboxes}>
@@ -77,7 +82,7 @@ function Pomodoro() {
                                                                     a może powinienem przez event dawać ?*/}
                                 onDelete={() => { handleConfirmDeletion(elem.uid) }}
                                 onStart={() => { onStartTimeboxListElement(index) }}
-                                onMoveElement={handleMoveElement}
+                                onMoveElement={handleMoveListElement}
                             />
                         );
                     })
