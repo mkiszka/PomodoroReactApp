@@ -18,15 +18,18 @@ const AutoIndicator = withAutoIndicator(ProgressBar);
 function Pomodoro() {
     
     const [
-        timeboxes, setTimeboxes,
+        isLoading,
+        loadingError,
+        timeboxes, 
+        setTimeboxes, //ki3 setTimeboxes pobierane z useTimebox i przekazyane do useTimeboxCreator. Obawiam się, że zamiszałem ?
         currentTimebox,
+
         handleDeleteTimeboxListElement,
         handleSaveTimeboxListElement,
         onStartTimeboxListElement,
         findElement,
-        handleMoveElement,
-        isLoading,
-        loadingError
+        handleMoveElement
+        
     
     ] = useManagedList();
     // const TimeboxAPI= useTimeboxAPI();
