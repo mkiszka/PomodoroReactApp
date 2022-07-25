@@ -50,12 +50,7 @@ function Pomodoro() {
 
     //TODO customhook to co dotyka tablicy timeboxów (nagranie ki2 końcówka)
        
-    const [title,
-        totalTimeInMinutes,
-        onTitleChange,
-        onTotalTimeInMinutesChange,
-        onAdd        
-        ] = useTimeboxCreator(setTimeboxes);
+    const [ onAdd ] = useTimeboxCreator(setTimeboxes);
         console.log('render')
     return (
         <>
@@ -66,12 +61,7 @@ function Pomodoro() {
                     //TODO handleCreatorAdd przekazuje nowy timebox                
                 }
 
-                <TimeboxCreator title={title}
-                    totalTimeInMinutes={totalTimeInMinutes}
-                    onTitleChange={onTitleChange}
-                    onTotalTimeInMinutesChange={onTotalTimeInMinutesChange}
-                    onAdd={onAdd}
-                />
+                <TimeboxCreator onAdd={onAdd} />
                 {loadingError ? <ErrorMessage error={loadingError} /> : ""}
                 {isLoading ? <AutoIndicator refresh="10" /> : ""}
                 

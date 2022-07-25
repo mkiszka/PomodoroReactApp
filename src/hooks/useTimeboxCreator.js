@@ -1,22 +1,15 @@
 //ki3 czy tutaj w tym hooku też zwracać komponent ? czy to już za dużo ?
 
-import { useState } from "react";
 import { useAuthenticationContext } from "./useAuthenticationContext";
 import { useTimeboxAPI } from "./useTimeboxAPI";
 
 function useTimeboxCreator(setTimeboxes) {
 
     const { accessToken } = useAuthenticationContext();
-    const [title, setTitle] = useState("Ucze się tego i tamtego?");
-    const [totalTimeInMinutes, setTotalTimeInMinutes] = useState('25');
+
     const [TimeboxApi] = useTimeboxAPI();
 
-    function handleTitleCreatorChange(event) {
-        setTitle(event.target.value);
-    }
-    function handleTotalTimeInMinutesCreatorChange(event) {
-        setTotalTimeInMinutes(event.target.value);
-    }
+    
     function handleCreatorAdd(timeboxToAdd) {
         
         TimeboxApi.addTimebox(accessToken, { ...timeboxToAdd }).then(() => {
@@ -32,10 +25,7 @@ function useTimeboxCreator(setTimeboxes) {
     // a {} po to żeby ktoś inny mógł wybrać czy setTitle
     // chce użyć, choć wydaje się, że tutaj nieporzadane byłoby
     //wystawianie setTitle
-    return [title,
-        totalTimeInMinutes, 
-        handleTitleCreatorChange,
-        handleTotalTimeInMinutesCreatorChange,
+    return [
         handleCreatorAdd
     ];
 }
