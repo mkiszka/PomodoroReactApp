@@ -3,7 +3,7 @@ import { useTimeboxAPI } from "./useTimeboxAPI";
 import { useCallback, useEffect, useState } from 'react';
 import update from 'immutability-helper';
 
-function useTimeboxes() {
+function useTimeboxes(ListAPI,) {
     console.log('useTimeboxes')
     const { accessToken } = useAuthenticationContext();
     const [isLoading, setIsLoding] = useState(true);
@@ -11,24 +11,28 @@ function useTimeboxes() {
 
     const [timeboxes, setTimeboxes] = useState([]);    
     // const TimeboxAPI = useTimeboxAPI();
-    const [TimeboxAPI] = useTimeboxAPI();
+    const [
+        removeElementAPI,
+        getAllElementsAPI,
+        replaceElementAPI
+    ] = useTimeboxAPI();
     
     useEffect(() => {
         //ki3 - czy tutaj dostęp do Api w zasadzie taki singleton troszkę
         //którego nie da się zamocować przy testach, czy nie powinien być 
         //przekazywany z zewnątrz ?
-        TimeboxAPI.getAllTimeboxes(accessToken)
+        getAllElementsAPI(accessToken)
             .then((timeboxes) => { setTimeboxes(timeboxes);console.log('setTimeboxes') })
             .catch((error) => setLoadingError(error))
             .finally(() => setIsLoding(false));
-    }, [accessToken, TimeboxAPI,setTimeboxes]); //ki3 po przejściu na hooka wymusza mi tutaj dodanie TimeboxAPI, czy to naprawde musi być?
+    }, [accessToken,setTimeboxes,getAllElementsAPI]); //ki3 po przejściu na hooka wymusza mi tutaj dodanie TimeboxAPI, czy to naprawde musi być?
 
     
     
 
     function handleDeleteTimeboxListElement(uid) {
         //setTimeboxToDelete(null);
-        TimeboxAPI.removeTimebox(accessToken, uid).then(() => {
+        removeElementAPI(accessToken, uid).then(() => {
             setTimeboxes(
                 (prevTimeboxes) => {
                     let timeboxes = prevTimeboxes.filter((value, index) => value.uid === uid ? false : true);
@@ -41,7 +45,7 @@ function useTimeboxes() {
 
     function handleSaveTimeboxListElement(editedTimebox) {
         //const { element } = findElement(editedTimebox.uid);        
-        TimeboxAPI.replaceTimebox(accessToken, { ...editedTimebox }).then(
+        replaceElementAPI(accessToken, { ...editedTimebox }).then(
             () => {
                 setTimeboxes(
                     (prevTimeboxes) => {

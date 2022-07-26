@@ -11,8 +11,9 @@ import ButtonMessage from './ButtonMessage';
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { useTimeboxCreator } from '../hooks/useTimeboxCreator';
-import { useManagedList } from '../hooks/useManagedList';
 import { useState } from "react";
+import { useTimeboxAPI } from "../hooks/useTimeboxAPI";
+import { useManagedList } from "../hooks/useManagedList";
 
 const AutoIndicator = withAutoIndicator(ProgressBar);
 function Pomodoro() {
@@ -23,20 +24,12 @@ function Pomodoro() {
         timeboxes, 
         setTimeboxes, //ki3 setTimeboxes pobierane z useTimebox i przekazyane do useTimeboxCreator. Obawiam się, że zamiszałem ?
         currentTimebox,
-
         handleDeleteTimeboxListElement, //ki3 trzy poniższe i pytanie
         handleSaveTimeboxListElement, //czy tu handle*
         onStartTimeboxListElement, //czy on*coś tam
         handleMoveListElement,
         findElement
-        handleDeleteTimeboxListElement,
-        handleSaveTimeboxListElement,
-        onStartTimeboxListElement,
-        findElement,
-        handleMoveElement
-        
-    
-    ] = useManagedList();
+    ] = useManagedList(useTimeboxAPI());
     // const TimeboxAPI= useTimeboxAPI();
    
     //ki3 - 

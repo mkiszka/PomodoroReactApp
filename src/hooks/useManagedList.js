@@ -92,17 +92,17 @@ function useManagedList() {
     )
 
 
-    return [ elements,         
+    return [ 
+        isLoading,
+        loadingError,
+        elements,         
         setElements, 
         elements.length > 0 ? elements[currentIndex] : null,
         handleDeleteListElement,
         handleSaveListElement,
-        handleStartListElement,
-        findElement,
+        handleStartListElement,        
         handleMoveElement,
-        isLoading,
-        loadingError
-
+        findElement
     ]
 };
 
