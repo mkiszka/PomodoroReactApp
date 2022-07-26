@@ -10,7 +10,6 @@ import ModalComponent from './ModalComponent';
 import ButtonMessage from './ButtonMessage';
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
-import { useTimeboxCreator } from '../hooks/useTimeboxCreator';
 import { useState } from "react";
 import { useTimeboxAPI } from "../hooks/useTimeboxAPI";
 import { useManagedList } from "../hooks/useManagedList";
@@ -24,10 +23,11 @@ function Pomodoro() {
         timeboxes, 
         setTimeboxes, //ki3 setTimeboxes pobierane z useTimebox i przekazyane do useTimeboxCreator. Obawiam się, że zamiszałem ?
         currentTimebox,
-        handleDeleteTimeboxListElement, //ki3 trzy poniższe i pytanie
-        handleSaveTimeboxListElement, //czy tu handle*
+        onAddTimeboxElement,
+        onDeleteTimeboxListElement, //ki3 trzy poniższe i pytanie
+        onSaveTimeboxListElement, //czy tu handle*
         onStartTimeboxListElement, //czy on*coś tam
-        handleMoveListElement,
+        onMoveListElement,
         findElement
     ] = useManagedList(useTimeboxAPI());
     // const TimeboxAPI= useTimeboxAPI();
@@ -44,22 +44,13 @@ function Pomodoro() {
     
     function handleCancelConfirmDeletion() {
         setTimeboxToDelete(null);
-    }
-
-    //TODO customhook to co dotyka tablicy timeboxów (nagranie ki2 końcówka)
-       
-    const [ onAdd ] = useTimeboxCreator(setTimeboxes);
+    }    
   
     return (
         <>
             <DndProvider backend={HTML5Backend}>
-                {/* <AutoIndicator /> 
-            
-            */
-                    //TODO handleCreatorAdd przekazuje nowy timebox                
-                }
-
-                <TimeboxCreator onAdd={onAdd} />
+             
+                <TimeboxCreator onAdd={onAddTimeboxElement} />
 
                 {loadingError ? <ErrorMessage error={loadingError} /> : ""}
                 {isLoading ? <AutoIndicator refresh="10" /> : ""}                
@@ -71,11 +62,11 @@ function Pomodoro() {
                             <TimeboxListElement
                                 key={elem.uid}
                                 timebox={elem}
-                                onSave={handleSaveTimeboxListElement/*ki3 onSave inaczej wygląda i onDelete inaczej, jak to uogólnićm z kąd wiedzieć co pisać ?
+                                onSave={onSaveTimeboxListElement/*ki3 onSave inaczej wygląda i onDelete inaczej, jak to uogólnićm z kąd wiedzieć co pisać ?
                                                                     a może powinienem przez event dawać ?*/}
                                 onDelete={() => { handleConfirmDeletion(elem.uid) }}
                                 onStart={() => { onStartTimeboxListElement(index) }}
-                                onMoveElement={handleMoveListElement}
+                                onMoveElement={onMoveListElement}
                             />
                         );
                     })
@@ -86,7 +77,7 @@ function Pomodoro() {
                         <ModalComponent>
                             <ButtonMessage
                                 message={`Czy chcesz usunąć: "${timeboxToDelete.title}"`}
-                                onAction={() => { handleDeleteTimeboxListElement(timeboxToDelete.uid) }}
+                                onAction={() => { onDeleteTimeboxListElement(timeboxToDelete.uid) }}
                                 onCancel={handleCancelConfirmDeletion} />
                         </ModalComponent>
                     </Portal> : ""}

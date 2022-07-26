@@ -52,12 +52,24 @@ function useManagedList() {
         )
     }
     
+    function handleCreatorAdd(timeboxToAdd) {
+        
+        TimeboxAPI.addTimebox(apiAccessToken, { ...timeboxToAdd }).then(() => {
+            setElements(
+                (prevTimeboxes) => {
+                    return [timeboxToAdd, ...prevTimeboxes];
+                }
+            )
+        });
+    }
+
     const [currentIndex, setCurrentIndex] = useState(0); 
     
     function handleStartListElement(id) {
         setCurrentIndex(id);
         //TODOa1 refactor w/w handlerów z (id) na findElement
     }
+
 
 
     const findElement = useCallback(
@@ -98,6 +110,7 @@ function useManagedList() {
         elements,         
         setElements, 
         elements.length > 0 ? elements[currentIndex] : null,
+        handleCreatorAdd,
         handleDeleteListElement,
         handleSaveListElement,
         handleStartListElement,        
