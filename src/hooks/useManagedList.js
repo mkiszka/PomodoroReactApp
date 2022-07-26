@@ -71,7 +71,7 @@ function useManagedList() {
     }
 
 
-
+    //ki3 te dwie niżej do innego hooka? ale refactor z w/w
     const findElement = useCallback(
         (uid) => {
             const element = elements.filter(

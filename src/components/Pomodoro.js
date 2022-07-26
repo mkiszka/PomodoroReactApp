@@ -33,6 +33,7 @@ function Pomodoro() {
     // const TimeboxAPI= useTimeboxAPI();
    
     //ki3 - 
+    //0. czy custom hook zwracający też Portal component ?
     //1. poprawność tworzenia renderu z portlem - czy tak ułożone componenty w portalu ok?,
     //czy jako zmienna stanowa sterująca wyświetlaniem jest ok?
     //2. przekazywanie tekstu do wyświetlenia, czy forma ok?
@@ -48,14 +49,11 @@ function Pomodoro() {
   
     return (
         <>
-            <DndProvider backend={HTML5Backend}>
-             
+            <DndProvider backend={HTML5Backend}>             
                 <TimeboxCreator onAdd={onAddTimeboxElement} />
-
                 {loadingError ? <ErrorMessage error={loadingError} /> : ""}
                 {isLoading ? <AutoIndicator refresh="10" /> : ""}                
                 <Timebox timebox={currentTimebox}/> 
-
                 <TimeboxList timeboxes={timeboxes}>
                     {timeboxes?.map((elem, index) => {
                         return (
