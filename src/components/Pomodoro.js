@@ -11,7 +11,7 @@ import ButtonMessage from './ButtonMessage';
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { useTimeboxCreator } from '../hooks/useTimeboxCreator';
-import { useTimeboxes } from '../hooks/useTimeboxes';
+import { useManagedList } from '../hooks/useManagedList';
 import { useState } from "react";
 
 const AutoIndicator = withAutoIndicator(ProgressBar);
@@ -28,7 +28,7 @@ function Pomodoro() {
         isLoading,
         loadingError
     
-    ] = useTimeboxes();
+    ] = useManagedList();
     // const TimeboxAPI= useTimeboxAPI();
    
     //ki3 - 
