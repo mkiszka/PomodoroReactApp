@@ -3,13 +3,13 @@ import { useTimeboxAPI } from "./useTimeboxAPI";
 import { useCallback, useEffect, useState } from 'react';
 import update from 'immutability-helper';
 
-function useManagedList() {
+function useManagedList(elements,setElements) {
     console.log('useManagedList')
     const { accessToken: apiAccessToken } = useAuthenticationContext();
     const [isLoading, setIsLoding] = useState(true);
     const [loadingError, setLoadingError] = useState(null);
 
-    const [elements, setElements] = useState([]);    
+      
     // const TimeboxAPI = useTimeboxAPI();
     const [TimeboxAPI] = useTimeboxAPI();
     
@@ -18,7 +18,7 @@ function useManagedList() {
         //którego nie da się zamocować przy testach, czy nie powinien być 
         //przekazywany z zewnątrz ?
         TimeboxAPI.getAllTimeboxes(apiAccessToken)
-            .then((elements) => { setElements(elements);console.log('setElements') })
+            .then((fetchedElements) => { setElements(fetchedElements);console.log('setElements') })
             .catch((error) => setLoadingError(error))
             .finally(() => setIsLoding(false));
     }, [apiAccessToken, TimeboxAPI,setElements]); //ki3 po przejściu na hooka wymusza mi tutaj dodanie TimeboxAPI, czy to naprawde musi być?
@@ -106,9 +106,7 @@ function useManagedList() {
 
     return [ 
         isLoading,
-        loadingError,
-        elements,         
-        setElements, 
+        loadingError,      
         elements.length > 0 ? elements[currentIndex] : null,
         handleCreatorAdd,
         handleDeleteListElement,

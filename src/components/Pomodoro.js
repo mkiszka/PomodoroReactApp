@@ -16,12 +16,10 @@ import { useManagedList } from "../hooks/useManagedList";
 
 const AutoIndicator = withAutoIndicator(ProgressBar);
 function Pomodoro() {
-
+    const [timeboxes, setTimeboxes] = useState([]);  
     const [
         isLoading,
-        loadingError,
-        timeboxes,
-        setTimeboxes, //ki3 setTimeboxes pobierane z useTimebox i przekazyane do useTimeboxCreator. Obawiam się, że zamiszałem ?
+        loadingError,       
         currentTimebox,
         onAddTimeboxElement,
         onDeleteTimeboxListElement, //ki3 trzy poniższe i pytanie
@@ -29,7 +27,7 @@ function Pomodoro() {
         onStartTimeboxListElement, //czy on*coś tam
         onMoveListElement,
         findElement
-    ] = useManagedList(useTimeboxAPI());
+    ] = useManagedList(timeboxes, setTimeboxes, useTimeboxAPI());
     // const TimeboxAPI= useTimeboxAPI();
 
     //ki3 - 
