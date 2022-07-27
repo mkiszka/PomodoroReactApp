@@ -76,7 +76,7 @@ function Pomodoro() {
                         <ModalComponent>
                             <ButtonMessage
                                 message={`Czy chcesz usunąć: "${timeboxToDelete.title}"`}
-                                onAction={() => { onDeleteTimeboxListElement(timeboxToDelete.uid) }}
+                                onAction={() => { onDeleteTimeboxListElement(timeboxToDelete.uid); handleCancelConfirmDeletion(); }}
                                 onCancel={handleCancelConfirmDeletion} />
                         </ModalComponent>
                     </Portal> : ""}                  
