@@ -13,6 +13,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend'
 import { useState } from "react";
 import { useTimeboxAPI } from "../hooks/useTimeboxAPI";
 import { useManagedList } from "../hooks/useManagedList";
+import { useDND } from "../hooks/useDND";
 
 const AutoIndicator = withAutoIndicator(ProgressBar);
 function Pomodoro() {
@@ -25,9 +26,12 @@ function Pomodoro() {
         onDeleteTimeboxListElement, //ki3 trzy poniższe i pytanie
         onSaveTimeboxListElement, //czy tu handle*
         onStartTimeboxListElement, //czy on*coś tam
-        onMoveListElement,
-        findElement
+       
     ] = useManagedList(timeboxes, setTimeboxes, useTimeboxAPI());
+
+    const [ onMoveListElement,
+        findElement] = useDND(timeboxes,setTimeboxes);
+
     // const TimeboxAPI= useTimeboxAPI();
 
     //ki3 - 

@@ -1,7 +1,7 @@
 import { useAuthenticationContext } from "./useAuthenticationContext";
 import { useTimeboxAPI } from "./useTimeboxAPI";
 import { useCallback, useEffect, useState } from 'react';
-import update from 'immutability-helper';
+
 
 function useManagedList(elements,setElements) {
     console.log('useManagedList')
@@ -67,42 +67,9 @@ function useManagedList(elements,setElements) {
     
     function handleStartListElement(id) {
         setCurrentIndex(id);
-        //TODOa1 refactor w/w handlerów z (id) na findElement
+        //TODOa1 refactor w/w handlerów z (id) na findElement z hooka useDND ? 
+        //findElement do czegoś wspólnego przenieść ?
     }
-
-
-    //ki3 te dwie niżej do innego hooka? ale refactor z w/w
-    const findElement = useCallback(
-        (uid) => {
-            const element = elements.filter(
-                (element) => {
-                    return `${element.uid}` === uid;
-                }
-            )[0]
-            return {
-                element,
-                index: elements.indexOf(element),
-            }
-        },
-        [elements],
-    )
-    const handleMoveElement = useCallback(
-        (uid, atUid) => {
-
-            const { element, index } = findElement(uid)
-            const { /*element: atElement,*/ index: atIndex } = findElement(atUid)
-            setElements(
-                update(elements, {
-                    $splice: [
-                        [index, 1],
-                        [atIndex, 0, element],
-                    ],
-                }),
-            )
-        },
-        [findElement, elements],
-    )
-
 
     return [ 
         isLoading,
@@ -111,9 +78,7 @@ function useManagedList(elements,setElements) {
         handleCreatorAdd,
         handleDeleteListElement,
         handleSaveListElement,
-        handleStartListElement,        
-        handleMoveElement,
-        findElement
+        handleStartListElement
     ]
 };
 
