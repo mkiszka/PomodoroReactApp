@@ -16,11 +16,11 @@ import { useManagedList } from "../hooks/useManagedList";
 
 const AutoIndicator = withAutoIndicator(ProgressBar);
 function Pomodoro() {
-    
+
     const [
         isLoading,
         loadingError,
-        timeboxes, 
+        timeboxes,
         setTimeboxes, //ki3 setTimeboxes pobierane z useTimebox i przekazyane do useTimeboxCreator. Obawiam się, że zamiszałem ?
         currentTimebox,
         onAddTimeboxElement,
@@ -31,7 +31,7 @@ function Pomodoro() {
         findElement
     ] = useManagedList(useTimeboxAPI());
     // const TimeboxAPI= useTimeboxAPI();
-   
+
     //ki3 - 
     //0. czy custom hook zwracający też Portal component ?
     //1. poprawność tworzenia renderu z portlem - czy tak ułożone componenty w portalu ok?,
@@ -42,18 +42,19 @@ function Pomodoro() {
         setTimeboxToDelete(findElement(uid).element);
     }
 
-    
+
     function handleCancelConfirmDeletion() {
         setTimeboxToDelete(null);
-    }    
-  
+    }
+    //TODO sprawdzić /react/menu dla headlessui
+    //TODO confirmation modal nagranie ki3
     return (
         <>
-            <DndProvider backend={HTML5Backend}>             
+            <DndProvider backend={HTML5Backend}>
                 <TimeboxCreator onAdd={onAddTimeboxElement} />
                 {loadingError ? <ErrorMessage error={loadingError} /> : ""}
-                {isLoading ? <AutoIndicator refresh="10" /> : ""}                
-                <Timebox timebox={currentTimebox}/> 
+                {isLoading ? <AutoIndicator refresh="10" /> : ""}
+                <Timebox timebox={currentTimebox} />
                 <TimeboxList timeboxes={timeboxes}>
                     {timeboxes?.map((elem, index) => {
                         return (
@@ -78,7 +79,7 @@ function Pomodoro() {
                                 onAction={() => { onDeleteTimeboxListElement(timeboxToDelete.uid) }}
                                 onCancel={handleCancelConfirmDeletion} />
                         </ModalComponent>
-                    </Portal> : ""}
+                    </Portal> : ""}                  
             </DndProvider>
         </>
 
