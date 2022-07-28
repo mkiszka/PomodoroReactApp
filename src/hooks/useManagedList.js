@@ -18,7 +18,9 @@ function useManagedList(elements,setElements) {
         //którego nie da się zamocować przy testach, czy nie powinien być 
         //przekazywany z zewnątrz ?
         TimeboxAPI.getAllTimeboxes(apiAccessToken)
-            .then((fetchedElements) => { setElements(fetchedElements);console.log('setElements') })
+            .then((fetchedElements) => { 
+                setElements(fetchedElements);            
+            })
             .catch((error) => setLoadingError(error))
             .finally(() => setIsLoding(false));
     }, [apiAccessToken, TimeboxAPI,setElements]); //ki3 po przejściu na hooka wymusza mi tutaj dodanie TimeboxAPI, czy to naprawde musi być?
@@ -71,15 +73,15 @@ function useManagedList(elements,setElements) {
         //findElement do czegoś wspólnego przenieść ?
     }
 
-    return [ 
+    return { 
         isLoading,
         loadingError,      
-        elements.length > 0 ? elements[currentIndex] : null,
+        elements:  ((elements.length > 0) ? elements[currentIndex] : null),
         handleCreatorAdd,
         handleDeleteListElement,
         handleSaveListElement,
         handleStartListElement
-    ]
+    }
 };
 
 

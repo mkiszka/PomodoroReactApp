@@ -18,16 +18,16 @@ import { useDND } from "../hooks/useDND";
 const AutoIndicator = withAutoIndicator(ProgressBar);
 function Pomodoro() {
     const [timeboxes, setTimeboxes] = useState([]);  
-    const [
+    const {
         isLoading,
         loadingError,       
-        currentTimebox,
-        onAddTimeboxElement,
-        onDeleteTimeboxListElement, //ki3 trzy poniższe i pytanie
-        onSaveTimeboxListElement, //czy tu handle*
-        onStartTimeboxListElement, //czy on*coś tam
+        elements: currentTimebox,
+        handleCreatorAdd: onAddTimeboxElement,
+        handleDeleteListElement: onDeleteTimeboxListElement, 
+        handleSaveListElement: onSaveTimeboxListElement, 
+        handleStartListElement: onStartTimeboxListElement, 
        
-    ] = useManagedList(timeboxes, setTimeboxes, useTimeboxAPI());
+     } = useManagedList(timeboxes, setTimeboxes);
 
     const [ onMoveListElement,
         findElement] = useDND(timeboxes,setTimeboxes);

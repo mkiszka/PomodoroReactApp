@@ -104,7 +104,7 @@ class Timebox extends React.Component {
     }
 
     isTimeboxEmpty(timebox) {
-        if (timebox === null || Object.keys(timebox).length === 0) {  
+        if (timebox == null || Object.keys(timebox).length === 0) {  
             return true;
         }
         return false;
