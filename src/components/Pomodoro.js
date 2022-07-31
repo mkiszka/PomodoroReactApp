@@ -11,11 +11,14 @@ import ButtonMessage from './ButtonMessage';
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { useState } from "react";
-import { useTimeboxAPI } from "../hooks/useTimeboxAPI";
 import { useManagedList } from "../hooks/useManagedList";
 import { useDND } from "../hooks/useDND";
+import ManagedListAPI from "../api/ManagedListAPI";
+import { TimeboxFakeAPI } from "../api/TimeboxFakeAPI";
 
 const AutoIndicator = withAutoIndicator(ProgressBar);
+const managedListAPI = new ManagedListAPI(TimeboxFakeAPI);
+
 function Pomodoro() {
     const [timeboxes, setTimeboxes] = useState([]);  
     const {
@@ -27,7 +30,7 @@ function Pomodoro() {
         handleSaveListElement: onSaveTimeboxListElement, 
         handleStartListElement: onStartTimeboxListElement, 
        
-     } = useManagedList(timeboxes, setTimeboxes);
+     } = useManagedList(timeboxes, setTimeboxes, managedListAPI);
 
     const [ onMoveListElement,
         findElement] = useDND(timeboxes,setTimeboxes);

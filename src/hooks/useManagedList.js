@@ -1,9 +1,8 @@
 import { useAuthenticationContext } from "./useAuthenticationContext";
-import { useTimeboxAPI } from "./useTimeboxAPI";
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 
-function useManagedList(elements,setElements) {
+function useManagedList(elements,setElements,elementAPI) {
     console.log('useManagedList')
     const { accessToken: apiAccessToken } = useAuthenticationContext();
     const [isLoading, setIsLoding] = useState(true);
@@ -11,25 +10,25 @@ function useManagedList(elements,setElements) {
 
       
     // const TimeboxAPI = useTimeboxAPI();
-    const [TimeboxAPI] = useTimeboxAPI();
+   //const [TimeboxAPI] = useTimeboxAPI();
     
     useEffect(() => {
         //ki3 - czy tutaj dostęp do Api w zasadzie taki singleton troszkę
         //którego nie da się zamocować przy testach, czy nie powinien być 
         //przekazywany z zewnątrz ?
-        TimeboxAPI.getAllTimeboxes(apiAccessToken)
+        elementAPI.getAllElements(apiAccessToken)
             .then((fetchedElements) => { 
                 setElements(fetchedElements);            
             })
             .catch((error) => setLoadingError(error))
             .finally(() => setIsLoding(false));
-    }, [apiAccessToken, TimeboxAPI,setElements]); //ki3 po przejściu na hooka wymusza mi tutaj dodanie TimeboxAPI, czy to naprawde musi być?
+    }, [apiAccessToken, elementAPI, setElements]); //ki3 po przejściu na hooka wymusza mi tutaj dodanie TimeboxAPI, czy to naprawde musi być?
 
     
     
 
     function handleDeleteListElement(uid) {        
-        TimeboxAPI.removeTimebox(apiAccessToken, uid).then(() => {
+        elementAPI.removeElement(apiAccessToken, uid).then(() => {
             setElements(
                 (prevTimeboxes) => {                    
                     return prevTimeboxes.filter((value, index) => value.uid === uid ? false : true);;
@@ -41,7 +40,7 @@ function useManagedList(elements,setElements) {
 
     function handleSaveListElement(editedElement) {
         //const { element } = findElement(editedTimebox.uid);        
-        TimeboxAPI.replaceTimebox(apiAccessToken, { ...editedElement }).then(
+        elementAPI.replaceElement(apiAccessToken, { ...editedElement }).then(
             () => {
                 setElements(
                     (prevElements) => {
@@ -56,7 +55,7 @@ function useManagedList(elements,setElements) {
     
     function handleCreatorAdd(timeboxToAdd) {
         
-        TimeboxAPI.addTimebox(apiAccessToken, { ...timeboxToAdd }).then(() => {
+        elementAPI.addElement(apiAccessToken, { ...timeboxToAdd }).then(() => {
             setElements(
                 (prevTimeboxes) => {
                     return [timeboxToAdd, ...prevTimeboxes];

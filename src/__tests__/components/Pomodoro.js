@@ -16,8 +16,8 @@ const t1 = [
     { uid: 'zzz-ddd-wuw', title: "KP-3034 Migracja z ver 1.14 do 1.15 usuwa powiązanie pacjent pracownik.", totalTimeInMinutes: 20 },
     { uid: 'ppp-ddd-zzz', title: "KP-3104 Deploy webserwisu zamówień dla 1.15", totalTimeInMinutes: 20 },
 ];
-jest.mock('../../hooks/useTimeboxAPI', () => ({
-    useTimeboxAPI: () => ([{
+jest.mock('../../api/TimeboxFakeAPI', () => {
+    return { TimeboxFakeAPI: {
         timeboxes: t1,
         checkAccessToken: async () => true,
         getAllTimeboxes: async () => t1,
@@ -25,12 +25,12 @@ jest.mock('../../hooks/useTimeboxAPI', () => ({
         replaceTimebox: async () => { },
         removeTimebox: async () => { },
         updateTimeboxesInsideCookie: async () => { }
-    }])
-}));
+    }
+}});
 
 
 describe('Pomodoro', () => {
-//    jest.setTimeout(20000);
+    //    jest.setTimeout(20000);
     it('should change element position on enter', async () => {
         render(<AuthenticationContext.Provider value={{ accessToken: 'aa-bb-cc', onLogout: () => { } }}>
             <Pomodoro />
@@ -111,11 +111,11 @@ describe('Pomodoro', () => {
         </AuthenticationContext.Provider>)
 
         let timebox = await screen.findByTestId('Timebox');
-        
+
         let taskTitle
         await waitFor(async () => {
             taskTitle = within(timebox).getByRole('heading', { level: 1 });
-            expect(taskTitle.textContent).toEqual("Wywołanie eventów");         
+            expect(taskTitle.textContent).toEqual("Wywołanie eventów");
         })
         const taskList = await screen.findAllByRole('listitem');
         const startButton = within(taskList[1]).getByTitle('start');
@@ -124,6 +124,6 @@ describe('Pomodoro', () => {
         timebox = await screen.findByTestId('Timebox');
         expect(taskTitle.textContent).toEqual("KP-3034 Migracja z ver 1.14 do 1.15 usuwa powiązanie pacjent pracownik.");
 
-       
+
     })
 });
