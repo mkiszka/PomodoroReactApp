@@ -21,7 +21,11 @@ function TimeboxListElement({ timebox, onSave, onDelete, onStart, onMoveElement}
         return !prevIsEditable;
     })
   }
-
+  function handleCancel() {    
+    setIsEditable((prevIsEditable) => {      
+        return false;
+    })
+  }
   function handleSave(newTimebox) {
       handleEdit();
       onSave(newTimebox)
@@ -70,10 +74,11 @@ function TimeboxListElement({ timebox, onSave, onDelete, onStart, onMoveElement}
         <EditableTimeboxListElement
           timebox={timebox}          
           onSave={handleSave}
+          onCancel={handleCancel}
           />
         : <NonEditableTimeboxListElement
           timebox={timebox}
-          onEdit={handleEdit}
+          onEdit={handleEdit}          
           onDelete={onDelete}
           onStart={onStart}
         />}
@@ -86,7 +91,7 @@ TimeboxListElement.defaultProps = {
   timebox: { uid: uuidv4(), title: "Default title", totalTimeInMinutes: 3 },  
   onSave: () => { console.log("handle save ") },
   onDelete: () => { console.log("handle delete ") },  
-
+  
 }
 
 TimeboxListElement.propTypes = {
