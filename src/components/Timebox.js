@@ -103,6 +103,13 @@ class Timebox extends React.Component {
         )
     }
 
+    isTimeboxEmpty(timebox) {
+        if (timebox == null || Object.keys(timebox).length === 0) {  
+            return true;
+        }
+        return false;
+    }
+
     render() {
 
         const { timebox, isEditable, progressBarAriaLabel } = this.props;
@@ -111,8 +118,10 @@ class Timebox extends React.Component {
         let totalTimeInMiliSeconds, timeLeftInMiliSeconds, milisecondsLeft, minutesLeft;
         let secondsLeft, hoursLeft;
         let progressInPercent;
-        let timeboxEmpty = false;
-        if (timebox === null || Object.keys(timebox).length === 0) {
+        let timeboxEmpty = this.isTimeboxEmpty(timebox);
+        let timeboxTitle;
+
+        if (timeboxEmpty) {
             totalTimeInMiliSeconds = 0;
             timeLeftInMiliSeconds = 0;
             milisecondsLeft = 0;
@@ -120,19 +129,21 @@ class Timebox extends React.Component {
             minutesLeft = 0;
             hoursLeft = 0;
             progressInPercent = 0;
-            timeboxEmpty = true;
+            timeboxTitle = "";
+            
         } else {
             totalTimeInMiliSeconds = timebox.totalTimeInMinutes * 60000;
             timeLeftInMiliSeconds = totalTimeInMiliSeconds - elapsedTimeInMiliSeconds;
             [milisecondsLeft, secondsLeft, minutesLeft, hoursLeft] = convertMiliSecondsToMiliSecondsSecondMinutesHours(timeLeftInMiliSeconds);
 
             progressInPercent = ((totalTimeInMiliSeconds - elapsedTimeInMiliSeconds) / totalTimeInMiliSeconds) * 100;
+            timeboxTitle = timebox.title;
         }
         const trulyIsEditable = !timeboxEmpty && isEditable;
         const classNameOfButton = trulyIsEditable ? "button-active" : "button-inactive";
 
         return (<div data-testid={"Timebox"} className={`Timebox  ${isEditable ? "" : "inactive"}`}>
-            <h1>{timebox.title}</h1>
+            <h1>{timeboxTitle}</h1>
             <h4>Liczba przerw: {pausesCount}</h4>
             <Clock keyPrefix="clock1"
                 hours={hoursLeft}

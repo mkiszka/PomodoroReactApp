@@ -4,6 +4,9 @@ import { act } from 'react-test-renderer';
 import Timebox from '../../components/Timebox';
 
 describe('Timebox', () => {
+    it.skip('should be ready for nullable timebox property', () => {
+
+    })
     it('should generate proper values', () => {
         const timebox = { uid: 'aaaa-dddd-cccc', title: 'Wywołanie eventów', totalTimeInMinutes: 3 }
         render(<Timebox timebox={timebox} />)

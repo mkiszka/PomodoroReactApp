@@ -1,10 +1,10 @@
-import { IoSaveOutline } from "react-icons/io5";
+import { IoSaveOutline, IoRemoveCircleOutline } from "react-icons/io5";
 import PropTypes from "prop-types";
 import { v4 as uuidv4 } from "uuid"
 import React from "react";
 import { useState } from "react";
 
-function EditableTimeboxListElement({ timebox, onSave }) {
+function EditableTimeboxListElement({ timebox, onSave, onCancel }) {
 
   const [insideTimebox, setInsideTimebox] = useState(timebox); //ki3 <-- sprawdzić czy na pewno to się raz wykona jako default
 
@@ -30,10 +30,9 @@ function EditableTimeboxListElement({ timebox, onSave }) {
     >
       <div className="TimeboxListElementTitle"><textarea value={insideTimebox.title} onChange={(event) => { handleTitleChange(event) }} /></div>
       <div className="TimeboxListElementTime"><input value={insideTimebox.totalTimeInMinutes} onChange={(event) => { handleTotalTimeInMinutesChange(event) }} type="number" />min.</div>
-      <div className="TimeboxListElementAction"><IoSaveOutline title="zapisz" className="button-active" onClick={() => onSave({ ...insideTimebox })} /> { /* ki3- czy poprawnie że kopie obiektu robię? */}
-
-        {/* <IoTrashOutline title="usuń" className="button-active" onClick={onDelete} />
-        <IoPushOutline title="start" className="button-active" onClick={onStart} /> */}
+      <div className="TimeboxListElementAction">
+        <IoSaveOutline title="zapisz" className="button-active" onClick={() => onSave({ ...insideTimebox })} /> { /* ki3- czy poprawnie że kopie obiektu robię? */}
+        <IoRemoveCircleOutline title="anuluj" className="button-active" onClick={() => onCancel()} />
       </div>
     </div>
   )

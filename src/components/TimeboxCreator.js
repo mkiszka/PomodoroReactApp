@@ -10,7 +10,11 @@ class TimeboxCreator extends React.Component {
     constructor(props) {
         super(props);
         this.formRef = React.createRef();
-        this.state = { hasError: false, }
+        this.state = { 
+            hasError: false, 
+            title: 'Ucze się tego i tamtego?', 
+            totalTimeInMinutes: 25
+        }
     }
 
     handleSubmit = (event) => {
@@ -23,13 +27,17 @@ class TimeboxCreator extends React.Component {
             this.setState( { hasError: true, error  })
         }
     }
+ 
+    handleTitleCreatorChange = (event) => {
+        this.setState( { ...this.state, title: event.target.value });
+    }
+    handleTotalTimeInMinutesCreatorChange = (event) => {
+        this.setState( { ...this.state, totalTimeInMinutes: event.target.value });
+    }
 
     render() {        
-        const { title, totalTimeInMinutes, isEditable,
-            onTitleChange,
-            onTotalTimeInMinutesChange
-        } = this.props;
-        const { /*hasError,*/ error } = this.state;
+        const { isEditable } = this.props;        
+        const { /*hasError,*/ error, title, totalTimeInMinutes  } = this.state;
 
         return (
             this.state.hasError?
@@ -38,9 +46,9 @@ class TimeboxCreator extends React.Component {
                 <form ref={this.form} onSubmit={this.handleSubmit} className={`TimeboxCreator ${isEditable ? "" : "inactive"}`}>
                     <div>
                         <label>Co robisz ?<input disabled={!isEditable} value={title} type="text"
-                            onChange={onTitleChange} /></label>
+                            onChange={this.handleTitleCreatorChange} /></label>
                         <label>Ile minut ?<input disabled={!isEditable} value={totalTimeInMinutes} type="number"
-                            onChange={onTotalTimeInMinutesChange} /></label>
+                            onChange={this.handleTotalTimeInMinutesCreatorChange} /></label>
                     </div>
                     <div>
                         <button type="submit">
@@ -53,11 +61,7 @@ class TimeboxCreator extends React.Component {
     }
 }
 TimeboxCreator.propTypes = {
-    title: PropTypes.string,
-    totalTimeInMinutes: PropTypes.string,
     isEditable: PropTypes.bool,
-    onTitleChange: PropTypes.func.isRequired,
-    onTotalTimeInMinutesChange: PropTypes.func.isRequired,
     onAdd: PropTypes.func.isRequired
 }
 TimeboxCreator.defaultProps = {
