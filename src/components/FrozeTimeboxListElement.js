@@ -7,11 +7,12 @@ function FrozeTimeboxListElement({ timebox }) {
   return (
     <div      
       role={"listitem"}
-      className={"Timebox FrozeTimeboxListElement"}
+      className={"Timebox TimeboxListElement"}
       >
       <div className="TimeboxListElementTitle">{timebox.title}</div>
       <div className="TimeboxListElementTime">{timebox.totalTimeInMinutes} min.</div>
       <div className="TimeboxListElementAction">     
+          saving
       </div>
     </div>
   )
