@@ -46,12 +46,12 @@ export const TimeboxFakeAPI = {
         this.timeboxes = this.timeboxes.map((value) => value.uid === timeboxToReplace.uid ? timeboxToReplace : value)
         this.updateTimeboxesInsideCookie();
     },
-    removeTimebox: async function (accessToken, uid) {
+    removeTimebox: async function (accessToken, timeboxToDelete) {
         await wait(200);
         if (! await this.checkAccessToken(accessToken)) {
             return;
         }
-        this.timeboxes = this.timeboxes.filter((value) => value.uid === uid ? false : true);
+        this.timeboxes = this.timeboxes.filter((value) => value.uid === timeboxToDelete.uid ? false : true);
         this.updateTimeboxesInsideCookie();       
     },
     updateTimeboxesInsideCookie: function () {

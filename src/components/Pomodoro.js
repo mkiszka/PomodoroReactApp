@@ -14,10 +14,10 @@ import { useState } from "react";
 import { useManagedList } from "../hooks/useManagedList";
 import { useDND } from "../hooks/useDND";
 import ManagedListAPI from "../api/ManagedListAPI";
-import { TimeboxFakeAPI } from "../api/TimeboxFakeAPI";
+import { AxiosTimeboxAPI } from "../api/AxiosTimeboxAPI";
 
 const AutoIndicator = withAutoIndicator(ProgressBar);
-const managedListAPI = new ManagedListAPI(TimeboxFakeAPI);
+const managedListAPI = new ManagedListAPI(AxiosTimeboxAPI);
 
 function Pomodoro() {
     const [timeboxes, setTimeboxes] = useState([]);  
@@ -81,7 +81,7 @@ function Pomodoro() {
                         <ModalComponent>
                             <ButtonMessage
                                 message={`Czy chcesz usunąć: "${timeboxToDelete.title}"`}
-                                onAction={() => { onDeleteTimeboxListElement(timeboxToDelete.uid); handleCancelConfirmDeletion(); }}
+                                onAction={() => { onDeleteTimeboxListElement(timeboxToDelete); handleCancelConfirmDeletion(); }}
                                 onCancel={handleCancelConfirmDeletion} />
                         </ModalComponent>
                     </Portal> : ""}                  

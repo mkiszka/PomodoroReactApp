@@ -27,11 +27,12 @@ function useManagedList(elements,setElements,elementAPI) {
     
     
 
-    function handleDeleteListElement(uid) {        
-        elementAPI.removeElement(apiAccessToken, uid).then(() => {
+    function handleDeleteListElement(deletedElement) {    
+            
+        elementAPI.removeElement(apiAccessToken, deletedElement).then(() => {
             setElements(
                 (prevTimeboxes) => {                    
-                    return prevTimeboxes.filter((value, index) => value.uid === uid ? false : true);;
+                    return prevTimeboxes.filter((value, index) => value.uid === deletedElement.uid ? false : true);;
                 }
             )
         }
