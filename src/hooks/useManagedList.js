@@ -22,10 +22,7 @@ function useManagedList(elements,setElements,elementAPI) {
             })
             .catch((error) => setLoadingError(error))
             .finally(() => setIsLoding(false));
-    }, [apiAccessToken, elementAPI, setElements]); //ki3 po przejściu na hooka wymusza mi tutaj dodanie TimeboxAPI, czy to naprawde musi być?
-
-    
-    
+    }, [apiAccessToken, elementAPI, setElements]); //ki3 po przejściu na hooka wymusza mi tutaj dodanie TimeboxAPI, czy to naprawde musi być?    
 
     function handleDeleteListElement(deletedElement) {    
             
@@ -40,11 +37,14 @@ function useManagedList(elements,setElements,elementAPI) {
     }
 
     function handleSaveListElement(editedElement) {
-        //const { element } = findElement(editedTimebox.uid);        
-        elementAPI.replaceElement(apiAccessToken, { ...editedElement }).then(
-            () => {
+        //const { element } = findElement(editedTimebox.uid);      
+        const promise =  elementAPI.replaceElement(apiAccessToken, { ...editedElement });  
+        promise.then(
+            (replacedElement) => {
+                debugger;
                 setElements(
                     (prevElements) => {
+                        
                         return prevElements.map((value) => { //TODOa1 tego mapa spróbować zedytować według uwag z konsultacji
                             return value.uid === editedElement.uid ? { ...editedElement } : value
                         })
@@ -52,6 +52,7 @@ function useManagedList(elements,setElements,elementAPI) {
                 )
             }
         )
+        return promise;
     }
     
     function handleCreatorAdd(timeboxToAdd) {

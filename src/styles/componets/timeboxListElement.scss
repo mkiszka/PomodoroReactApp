@@ -10,6 +10,19 @@
         width: 100%
     }
 }
+
+.FrozeTimeboxListElement {
+    margin-top: $margin-top;
+    display: flex;
+    background-color: $frozen-list-lement-backgroun-color;
+    color: $list-element-color;
+    align-items: center;
+    cursor: move;
+    
+    >textarea {
+        width: 100%
+    }
+}
 //font-family sans-serif
 .TimeboxListElementTitle {
     width: 80%;

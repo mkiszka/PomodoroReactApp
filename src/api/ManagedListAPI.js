@@ -8,7 +8,7 @@ class ManagedListAPI {
 
     removeElement = async (accessToken, timeboxToDelete) => { this.timeboxesAPI.removeTimebox(accessToken, timeboxToDelete); };
     getAllElements = async (accessToken) => { return this.timeboxesAPI.getAllTimeboxes(accessToken) };
-    replaceElement = async (accessToken, timeboxToReplace) => { this.timeboxesAPI.replaceTimebox(accessToken, timeboxToReplace) };
-    addElement = async (accessToken, timeboxToAdd) => { this.timeboxesAPI.addTimebox(accessToken,timeboxToAdd)};
+    replaceElement = async (accessToken, timeboxToReplace) => { return this.timeboxesAPI.replaceTimebox(accessToken, timeboxToReplace) };
+    addElement = async (accessToken, timeboxToAdd) => { return this.timeboxesAPI.addTimebox(accessToken,timeboxToAdd)};
 }
 export default ManagedListAPI;

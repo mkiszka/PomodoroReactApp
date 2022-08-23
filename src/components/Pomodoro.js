@@ -20,20 +20,20 @@ const AutoIndicator = withAutoIndicator(ProgressBar);
 const managedListAPI = new ManagedListAPI(AxiosTimeboxAPI);
 
 function Pomodoro() {
-    const [timeboxes, setTimeboxes] = useState([]);  
+    const [timeboxes, setTimeboxes] = useState([]);
     const {
         isLoading,
-        loadingError,       
+        loadingError,
         elements: currentTimebox,
         handleCreatorAdd: onAddTimeboxElement,
-        handleDeleteListElement: onDeleteTimeboxListElement, 
-        handleSaveListElement: onSaveTimeboxListElement, 
-        handleStartListElement: onStartTimeboxListElement, 
-       
-     } = useManagedList(timeboxes, setTimeboxes, managedListAPI);
+        handleDeleteListElement: onDeleteTimeboxListElement,
+        handleSaveListElement: onSaveTimeboxListElement,
+        handleStartListElement: onStartTimeboxListElement,
 
-    const [ onMoveListElement,
-        findElement] = useDND(timeboxes,setTimeboxes);
+    } = useManagedList(timeboxes, setTimeboxes, managedListAPI);
+
+    const [onMoveListElement,
+        findElement] = useDND(timeboxes, setTimeboxes);
 
     // const TimeboxAPI= useTimeboxAPI();
 
@@ -66,8 +66,7 @@ function Pomodoro() {
                             <TimeboxListElement
                                 key={elem.uid}
                                 timebox={elem}
-                                onSave={onSaveTimeboxListElement/*ki3 onSave inaczej wygląda i onDelete inaczej, jak to uogólnićm z kąd wiedzieć co pisać ?
-                                                                    a może powinienem przez event dawać ?*/}
+                                onSave={ onSaveTimeboxListElement }
                                 onDelete={() => { handleConfirmDeletion(elem.uid) }}
                                 onStart={() => { onStartTimeboxListElement(index) }}
                                 onMoveElement={onMoveListElement}
@@ -84,7 +83,7 @@ function Pomodoro() {
                                 onAction={() => { onDeleteTimeboxListElement(timeboxToDelete); handleCancelConfirmDeletion(); }}
                                 onCancel={handleCancelConfirmDeletion} />
                         </ModalComponent>
-                    </Portal> : ""}                  
+                    </Portal> : ""}
             </DndProvider>
         </>
 

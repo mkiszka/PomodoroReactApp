@@ -21,13 +21,13 @@ export const AxiosTimeboxAPI = {
     },
 
     addTimebox: async function (accessToken,timeboxToAdd) {        
-        /*const response = */await axios.post(this.getURL(),timeboxToAdd)
-        console.log(timeboxToAdd);
-        //TODO return response and add response.data as added timeboxes
+        const response = await axios.post(this.getURL(),timeboxToAdd)
+        return response.data;
     },
     replaceTimebox: async function (accessToken,timeboxToReplace) {    
         console.log(timeboxToReplace);
-        /*const response = */await axios.put(`${this.getURL()}/${timeboxToReplace.id}`,timeboxToReplace)
+        const response = await axios.put(`${this.getURL()}/${timeboxToReplace.id}`,timeboxToReplace);
+        return response.data;
     },
     removeTimebox: async function (accessToken,timeboxToDelete) {
       /*const response = */await axios.delete(`${this.getURL()}/${timeboxToDelete.id}`)
