@@ -19,3 +19,11 @@
         color: red;
     }
 }
+
+.LogoutButton {    
+    all:unset; 
+    svg {
+        height: $react-icons-button-medium;
+        width: $react-icons-button-medium;          
+    }
+}

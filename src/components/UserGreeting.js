@@ -4,13 +4,13 @@ import AuthenticationContext from '../contexts/AuthenticationContext'
 function UserGreeting({ accesToken }) {
 
     return (
-        <>
+        <p>
             <AuthenticationContext.Consumer>
                 {
-                    ({accessToken}) => <>Witaj {getUserEmail(accessToken)}</>
+                    ({accessToken}) => <>{getUserEmail(accessToken)}</>
                 }
             </AuthenticationContext.Consumer>
-        </>
+        </p>
     )
 }
 
