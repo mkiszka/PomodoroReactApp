@@ -12,7 +12,7 @@ const AuthenticatedApp = React.lazy(() => import('./AuthenticatedApp'));
 //IMPORTANT ! The login functionality is only a simulation.
 function App() {
         
-    const [accessToken, setAccessToken] = useState(null);
+    const [accessToken, setAccessToken] = useState(localStorage.getItem('accessToken'));
     const [previousLoginAttemptFailed, setPreviousLoginAttemptFailed ] = useState(false);
     const isUserLoggedIn = () => { 
         return !!accessToken;
