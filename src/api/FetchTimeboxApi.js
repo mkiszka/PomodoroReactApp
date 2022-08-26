@@ -1,6 +1,7 @@
 const BASE_URL = "http://localhost:5000/timeboxes"
 const FetchTimeboxesAPI = {
     getAllTimeboxes: async function() {
+        debugger;
         const response = await makeRequest(`${BASE_URL}`, "GET")
         const timeboxes = await response.json();
         return timeboxes;
@@ -29,11 +30,13 @@ const FetchTimeboxesAPI = {
 export default FetchTimeboxesAPI;
 
 async function makeRequest(url, method, body) {
+    
     const jsonBody = body ? JSON.stringify(body) : undefined;
     const response = await window.fetch(url, {
         method,
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem('accessToken')}`
         },
         body: jsonBody
     });
