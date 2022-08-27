@@ -33,8 +33,7 @@ function TimeboxListElement({ timebox, onSave, onDelete, onStart, onMoveElement 
   function handleSave(newTimebox) {
     setIsFrozen(true);
     handleEdit();
-    onSave(newTimebox).then(() => {
-      debugger;
+    onSave(newTimebox).then(() => {      
       setIsFrozen(false);
     });
   }

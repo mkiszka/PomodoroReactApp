@@ -41,8 +41,7 @@ function useManagedList(elements, setElements, elementAPI) {
         editedElement.userId = getUserId(apiAccessToken);
         const promise = elementAPI.replaceElement(apiAccessToken, { ...editedElement });
         promise.then(
-            (replacedElement) => {
-                debugger;
+            (replacedElement) => {                
                 setElements(
                     (prevElements) => {
 
