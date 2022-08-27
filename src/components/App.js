@@ -8,10 +8,10 @@ import UnauthenticationContext from '../contexts/UnauthenticationContext';
 import AuthenticationAPI from '../api/FetchAuthenticationAPI';
 
 const AuthenticatedApp = React.lazy(() => import('./AuthenticatedApp'));
-
+const LS_ACCESSTOKEN = 'accessToken';
 function App() {
         
-    const [accessToken, setAccessToken] = useState(localStorage.getItem('accessToken'));
+    const [accessToken, setAccessToken] = useState(localStorage.getItem(LS_ACCESSTOKEN));
     const [previousLoginAttemptFailed, setPreviousLoginAttemptFailed ] = useState(false);
     const isUserLoggedIn = () => { 
         return !!accessToken;
@@ -21,7 +21,7 @@ function App() {
     //https://stackoverflow.com/questions/41030361/how-to-update-react-context-from-inside-a-child-component
     function handleLogout() {        
         setAccessToken(null);
-        localStorage.removeItem('accessToken');
+        localStorage.removeItem(LS_ACCESSTOKEN);
     }
 
 
@@ -29,7 +29,7 @@ function App() {
         AuthenticationAPI.login(credencials)
             .then(({accessToken, user})=> { 
                 setAccessToken(accessToken);  
-                localStorage.setItem('accessToken',accessToken);
+                localStorage.setItem(LS_ACCESSTOKEN,accessToken);
             })
             .catch(()=> { setPreviousLoginAttemptFailed(true)});
         console.log(credencials);        
