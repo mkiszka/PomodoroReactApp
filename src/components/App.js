@@ -9,7 +9,6 @@ import AuthenticationAPI from '../api/FetchAuthenticationAPI';
 
 const AuthenticatedApp = React.lazy(() => import('./AuthenticatedApp'));
 
-//IMPORTANT ! The login functionality is only a simulation.
 function App() {
         
     const [accessToken, setAccessToken] = useState(localStorage.getItem('accessToken'));
@@ -29,7 +28,6 @@ function App() {
     function handleLogin(credencials) {     
         AuthenticationAPI.login(credencials)
             .then(({accessToken, user})=> { 
-                console.log(accessToken,user); 
                 setAccessToken(accessToken);  
                 localStorage.setItem('accessToken',accessToken);
             })
