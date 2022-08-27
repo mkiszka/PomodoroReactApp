@@ -10,6 +10,7 @@
         width: 100%
     }
 }
+
 //font-family sans-serif
 .TimeboxListElementTitle {
     width: 80%;
@@ -49,7 +50,8 @@
 }
 
 .TimeboxListElementAction {
-    width: 110px;
+    min-width: 120px;    
+    min-height: 40px;
     justify-content: center;
     display: flex;
 }

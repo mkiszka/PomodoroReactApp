@@ -3,32 +3,40 @@ import { useDrop } from 'react-dnd';
 import PropTypes from "prop-types";
 import { v4 as uuidv4 } from "uuid"
 import { DraggableItemTypes } from "./DraggableItemTypes";
-import React, {useState} from "react";
+import React, { useState } from "react";
 import EditableTimeboxListElement from './EditableTimeboxListElement';
 import NonEditableTimeboxListElement from './NonEditableTimeboxListElement';
+import FrozeTimeboxListElement from './FrozeTimeboxListElement';
 
 //ki3 czy o to chodziło ? komponent główny i w środku dwa, edytowalny i nie edytowlny??
 //     czy TimeboxListElement wywalić i ....
 //TODO split into TimeboxListElement and DragableTimeboxListElement
 
-function TimeboxListElement({ timebox, onSave, onDelete, onStart, onMoveElement}) {
-  
-  const [ isEditable, setIsEditable ] = useState(false);  
+function TimeboxListElement({ timebox, onSave, onDelete, onStart, onMoveElement }) {
+
+  const [isEditable, setIsEditable] = useState(false);
+  const [isFrozen, setIsFrozen] = useState(false);
+
   const uid = timebox.uid;
+
+  function handleEdit() {
+    setIsEditable((prevIsEditable) => {
+      return !prevIsEditable;
+    })
+  }
+  function handleCancel() {
+    setIsEditable((prevIsEditable) => {
+      return false;
+    })
+  }
   
-  function handleEdit() {    
-    setIsEditable((prevIsEditable) => {      
-        return !prevIsEditable;
-    })
-  }
-  function handleCancel() {    
-    setIsEditable((prevIsEditable) => {      
-        return false;
-    })
-  }
   function handleSave(newTimebox) {
-      handleEdit();
-      onSave(newTimebox)
+    setIsFrozen(true);
+    handleEdit();
+    onSave(newTimebox).then(() => {
+      debugger;
+      setIsFrozen(false);
+    });
   }
 
   const [{ isDragging }, drag] = useDrag(
@@ -53,15 +61,15 @@ function TimeboxListElement({ timebox, onSave, onDelete, onStart, onMoveElement}
     () => ({
       accept: DraggableItemTypes.TimeboxListElement,
       hover({ uid: draggedUid }) {
-        if (draggedUid !== uid) {          
-          onMoveElement(draggedUid, uid) 
+        if (draggedUid !== uid) {
+          onMoveElement(draggedUid, uid)
         }
       },
     }),
     [onMoveElement],
   )
   const opacity = isDragging ? 0 : 1
-  
+
   //ki3 0 niestety przy zostawieniu drag tutaj, i wyciągnięciu diva tutaj, komponenty podrzędne stają się niereużywalne,
   //przez chwile myślałem o HOC ? żeby dodać drag and drop, ale jeszcze nie ogarniam
   //opcja - div tylko dla dragging ? ale jak lepiej ?
@@ -70,34 +78,38 @@ function TimeboxListElement({ timebox, onSave, onDelete, onStart, onMoveElement}
       ref={(node) => drag(drop(node))}
       style={{ opacity }}
     >
-      {isEditable ?
-        <EditableTimeboxListElement
-          timebox={timebox}          
-          onSave={handleSave}
-          onCancel={handleCancel}
+      {isFrozen ?
+        <FrozeTimeboxListElement timebox={timebox} />
+        :
+
+        isEditable ?
+          <EditableTimeboxListElement
+            timebox={timebox}
+            onSave={handleSave}
+            onCancel={handleCancel}
           />
-        : <NonEditableTimeboxListElement
-          timebox={timebox}
-          onEdit={handleEdit}          
-          onDelete={onDelete}
-          onStart={onStart}
-        />}
+          : <NonEditableTimeboxListElement
+            timebox={timebox}
+            onEdit={handleEdit}
+            onDelete={onDelete}
+            onStart={onStart}
+          />}
     </div>
   )
 }
 
 TimeboxListElement.defaultProps = {
 
-  timebox: { uid: uuidv4(), title: "Default title", totalTimeInMinutes: 3 },  
+  timebox: { uid: uuidv4(), title: "Default title", totalTimeInMinutes: 3 },
   onSave: () => { console.log("handle save ") },
-  onDelete: () => { console.log("handle delete ") },  
-  
+  onDelete: () => { console.log("handle delete ") },
+
 }
 
 TimeboxListElement.propTypes = {
-  timebox: PropTypes.object.isRequired,  
+  timebox: PropTypes.object.isRequired,
   onSave: PropTypes.func.isRequired,
-  onDelete: PropTypes.func.isRequired,  
+  onDelete: PropTypes.func.isRequired,
 }
 
 export default TimeboxListElement;

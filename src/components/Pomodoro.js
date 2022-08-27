@@ -14,26 +14,26 @@ import { useState } from "react";
 import { useManagedList } from "../hooks/useManagedList";
 import { useDND } from "../hooks/useDND";
 import ManagedListAPI from "../api/ManagedListAPI";
-import { TimeboxFakeAPI } from "../api/TimeboxFakeAPI";
+import { AxiosTimeboxAPI } from "../api/AxiosTimeboxAPI";
 
 const AutoIndicator = withAutoIndicator(ProgressBar);
-const managedListAPI = new ManagedListAPI(TimeboxFakeAPI);
+const managedListAPI = new ManagedListAPI(AxiosTimeboxAPI);
 
 function Pomodoro() {
-    const [timeboxes, setTimeboxes] = useState([]);  
+    const [timeboxes, setTimeboxes] = useState([]);
     const {
         isLoading,
-        loadingError,       
+        loadingError,
         elements: currentTimebox,
         handleCreatorAdd: onAddTimeboxElement,
-        handleDeleteListElement: onDeleteTimeboxListElement, 
-        handleSaveListElement: onSaveTimeboxListElement, 
-        handleStartListElement: onStartTimeboxListElement, 
-       
-     } = useManagedList(timeboxes, setTimeboxes, managedListAPI);
+        handleDeleteListElement: onDeleteTimeboxListElement,
+        handleSaveListElement: onSaveTimeboxListElement,
+        handleStartListElement: onStartTimeboxListElement,
 
-    const [ onMoveListElement,
-        findElement] = useDND(timeboxes,setTimeboxes);
+    } = useManagedList(timeboxes, setTimeboxes, managedListAPI);
+
+    const [onMoveListElement,
+        findElement] = useDND(timeboxes, setTimeboxes);
 
     // const TimeboxAPI= useTimeboxAPI();
 
@@ -66,8 +66,7 @@ function Pomodoro() {
                             <TimeboxListElement
                                 key={elem.uid}
                                 timebox={elem}
-                                onSave={onSaveTimeboxListElement/*ki3 onSave inaczej wygląda i onDelete inaczej, jak to uogólnićm z kąd wiedzieć co pisać ?
-                                                                    a może powinienem przez event dawać ?*/}
+                                onSave={ onSaveTimeboxListElement }
                                 onDelete={() => { handleConfirmDeletion(elem.uid) }}
                                 onStart={() => { onStartTimeboxListElement(index) }}
                                 onMoveElement={onMoveListElement}
@@ -81,10 +80,10 @@ function Pomodoro() {
                         <ModalComponent>
                             <ButtonMessage
                                 message={`Czy chcesz usunąć: "${timeboxToDelete.title}"`}
-                                onAction={() => { onDeleteTimeboxListElement(timeboxToDelete.uid); handleCancelConfirmDeletion(); }}
+                                onAction={() => { onDeleteTimeboxListElement(timeboxToDelete); handleCancelConfirmDeletion(); }}
                                 onCancel={handleCancelConfirmDeletion} />
                         </ModalComponent>
-                    </Portal> : ""}                  
+                    </Portal> : ""}
             </DndProvider>
         </>
 
