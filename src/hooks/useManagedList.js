@@ -58,10 +58,10 @@ function useManagedList(elements,setElements,elementAPI) {
     
     function handleCreatorAdd(timeboxToAdd) {
         timeboxToAdd.userId =  getUserId(apiAccessToken);        
-        elementAPI.addElement(apiAccessToken, { ...timeboxToAdd }).then(() => {
+        elementAPI.addElement(apiAccessToken, { ...timeboxToAdd }).then((timeboxAdded) => {
             setElements(
                 (prevTimeboxes) => {
-                    return [timeboxToAdd, ...prevTimeboxes];
+                    return [...prevTimeboxes, timeboxAdded];
                 }
             )
         });
