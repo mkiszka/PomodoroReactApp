@@ -28,12 +28,11 @@ export const AxiosTimeboxAPI = {
 
     },
 
-    addTimebox: async function (accessToken, timeboxToAdd) {
-        const response = await axios.post(this.getURL(), timeboxToAdd, { headers: this.getHeaders() })
+    addTimebox: async function (accessToken, timeboxToAdd) {           
+        const response = await axios.post(this.getURL(), timeboxToAdd, { headers: this.getHeaders() });
         return response.data;
     },
-    replaceTimebox: async function (accessToken, timeboxToReplace) {
-        console.log(timeboxToReplace);
+    replaceTimebox: async function (accessToken, timeboxToReplace) {     
         const response = await axios.put(`${this.getURL()}/${timeboxToReplace.id}`, timeboxToReplace, { headers: this.getHeaders() });
         return response.data;
     },

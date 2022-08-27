@@ -1,5 +1,6 @@
 import { useAuthenticationContext } from "./useAuthenticationContext";
 import { useEffect, useState } from 'react';
+import { getUserId } from "../utilities/accessToken";
 
 
 function useManagedList(elements,setElements,elementAPI) {
@@ -37,7 +38,7 @@ function useManagedList(elements,setElements,elementAPI) {
     }
 
     function handleSaveListElement(editedElement) {
-        //const { element } = findElement(editedTimebox.uid);      
+        editedElement.userId =  getUserId(apiAccessToken);     
         const promise =  elementAPI.replaceElement(apiAccessToken, { ...editedElement });  
         promise.then(
             (replacedElement) => {
@@ -56,7 +57,7 @@ function useManagedList(elements,setElements,elementAPI) {
     }
     
     function handleCreatorAdd(timeboxToAdd) {
-        
+        timeboxToAdd.userId =  getUserId(apiAccessToken);        
         elementAPI.addElement(apiAccessToken, { ...timeboxToAdd }).then(() => {
             setElements(
                 (prevTimeboxes) => {

@@ -1,6 +1,6 @@
 import React from 'react'
 import AuthenticationContext from '../contexts/AuthenticationContext'
-import jwt_decode from "jwt-decode";
+import { getUserEmail } from '../utilities/accessToken'
 
 function UserGreeting({ accesToken }) {
 
@@ -17,7 +17,3 @@ function UserGreeting({ accesToken }) {
 
 export default UserGreeting;
 
-function getUserEmail(accesToken) {       
-    const { email } =  jwt_decode(accesToken);    
-    return email;
-}
