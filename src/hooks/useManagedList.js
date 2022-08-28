@@ -70,11 +70,13 @@ function useManagedList(elements, setElements, elementAPI) {
 
     const [currentIndex, setCurrentIndex] = useState(0);
 
-    const handleStartListElement = useCallback((id) => {
-        setCurrentIndex(id);
+    const handleStartListElement = useCallback((element) => {
+        debugger;
+        const index = elements.findIndex((felement) => felement.uid === element.uid )
+        setCurrentIndex(index);
         //TODOa1 refactor w/w handlerów z (id) na findElement z hooka useDND ? 
         //findElement do czegoś wspólnego przenieść ?
-    }, [setCurrentIndex]);
+    }, [setCurrentIndex,elements]);
 
     return {
         isLoading,
