@@ -1,11 +1,11 @@
-import { useAuthenticationContext } from "./useAuthenticationContext";
 import { useCallback, useEffect, useState } from 'react';
 import { getUserId } from "../utilities/accessToken";
 
 
-function useManagedList(elements, setElements, elementAPI) {
+function useManagedList(elements, setElements, apiAccessToken, elementAPI) {
     console.log('useManagedList')
-    const { accessToken: apiAccessToken } = useAuthenticationContext();
+    
+
     const [isLoading, setIsLoding] = useState(true);
     const [loadingError, setLoadingError] = useState(null);
 
@@ -13,17 +13,14 @@ function useManagedList(elements, setElements, elementAPI) {
     // const TimeboxAPI = useTimeboxAPI();
     //const [TimeboxAPI] = useTimeboxAPI();
 
-    useEffect(() => {
-        //ki3 - czy tutaj dostęp do Api w zasadzie taki singleton troszkę
-        //którego nie da się zamocować przy testach, czy nie powinien być 
-        //przekazywany z zewnątrz ?
+    useEffect(() => {       
         elementAPI.getAllElements(apiAccessToken)
             .then((fetchedElements) => {
                 setElements(fetchedElements);
             })
             .catch((error) => setLoadingError(error))
             .finally(() => setIsLoding(false));
-    }, [apiAccessToken, elementAPI, setElements]); //ki3 po przejściu na hooka wymusza mi tutaj dodanie TimeboxAPI, czy to naprawde musi być?    
+    }, [apiAccessToken, elementAPI, setElements]);
 
     const handleDeleteListElement = useCallback((deletedElement) => {
 

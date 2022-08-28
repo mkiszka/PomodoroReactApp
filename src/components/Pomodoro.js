@@ -13,15 +13,16 @@ import { HTML5Backend } from 'react-dnd-html5-backend'
 import { useCallback, useState } from "react";
 import { useManagedList } from "../hooks/useManagedList";
 import { useDND } from "../hooks/useDND";
-import ManagedListAPI from "../api/ManagedListAPI";
-import { AxiosTimeboxAPI } from "../api/AxiosTimeboxAPI";
+
+import { useAuthenticationContext } from "../hooks/useAuthenticationContext";
 
 const AutoIndicator = withAutoIndicator(ProgressBar);
-const managedListAPI = new ManagedListAPI(AxiosTimeboxAPI);
+
 
 function Pomodoro() {
-    const [timeboxes, setTimeboxes] = useState([]);
-    const {
+    const [timeboxes, setTimeboxes] = useState([]);  
+    const { apiAccessToken, managedListAPI  } = useAuthenticationContext();    
+    const {   
         isLoading,
         loadingError,
         elements: currentTimebox,
@@ -30,10 +31,12 @@ function Pomodoro() {
         handleSaveListElement: onSaveTimeboxListElement,
         handleStartListElement: onStartTimeboxListElement,
 
-    } = useManagedList(timeboxes, setTimeboxes, managedListAPI);
+    } = useManagedList(timeboxes, setTimeboxes, apiAccessToken, managedListAPI);
 
-    const [onMoveListElement,
-        findElement] = useDND(timeboxes, setTimeboxes);
+
+
+
+    const [onMoveListElement/*,findElement*/] = useDND(timeboxes, setTimeboxes);
 
     // const TimeboxAPI= useTimeboxAPI();
 
