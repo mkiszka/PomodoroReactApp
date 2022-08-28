@@ -36,13 +36,13 @@ function useManagedList(elements, setElements, elementAPI) {
         }
         );
     },
-    [apiAccessToken, elementAPI, setElements]);
+        [apiAccessToken, elementAPI, setElements]);
 
     const handleSaveListElement = useCallback((editedElement) => {
         editedElement.userId = getUserId(apiAccessToken);
         const promise = elementAPI.replaceElement(apiAccessToken, { ...editedElement });
         promise.then(
-            (replacedElement) => {                
+            (replacedElement) => {
                 setElements(
                     (prevElements) => {
 
@@ -54,7 +54,7 @@ function useManagedList(elements, setElements, elementAPI) {
             }
         )
         return promise;
-    },[apiAccessToken, elementAPI,setElements]);
+    }, [apiAccessToken, elementAPI, setElements]);
 
     const handleCreatorAdd = useCallback((timeboxToAdd) => {
         timeboxToAdd.userId = getUserId(apiAccessToken);
@@ -66,7 +66,7 @@ function useManagedList(elements, setElements, elementAPI) {
             )
         });
     },
-    [apiAccessToken,elementAPI,setElements]);
+        [apiAccessToken, elementAPI, setElements]);
 
     const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -74,7 +74,7 @@ function useManagedList(elements, setElements, elementAPI) {
         setCurrentIndex(id);
         //TODOa1 refactor w/w handlerów z (id) na findElement z hooka useDND ? 
         //findElement do czegoś wspólnego przenieść ?
-    },[setCurrentIndex]);
+    }, [setCurrentIndex]);
 
     return {
         isLoading,
