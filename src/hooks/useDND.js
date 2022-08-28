@@ -33,7 +33,7 @@ function useDND(elements,setElements) {
         [findElement, elements, setElements],
     )
 
-    return [handleMoveElement,findElement]
+    return [handleMoveElement/*,findElement*/]
 }
 
 export { useDND };
