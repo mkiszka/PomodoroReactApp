@@ -4,9 +4,28 @@ import {
 } from "react-icons/io5";
 import PropTypes from "prop-types";
 import { v4 as uuidv4 } from "uuid"
-import React from "react";
+import React, { useCallback } from "react";
 
 function NonEditableTimeboxListElement({ timebox, onEdit, onDelete, onStart }) {
+  const handleEdit = useCallback(
+    () => {
+      onEdit(timebox);
+    },
+    [timebox, onEdit],
+  );
+  const handleDelete = useCallback(
+    () => {
+      onDelete(timebox);
+    },
+    [timebox, onDelete],
+  )
+  const handleStart = useCallback(
+    () => {
+      onStart(timebox)
+    },
+    [timebox, onStart],
+  )
+  
   
   return (
     <div      
@@ -16,9 +35,9 @@ function NonEditableTimeboxListElement({ timebox, onEdit, onDelete, onStart }) {
       <div className="TimeboxListElementTitle">{timebox.title}</div>
       <div className="TimeboxListElementTime">{timebox.totalTimeInMinutes} min.</div>
       <div className="TimeboxListElementAction">
-        <IoMenu title="edytuj" className="button-active" onClick={onEdit} />
-        <IoTrashOutline title="usuń" className="button-active" onClick={onDelete} />
-        <IoPushOutline title="start" className="button-active" onClick={onStart} />
+        <IoMenu title="edytuj" className="button-active" onClick={handleEdit} />
+        <IoTrashOutline title="usuń" className="button-active" onClick={handleDelete} />
+        <IoPushOutline title="start" className="button-active" onClick={handleStart} />
       </div>
     </div>
   )

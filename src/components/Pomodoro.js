@@ -10,7 +10,7 @@ import ModalComponent from './ModalComponent';
 import ButtonMessage from './ButtonMessage';
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useManagedList } from "../hooks/useManagedList";
 import { useDND } from "../hooks/useDND";
 import ManagedListAPI from "../api/ManagedListAPI";
@@ -43,9 +43,9 @@ function Pomodoro() {
     //czy jako zmienna stanowa sterująca wyświetlaniem jest ok?
     //2. przekazywanie tekstu do wyświetlenia, czy forma ok?
     const [timeboxToDelete, setTimeboxToDelete] = useState(null);
-    function handleConfirmDeletion(uid) {
-        setTimeboxToDelete(findElement(uid).element);
-    }
+    const handleConfirmDeletion = useCallback((element)  => {       
+        setTimeboxToDelete(element);
+    },[]);
 
 
     function handleCancelConfirmDeletion() {
@@ -67,8 +67,8 @@ function Pomodoro() {
                                 key={elem.uid}
                                 timebox={elem}
                                 onSave={ onSaveTimeboxListElement }
-                                onDelete={() => { handleConfirmDeletion(elem.uid) }}
-                                onStart={() => { onStartTimeboxListElement(index) }}
+                                onDelete={ handleConfirmDeletion }
+                                onStart={onStartTimeboxListElement}
                                 onMoveElement={onMoveListElement}
                             />
                         );

@@ -1,5 +1,5 @@
 import { useAuthenticationContext } from "./useAuthenticationContext";
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { getUserId } from "../utilities/accessToken";
 
 
@@ -25,7 +25,7 @@ function useManagedList(elements, setElements, elementAPI) {
             .finally(() => setIsLoding(false));
     }, [apiAccessToken, elementAPI, setElements]); //ki3 po przejściu na hooka wymusza mi tutaj dodanie TimeboxAPI, czy to naprawde musi być?    
 
-    function handleDeleteListElement(deletedElement) {
+    const handleDeleteListElement = useCallback((deletedElement) => {
 
         elementAPI.removeElement(apiAccessToken, deletedElement).then(() => {
             setElements(
@@ -35,14 +35,14 @@ function useManagedList(elements, setElements, elementAPI) {
             )
         }
         );
-    }
+    },
+        [apiAccessToken, elementAPI, setElements]);
 
-    function handleSaveListElement(editedElement) {
+    const handleSaveListElement = useCallback((editedElement) => {
         editedElement.userId = getUserId(apiAccessToken);
         const promise = elementAPI.replaceElement(apiAccessToken, { ...editedElement });
         promise.then(
             (replacedElement) => {
-                debugger;
                 setElements(
                     (prevElements) => {
 
@@ -54,9 +54,9 @@ function useManagedList(elements, setElements, elementAPI) {
             }
         )
         return promise;
-    }
+    }, [apiAccessToken, elementAPI, setElements]);
 
-    function handleCreatorAdd(timeboxToAdd) {
+    const handleCreatorAdd = useCallback((timeboxToAdd) => {
         timeboxToAdd.userId = getUserId(apiAccessToken);
         elementAPI.addElement(apiAccessToken, { ...timeboxToAdd }).then((timeboxAdded) => {
             setElements(
@@ -65,15 +65,18 @@ function useManagedList(elements, setElements, elementAPI) {
                 }
             )
         });
-    }
+    },
+        [apiAccessToken, elementAPI, setElements]);
 
     const [currentIndex, setCurrentIndex] = useState(0);
 
-    function handleStartListElement(id) {
-        setCurrentIndex(id);
+    const handleStartListElement = useCallback((element) => {
+        debugger;
+        const index = elements.findIndex((felement) => felement.uid === element.uid )
+        setCurrentIndex(index);
         //TODOa1 refactor w/w handlerów z (id) na findElement z hooka useDND ? 
         //findElement do czegoś wspólnego przenieść ?
-    }
+    }, [setCurrentIndex,elements]);
 
     return {
         isLoading,

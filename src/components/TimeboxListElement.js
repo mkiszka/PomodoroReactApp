@@ -33,8 +33,7 @@ function TimeboxListElement({ timebox, onSave, onDelete, onStart, onMoveElement 
   function handleSave(newTimebox) {
     setIsFrozen(true);
     handleEdit();
-    onSave(newTimebox).then(() => {
-      debugger;
+    onSave(newTimebox).then(() => {      
       setIsFrozen(false);
     });
   }
@@ -69,7 +68,7 @@ function TimeboxListElement({ timebox, onSave, onDelete, onStart, onMoveElement 
     [onMoveElement],
   )
   const opacity = isDragging ? 0 : 1
-
+console.log('TimeboxListElement rendered');
   //ki3 0 niestety przy zostawieniu drag tutaj, i wyciągnięciu diva tutaj, komponenty podrzędne stają się niereużywalne,
   //przez chwile myślałem o HOC ? żeby dodać drag and drop, ale jeszcze nie ogarniam
   //opcja - div tylko dla dragging ? ale jak lepiej ?
