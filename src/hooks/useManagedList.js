@@ -2,7 +2,8 @@ import { useCallback, useEffect, useState } from 'react';
 import { getUserId } from "../utilities/accessToken";
 
 export const MANGEDLIST_ACTION = {
-    ELEMENTS_SET: 'ELEMENTS_SET'
+    ELEMENTS_SET: 'ELEMENTS_SET',
+    ELEMENT_REMOVE: 'ELEMENT_REMOVE'
 };
 
 

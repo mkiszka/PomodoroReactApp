@@ -27,7 +27,9 @@ function timeboxesReducer(state,action) {
     switch (action.type) {
         case MANGEDLIST_ACTION.ELEMENTS_SET:
             return { elements: action.elements };            
-    
+        case MANGEDLIST_ACTION.ELEMENT_REMOVE:
+            const elements = state.elements.filter((value) => value.uid === action.element.uid ? false : true);
+            return { elements };
         default:           
             return state;
     }
@@ -41,7 +43,7 @@ const initialState = {
 // }
 function Pomodoro() {
     const [ state, dispatch ] = useReducer(timeboxesReducer,initialState/*,initializeState*/);
-    debugger;
+    
     const [ timeboxes, setTimeboxes] = useState([]);  
     const { apiAccessToken, managedListAPI  } = useAuthenticationContext();    
     const {   
