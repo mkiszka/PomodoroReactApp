@@ -4,7 +4,8 @@ import { getUserId } from "../utilities/accessToken";
 export const MANGEDLIST_ACTION = {
     ELEMENTS_SET: 'ELEMENTS_SET',
     ELEMENT_REMOVE: 'ELEMENT_REMOVE',
-    ELEMENT_ADD: 'ELEMENT_ADD'
+    ELEMENT_ADD: 'ELEMENT_ADD',
+    ELEMENT_REPLACE: 'EMENT_REPLACE'
 };
 
 
@@ -41,20 +42,13 @@ function useManagedList(elements, setElements, apiAccessToken, elementAPI, dispa
     const handleSaveListElement = useCallback((editedElement) => {
         editedElement.userId = getUserId(apiAccessToken);
         const promise = elementAPI.replaceElement(apiAccessToken, { ...editedElement });
-        promise.then(
+        promise.then(            
             (replacedElement) => {
-                setElements(
-                    (prevElements) => {
-
-                        return prevElements.map((value) => { //TODOa1 tego mapa spróbować zedytować według uwag z konsultacji
-                            return value.uid === editedElement.uid ? { ...editedElement } : value
-                        })
-                    }
-                )
+                dispatch({ type: MANGEDLIST_ACTION.ELEMENT_REPLACE, element: replacedElement })               
             }
         )
         return promise;
-    }, [apiAccessToken, elementAPI, setElements]);
+    }, [apiAccessToken, elementAPI, dispatch]);
 
     const handleCreatorAdd = useCallback((elementToAdd) => {
         elementToAdd.userId = getUserId(apiAccessToken);
