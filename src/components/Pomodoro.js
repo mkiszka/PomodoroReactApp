@@ -12,7 +12,7 @@ import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { useCallback, useReducer, useState } from "react";
 import { useManagedList, MANGEDLIST_ACTION } from "../hooks/useManagedList";
-import { useDND } from "../hooks/useDND";
+import update from 'immutability-helper';
 
 import { useAuthenticationContext } from "../hooks/useAuthenticationContext";
 
@@ -23,7 +23,18 @@ const AutoIndicator = withAutoIndicator(ProgressBar);
 //do akcji przekazywać obiekty zwracane przez API - czyli jak coś usuwam to nie przekazuje indexu tylko cały obiekt usunięty i po uid go znajdę, tak samo przy zmianie i dodawaniu
 //przenieść reducera i initial state do osobnego pliku, i tak żeby nie musieć eksportować initial state (inicjalizować state w reducers.js)
 //
-function timeboxesReducer(state, action) {
+function findElement(elements, uid) {
+    const element = elements.filter(
+        (element) => {
+            return `${element.uid}` === uid;
+        }
+    )[0]
+    return {
+        element,
+        index: elements.indexOf(element),
+    }
+};
+function timeboxesReducer(state, action) {    
     switch (action.type) {
         case MANGEDLIST_ACTION.ELEMENTS_SET:
             return { ...state, elements: action.elements, currentCountdownElment: action.elements.length > 0 ? action.elements[0] : null };
@@ -46,6 +57,18 @@ function timeboxesReducer(state, action) {
             //findElement do czegoś wspólnego przenieść ?
 
             return { ...state, currentCountdownElment: state.elements[index] }
+        }
+        case MANGEDLIST_ACTION.ELEMENT_MOVE: 
+        {            
+            const { element, index } = findElement(state.elements, action.uid)
+            const { /*element: atElement,*/ index: atIndex } = findElement(state.elements, action.atUid)
+            const elements =  update(state.elements, {
+                                    $splice: [
+                                        [index, 1],
+                                        [atIndex, 0, element],
+                                    ],
+                                });
+            return { ...state, elements };
         }
         default:
             return state;
@@ -71,14 +94,10 @@ function Pomodoro() {
         handleDeleteListElement: onDeleteTimeboxListElement,
         handleSaveListElement: onSaveTimeboxListElement,
         handleStartListElement: onStartTimeboxListElement,
+        handleMoveElement: onMoveListElement
 
     } = useManagedList(apiAccessToken, managedListAPI, dispatch);
-
-
-
-    //!!!!!!!!!!!!!!!!!!!!!!! useDND do poprawy dla reducera
-    const [onMoveListElement/*,findElement*/] = useDND(state.elements, setTimeboxes);
-
+  
     // const TimeboxAPI= useTimeboxAPI();
 
     //ki3 - 
@@ -104,7 +123,7 @@ function Pomodoro() {
                 {loadingError ? <ErrorMessage error={loadingError} /> : ""}
                 {isLoading ? <AutoIndicator refresh="10" /> : ""}
                 <Timebox timebox={state.currentCountdownElment} />
-                <TimeboxList timeboxes={timeboxes}> {/*TODO props timeboxes raczej do uczunięcia */}
+                <TimeboxList>
                     {state.elements?.map((elem, index) => {
                         return (
                             <TimeboxListElement

@@ -6,6 +6,7 @@ export const MANGEDLIST_ACTION = {
     ELEMENT_REMOVE: 'ELEMENT_REMOVE',
     ELEMENT_ADD: 'ELEMENT_ADD',
     ELEMENT_REPLACE: 'EMENT_REPLACE',
+    ELEMENT_MOVE: 'ELEMENT_MOVE',
     CURRENT_COUNTDOWN_ELEMENT_SET: 'CURRENT_COUNTDOWN_ELEMENT_SET'
 };
 
@@ -62,13 +63,24 @@ function useManagedList(apiAccessToken, elementAPI, dispatch) {
         dispatch({ type: MANGEDLIST_ACTION.CURRENT_COUNTDOWN_ELEMENT_SET, element });
     }, [dispatch]);
 
+    
+    const handleMoveElement = useCallback(
+        (uid, atUid) => {
+            dispatch({ type: MANGEDLIST_ACTION.ELEMENT_MOVE, uid, atUid })       
+        },
+        [dispatch],
+    )
+
+
+
     return {
         isLoading,
         loadingError,
         handleCreatorAdd,
         handleDeleteListElement,
         handleSaveListElement,
-        handleStartListElement
+        handleStartListElement,
+        handleMoveElement
     }
 };
 
