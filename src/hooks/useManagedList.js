@@ -1,10 +1,14 @@
 import { useCallback, useEffect, useState } from 'react';
 import { getUserId } from "../utilities/accessToken";
 
+export const MANGEDLIST_ACTION = {
+    ELEMENTS_SET: 'ELEMENTS_SET'
+};
 
-function useManagedList(elements, setElements, apiAccessToken, elementAPI) {
+
+function useManagedList(elements, setElements, apiAccessToken, elementAPI, dispatch) {
     console.log('useManagedList')
-    
+
 
     const [isLoading, setIsLoding] = useState(true);
     const [loadingError, setLoadingError] = useState(null);
@@ -13,27 +17,24 @@ function useManagedList(elements, setElements, apiAccessToken, elementAPI) {
     // const TimeboxAPI = useTimeboxAPI();
     //const [TimeboxAPI] = useTimeboxAPI();
 
-    useEffect(() => {       
+    useEffect(() => {
         elementAPI.getAllElements(apiAccessToken)
             .then((fetchedElements) => {
-                setElements(fetchedElements);
+                //r: setElements(fetchedElements);
+                dispatch({ type: MANGEDLIST_ACTION.ELEMENTS_SET, elements: fetchedElements });
             })
             .catch((error) => setLoadingError(error))
             .finally(() => setIsLoding(false));
-    }, [apiAccessToken, elementAPI, setElements]);
+    }, [apiAccessToken,elementAPI,dispatch]);
 
     const handleDeleteListElement = useCallback((deletedElement) => {
 
         elementAPI.removeElement(apiAccessToken, deletedElement).then(() => {
-            setElements(
-                (prevTimeboxes) => {
-                    return prevTimeboxes.filter((value, index) => value.uid === deletedElement.uid ? false : true);;
-                }
-            )
+            dispatch({ type: MANGEDLIST_ACTION.ELEMENT_REMOVE, element: deletedElement})         
         }
         );
     },
-        [apiAccessToken, elementAPI, setElements]);
+        [apiAccessToken, elementAPI, dispatch]);
 
     const handleSaveListElement = useCallback((editedElement) => {
         editedElement.userId = getUserId(apiAccessToken);
@@ -69,11 +70,11 @@ function useManagedList(elements, setElements, apiAccessToken, elementAPI) {
 
     const handleStartListElement = useCallback((element) => {
         debugger;
-        const index = elements.findIndex((felement) => felement.uid === element.uid )
+        const index = elements.findIndex((felement) => felement.uid === element.uid)
         setCurrentIndex(index);
         //TODOa1 refactor w/w handlerów z (id) na findElement z hooka useDND ? 
         //findElement do czegoś wspólnego przenieść ?
-    }, [setCurrentIndex,elements]);
+    }, [setCurrentIndex, elements]);
 
     return {
         isLoading,

@@ -10,8 +10,8 @@ import ModalComponent from './ModalComponent';
 import ButtonMessage from './ButtonMessage';
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
-import { useCallback, useState } from "react";
-import { useManagedList } from "../hooks/useManagedList";
+import { useCallback, useReducer, useState } from "react";
+import { useManagedList, MANGEDLIST_ACTION } from "../hooks/useManagedList";
 import { useDND } from "../hooks/useDND";
 
 import { useAuthenticationContext } from "../hooks/useAuthenticationContext";
@@ -23,8 +23,26 @@ const AutoIndicator = withAutoIndicator(ProgressBar);
 //do akcji przekazywać obiekty zwracane przez API - czyli jak coś usuwam to nie przekazuje indexu tylko cały obiekt usunięty i po uid go znajdę, tak samo przy zmianie i dodawaniu
 //przenieść reducera i initial state do osobnego pliku, i tak żeby nie musieć eksportować initial state (inicjalizować state w reducers.js)
 //
+function timeboxesReducer(state,action) {
+    switch (action.type) {
+        case MANGEDLIST_ACTION.ELEMENTS_SET:
+            return { elements: action.elements };            
+    
+        default:           
+            return state;
+    }
+}
+const initialState = {
+    elements: [],
+    
+}
+// function initializeState(arg_initialState) { 
+//     return arg_initialState;
+// }
 function Pomodoro() {
-    const [timeboxes, setTimeboxes] = useState([]);  
+    const [ state, dispatch ] = useReducer(timeboxesReducer,initialState/*,initializeState*/);
+    debugger;
+    const [ timeboxes, setTimeboxes] = useState([]);  
     const { apiAccessToken, managedListAPI  } = useAuthenticationContext();    
     const {   
         isLoading,
@@ -35,12 +53,12 @@ function Pomodoro() {
         handleSaveListElement: onSaveTimeboxListElement,
         handleStartListElement: onStartTimeboxListElement,
 
-    } = useManagedList(timeboxes, setTimeboxes, apiAccessToken, managedListAPI);
+    } = useManagedList(timeboxes, setTimeboxes, apiAccessToken, managedListAPI, dispatch);
 
 
 
-
-    const [onMoveListElement/*,findElement*/] = useDND(timeboxes, setTimeboxes);
+    //!!!!!!!!!!!!!!!!!!!!!!! useDND do poprawy dla reducera
+    const [onMoveListElement/*,findElement*/] = useDND(state.elements, setTimeboxes);
 
     // const TimeboxAPI= useTimeboxAPI();
 
@@ -67,8 +85,8 @@ function Pomodoro() {
                 {loadingError ? <ErrorMessage error={loadingError} /> : ""}
                 {isLoading ? <AutoIndicator refresh="10" /> : ""}
                 <Timebox timebox={currentTimebox} />
-                <TimeboxList timeboxes={timeboxes}>
-                    {timeboxes?.map((elem, index) => {
+                <TimeboxList timeboxes={timeboxes}> {/*TODO props timeboxes raczej do uczunięcia */}
+                    {state.elements?.map((elem, index) => {
                         return (
                             <TimeboxListElement
                                 key={elem.uid}
