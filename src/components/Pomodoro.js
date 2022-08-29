@@ -17,8 +17,12 @@ import { useDND } from "../hooks/useDND";
 import { useAuthenticationContext } from "../hooks/useAuthenticationContext";
 
 const AutoIndicator = withAutoIndicator(ProgressBar);
-
-
+//useReducer
+//wyciągnięcia wszystkich akcji do reducera
+//usuwanie na podstawie uid a nie index
+//do akcji przekazywać obiekty zwracane przez API - czyli jak coś usuwam to nie przekazuje indexu tylko cały obiekt usunięty i po uid go znajdę, tak samo przy zmianie i dodawaniu
+//przenieść reducera i initial state do osobnego pliku, i tak żeby nie musieć eksportować initial state (inicjalizować state w reducers.js)
+//
 function Pomodoro() {
     const [timeboxes, setTimeboxes] = useState([]);  
     const { apiAccessToken, managedListAPI  } = useAuthenticationContext();    
