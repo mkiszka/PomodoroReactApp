@@ -23,20 +23,24 @@ const AutoIndicator = withAutoIndicator(ProgressBar);
 //do akcji przekazywać obiekty zwracane przez API - czyli jak coś usuwam to nie przekazuje indexu tylko cały obiekt usunięty i po uid go znajdę, tak samo przy zmianie i dodawaniu
 //przenieść reducera i initial state do osobnego pliku, i tak żeby nie musieć eksportować initial state (inicjalizować state w reducers.js)
 //
-function timeboxesReducer(state,action) {
+function timeboxesReducer(state, action) {
     switch (action.type) {
         case MANGEDLIST_ACTION.ELEMENTS_SET:
-            return { elements: action.elements };            
-        case MANGEDLIST_ACTION.ELEMENT_REMOVE:
+            return { elements: action.elements };
+        case MANGEDLIST_ACTION.ELEMENT_REMOVE: {
             const elements = state.elements.filter((value) => value.uid === action.element.uid ? false : true);
             return { elements };
-        default:           
+        }
+        case MANGEDLIST_ACTION.ELEMENT_ADD: {
+            return { elements: [...state.elements, action.element] }
+        }
+        default:
             return state;
     }
 }
 const initialState = {
     elements: [],
-    
+
 }
 // function initializeState(arg_initialState) { 
 //     return arg_initialState;
@@ -70,9 +74,9 @@ function Pomodoro() {
     //czy jako zmienna stanowa sterująca wyświetlaniem jest ok?
     //2. przekazywanie tekstu do wyświetlenia, czy forma ok?
     const [timeboxToDelete, setTimeboxToDelete] = useState(null);
-    const handleConfirmDeletion = useCallback((element)  => {       
+    const handleConfirmDeletion = useCallback((element) => {
         setTimeboxToDelete(element);
-    },[]);
+    }, []);
 
 
     function handleCancelConfirmDeletion() {
@@ -93,8 +97,8 @@ function Pomodoro() {
                             <TimeboxListElement
                                 key={elem.uid}
                                 timebox={elem}
-                                onSave={ onSaveTimeboxListElement }
-                                onDelete={ handleConfirmDeletion }
+                                onSave={onSaveTimeboxListElement}
+                                onDelete={handleConfirmDeletion}
                                 onStart={onStartTimeboxListElement}
                                 onMoveElement={onMoveListElement}
                             />

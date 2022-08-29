@@ -3,7 +3,8 @@ import { getUserId } from "../utilities/accessToken";
 
 export const MANGEDLIST_ACTION = {
     ELEMENTS_SET: 'ELEMENTS_SET',
-    ELEMENT_REMOVE: 'ELEMENT_REMOVE'
+    ELEMENT_REMOVE: 'ELEMENT_REMOVE',
+    ELEMENT_ADD: 'ELEMENT_ADD'
 };
 
 
@@ -55,17 +56,12 @@ function useManagedList(elements, setElements, apiAccessToken, elementAPI, dispa
         return promise;
     }, [apiAccessToken, elementAPI, setElements]);
 
-    const handleCreatorAdd = useCallback((timeboxToAdd) => {
-        timeboxToAdd.userId = getUserId(apiAccessToken);
-        elementAPI.addElement(apiAccessToken, { ...timeboxToAdd }).then((timeboxAdded) => {
-            setElements(
-                (prevTimeboxes) => {
-                    return [...prevTimeboxes, timeboxAdded];
-                }
-            )
+    const handleCreatorAdd = useCallback((elementToAdd) => {
+        elementToAdd.userId = getUserId(apiAccessToken);
+        elementAPI.addElement(apiAccessToken, { ...elementToAdd }).then((elementAdded) => {        
+            dispatch({ type: MANGEDLIST_ACTION.ELEMENT_ADD, element: elementAdded });            
         });
-    },
-        [apiAccessToken, elementAPI, setElements]);
+    },[apiAccessToken, elementAPI, dispatch]);
 
     const [currentIndex, setCurrentIndex] = useState(0);
 
