@@ -35,7 +35,7 @@ function timeboxesReducer(state, action) {
             return { elements: [...state.elements, action.element] }
         }
         case MANGEDLIST_ACTION.ELEMENT_REPLACE: {
-            const elements =state.elements.map((value) => { //TODOa1 tego mapa spróbować zedytować według uwag z konsultacji
+            const elements = state.elements.map((value) => { //TODOa1 tego mapa spróbować zedytować według uwag z konsultacji
                 return value.uid === action.element.uid ? { ...action.element } : value
             })
             return { elements };

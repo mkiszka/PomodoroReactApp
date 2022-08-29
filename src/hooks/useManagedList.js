@@ -28,12 +28,12 @@ function useManagedList(elements, setElements, apiAccessToken, elementAPI, dispa
             })
             .catch((error) => setLoadingError(error))
             .finally(() => setIsLoding(false));
-    }, [apiAccessToken,elementAPI,dispatch]);
+    }, [apiAccessToken, elementAPI, dispatch]);
 
     const handleDeleteListElement = useCallback((deletedElement) => {
 
         elementAPI.removeElement(apiAccessToken, deletedElement).then(() => {
-            dispatch({ type: MANGEDLIST_ACTION.ELEMENT_REMOVE, element: deletedElement})         
+            dispatch({ type: MANGEDLIST_ACTION.ELEMENT_REMOVE, element: deletedElement })
         }
         );
     },
@@ -42,9 +42,9 @@ function useManagedList(elements, setElements, apiAccessToken, elementAPI, dispa
     const handleSaveListElement = useCallback((editedElement) => {
         editedElement.userId = getUserId(apiAccessToken);
         const promise = elementAPI.replaceElement(apiAccessToken, { ...editedElement });
-        promise.then(            
+        promise.then(
             (replacedElement) => {
-                dispatch({ type: MANGEDLIST_ACTION.ELEMENT_REPLACE, element: replacedElement })               
+                dispatch({ type: MANGEDLIST_ACTION.ELEMENT_REPLACE, element: replacedElement })
             }
         )
         return promise;
@@ -52,10 +52,10 @@ function useManagedList(elements, setElements, apiAccessToken, elementAPI, dispa
 
     const handleCreatorAdd = useCallback((elementToAdd) => {
         elementToAdd.userId = getUserId(apiAccessToken);
-        elementAPI.addElement(apiAccessToken, { ...elementToAdd }).then((elementAdded) => {        
-            dispatch({ type: MANGEDLIST_ACTION.ELEMENT_ADD, element: elementAdded });            
+        elementAPI.addElement(apiAccessToken, { ...elementToAdd }).then((elementAdded) => {
+            dispatch({ type: MANGEDLIST_ACTION.ELEMENT_ADD, element: elementAdded });
         });
-    },[apiAccessToken, elementAPI, dispatch]);
+    }, [apiAccessToken, elementAPI, dispatch]);
 
     const [currentIndex, setCurrentIndex] = useState(0);
 
