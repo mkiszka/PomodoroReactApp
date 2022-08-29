@@ -9,7 +9,7 @@ export const MANGEDLIST_ACTION = {
 };
 
 
-function useManagedList(elements, setElements, apiAccessToken, elementAPI, dispatch) {
+function useManagedList(elements, apiAccessToken, elementAPI, dispatch) {
     console.log('useManagedList')
 
 
@@ -22,8 +22,7 @@ function useManagedList(elements, setElements, apiAccessToken, elementAPI, dispa
 
     useEffect(() => {
         elementAPI.getAllElements(apiAccessToken)
-            .then((fetchedElements) => {
-                //r: setElements(fetchedElements);
+            .then((fetchedElements) => {             
                 dispatch({ type: MANGEDLIST_ACTION.ELEMENTS_SET, elements: fetchedElements });
             })
             .catch((error) => setLoadingError(error))

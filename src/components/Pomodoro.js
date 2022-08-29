@@ -65,7 +65,7 @@ function Pomodoro() {
         handleSaveListElement: onSaveTimeboxListElement,
         handleStartListElement: onStartTimeboxListElement,
 
-    } = useManagedList(timeboxes, setTimeboxes, apiAccessToken, managedListAPI, dispatch);
+    } = useManagedList(timeboxes, apiAccessToken, managedListAPI, dispatch);
 
 
 
