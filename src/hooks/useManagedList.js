@@ -10,7 +10,7 @@ export const MANGEDLIST_ACTION = {
 };
 
 
-function useManagedList(elements, apiAccessToken, elementAPI, dispatch) {
+function useManagedList(apiAccessToken, elementAPI, dispatch) {
     console.log('useManagedList')
 
 
