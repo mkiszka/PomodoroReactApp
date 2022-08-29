@@ -34,7 +34,7 @@ function findElement(elements, uid) {
         index: elements.indexOf(element),
     }
 };
-function timeboxesReducer(state, action) {    
+function timeboxesReducer(state, action) {
     switch (action.type) {
         case MANGEDLIST_ACTION.ELEMENTS_SET:
             return { ...state, elements: action.elements, currentCountdownElment: action.elements.length > 0 ? action.elements[0] : null };
@@ -58,18 +58,18 @@ function timeboxesReducer(state, action) {
 
             return { ...state, currentCountdownElment: state.elements[index] }
         }
-        case MANGEDLIST_ACTION.ELEMENT_MOVE: 
-        {            
-            const { element, index } = findElement(state.elements, action.uid)
-            const { /*element: atElement,*/ index: atIndex } = findElement(state.elements, action.atUid)
-            const elements =  update(state.elements, {
-                                    $splice: [
-                                        [index, 1],
-                                        [atIndex, 0, element],
-                                    ],
-                                });
-            return { ...state, elements };
-        }
+        case MANGEDLIST_ACTION.ELEMENT_MOVE:
+            {
+                const { element, index } = findElement(state.elements, action.uid)
+                const { /*element: atElement,*/ index: atIndex } = findElement(state.elements, action.atUid)
+                const elements = update(state.elements, {
+                    $splice: [
+                        [index, 1],
+                        [atIndex, 0, element],
+                    ],
+                });
+                return { ...state, elements };
+            }
         default:
             return state;
     }
@@ -97,7 +97,7 @@ function Pomodoro() {
         handleMoveElement: onMoveListElement
 
     } = useManagedList(apiAccessToken, managedListAPI, dispatch);
-  
+
     // const TimeboxAPI= useTimeboxAPI();
 
     //ki3 - 

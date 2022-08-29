@@ -63,10 +63,10 @@ function useManagedList(apiAccessToken, elementAPI, dispatch) {
         dispatch({ type: MANGEDLIST_ACTION.CURRENT_COUNTDOWN_ELEMENT_SET, element });
     }, [dispatch]);
 
-    
+
     const handleMoveElement = useCallback(
         (uid, atUid) => {
-            dispatch({ type: MANGEDLIST_ACTION.ELEMENT_MOVE, uid, atUid })       
+            dispatch({ type: MANGEDLIST_ACTION.ELEMENT_MOVE, uid, atUid })
         },
         [dispatch],
     )
