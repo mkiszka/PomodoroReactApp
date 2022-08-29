@@ -5,7 +5,8 @@ export const MANGEDLIST_ACTION = {
     ELEMENTS_SET: 'ELEMENTS_SET',
     ELEMENT_REMOVE: 'ELEMENT_REMOVE',
     ELEMENT_ADD: 'ELEMENT_ADD',
-    ELEMENT_REPLACE: 'EMENT_REPLACE'
+    ELEMENT_REPLACE: 'EMENT_REPLACE',
+    CURRENT_COUNTDOWN_ELEMENT_SET: 'CURRENT_COUNTDOWN_ELEMENT_SET'
 };
 
 
@@ -55,21 +56,15 @@ function useManagedList(elements, apiAccessToken, elementAPI, dispatch) {
             dispatch({ type: MANGEDLIST_ACTION.ELEMENT_ADD, element: elementAdded });
         });
     }, [apiAccessToken, elementAPI, dispatch]);
-
-    const [currentIndex, setCurrentIndex] = useState(0);
-
+   
     const handleStartListElement = useCallback((element) => {
-        debugger;
-        const index = elements.findIndex((felement) => felement.uid === element.uid)
-        setCurrentIndex(index);
-        //TODOa1 refactor w/w handlerów z (id) na findElement z hooka useDND ? 
-        //findElement do czegoś wspólnego przenieść ?
-    }, [setCurrentIndex, elements]);
+        //debugger;
+        dispatch( { type: MANGEDLIST_ACTION.CURRENT_COUNTDOWN_ELEMENT_SET, element });        
+    }, [dispatch]);
 
     return {
         isLoading,
-        loadingError,
-        elements: ((elements.length > 0) ? elements[currentIndex] : null),
+        loadingError,        
         handleCreatorAdd,
         handleDeleteListElement,
         handleSaveListElement,

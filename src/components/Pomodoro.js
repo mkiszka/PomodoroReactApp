@@ -26,19 +26,26 @@ const AutoIndicator = withAutoIndicator(ProgressBar);
 function timeboxesReducer(state, action) {
     switch (action.type) {
         case MANGEDLIST_ACTION.ELEMENTS_SET:
-            return { elements: action.elements };
+            return { ...state, elements: action.elements, currentCountdownElment: action.elements.length > 0?action.elements[0]:null };
         case MANGEDLIST_ACTION.ELEMENT_REMOVE: {
             const elements = state.elements.filter((value) => value.uid === action.element.uid ? false : true);
-            return { elements };
+            return { ...state, elements };
         }
         case MANGEDLIST_ACTION.ELEMENT_ADD: {
-            return { elements: [...state.elements, action.element] }
+            return { ...state, elements: [...state.elements, action.element] }
         }
         case MANGEDLIST_ACTION.ELEMENT_REPLACE: {
             const elements = state.elements.map((value) => { //TODOa1 tego mapa spróbować zedytować według uwag z konsultacji
                 return value.uid === action.element.uid ? { ...action.element } : value
             })
-            return { elements };
+            return { ...state, elements };
+        }
+        case MANGEDLIST_ACTION.CURRENT_COUNTDOWN_ELEMENT_SET: {
+            const index = state.elements.findIndex((comparableElement) => comparableElement.uid === action.element.uid);
+         //TODOa1 refactor w/w handlerów z (id) na findElement z hooka useDND ? 
+        //findElement do czegoś wspólnego przenieść ?
+
+            return { ...state, currentCountdownElment: state.elements[index] }
         }
         default:
             return state;
@@ -46,6 +53,7 @@ function timeboxesReducer(state, action) {
 }
 const initialState = {
     elements: [],
+    currentCountdownElment: null
 
 }
 // function initializeState(arg_initialState) { 
@@ -58,8 +66,7 @@ function Pomodoro() {
     const { accessToken: apiAccessToken, managedListAPI } = useAuthenticationContext();
     const {
         isLoading,
-        loadingError,
-        elements: currentTimebox,
+        loadingError,    
         handleCreatorAdd: onAddTimeboxElement,
         handleDeleteListElement: onDeleteTimeboxListElement,
         handleSaveListElement: onSaveTimeboxListElement,
@@ -96,7 +103,7 @@ function Pomodoro() {
                 <TimeboxCreator onAdd={onAddTimeboxElement} />
                 {loadingError ? <ErrorMessage error={loadingError} /> : ""}
                 {isLoading ? <AutoIndicator refresh="10" /> : ""}
-                <Timebox timebox={currentTimebox} />
+                <Timebox timebox={state.currentCountdownElment} />
                 <TimeboxList timeboxes={timeboxes}> {/*TODO props timeboxes raczej do uczunięcia */}
                     {state.elements?.map((elem, index) => {
                         return (
