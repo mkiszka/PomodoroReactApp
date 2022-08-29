@@ -23,7 +23,7 @@ function useManagedList(elements, apiAccessToken, elementAPI, dispatch) {
 
     useEffect(() => {
         elementAPI.getAllElements(apiAccessToken)
-            .then((fetchedElements) => {             
+            .then((fetchedElements) => {
                 dispatch({ type: MANGEDLIST_ACTION.ELEMENTS_SET, elements: fetchedElements });
             })
             .catch((error) => setLoadingError(error))
@@ -56,15 +56,15 @@ function useManagedList(elements, apiAccessToken, elementAPI, dispatch) {
             dispatch({ type: MANGEDLIST_ACTION.ELEMENT_ADD, element: elementAdded });
         });
     }, [apiAccessToken, elementAPI, dispatch]);
-   
+
     const handleStartListElement = useCallback((element) => {
         //debugger;
-        dispatch( { type: MANGEDLIST_ACTION.CURRENT_COUNTDOWN_ELEMENT_SET, element });        
+        dispatch({ type: MANGEDLIST_ACTION.CURRENT_COUNTDOWN_ELEMENT_SET, element });
     }, [dispatch]);
 
     return {
         isLoading,
-        loadingError,        
+        loadingError,
         handleCreatorAdd,
         handleDeleteListElement,
         handleSaveListElement,

@@ -26,7 +26,7 @@ const AutoIndicator = withAutoIndicator(ProgressBar);
 function timeboxesReducer(state, action) {
     switch (action.type) {
         case MANGEDLIST_ACTION.ELEMENTS_SET:
-            return { ...state, elements: action.elements, currentCountdownElment: action.elements.length > 0?action.elements[0]:null };
+            return { ...state, elements: action.elements, currentCountdownElment: action.elements.length > 0 ? action.elements[0] : null };
         case MANGEDLIST_ACTION.ELEMENT_REMOVE: {
             const elements = state.elements.filter((value) => value.uid === action.element.uid ? false : true);
             return { ...state, elements };
@@ -42,8 +42,8 @@ function timeboxesReducer(state, action) {
         }
         case MANGEDLIST_ACTION.CURRENT_COUNTDOWN_ELEMENT_SET: {
             const index = state.elements.findIndex((comparableElement) => comparableElement.uid === action.element.uid);
-         //TODOa1 refactor w/w handlerów z (id) na findElement z hooka useDND ? 
-        //findElement do czegoś wspólnego przenieść ?
+            //TODOa1 refactor w/w handlerów z (id) na findElement z hooka useDND ? 
+            //findElement do czegoś wspólnego przenieść ?
 
             return { ...state, currentCountdownElment: state.elements[index] }
         }
@@ -66,7 +66,7 @@ function Pomodoro() {
     const { accessToken: apiAccessToken, managedListAPI } = useAuthenticationContext();
     const {
         isLoading,
-        loadingError,    
+        loadingError,
         handleCreatorAdd: onAddTimeboxElement,
         handleDeleteListElement: onDeleteTimeboxListElement,
         handleSaveListElement: onSaveTimeboxListElement,
