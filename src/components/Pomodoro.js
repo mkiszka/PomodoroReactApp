@@ -46,11 +46,11 @@ const initialState = {
 //     return arg_initialState;
 // }
 function Pomodoro() {
-    const [ state, dispatch ] = useReducer(timeboxesReducer,initialState/*,initializeState*/);
-    
-    const [ timeboxes, setTimeboxes] = useState([]);  
-    const { apiAccessToken, managedListAPI  } = useAuthenticationContext();    
-    const {   
+    const [state, dispatch] = useReducer(timeboxesReducer, initialState/*,initializeState*/);
+
+    const [timeboxes, setTimeboxes] = useState([]);
+    const { accessToken: apiAccessToken, managedListAPI } = useAuthenticationContext();
+    const {
         isLoading,
         loadingError,
         elements: currentTimebox,
