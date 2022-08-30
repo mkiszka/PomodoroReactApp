@@ -17,12 +17,10 @@ import update from 'immutability-helper';
 import { useAuthenticationContext } from "../hooks/useAuthenticationContext";
 
 const AutoIndicator = withAutoIndicator(ProgressBar);
-//useReducer
-//wyciągnięcia wszystkich akcji do reducera
-//usuwanie na podstawie uid a nie index
-//do akcji przekazywać obiekty zwracane przez API - czyli jak coś usuwam to nie przekazuje indexu tylko cały obiekt usunięty i po uid go znajdę, tak samo przy zmianie i dodawaniu
-//przenieść reducera i initial state do osobnego pliku, i tak żeby nie musieć eksportować initial state (inicjalizować state w reducers.js)
-//
+//TODO isLoading i loading error do redura
+//generatory akcji i przeniesienie ich do jednego pliku (Action.js)
+//selektory akcji
+//dla pamięci currentTimebox na reduera zmienić i generaory oraz selektory ?
 function findElement(elements, uid) {
     const element = elements.filter(
         (element) => {
