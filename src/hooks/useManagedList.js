@@ -7,28 +7,24 @@ export const MANGEDLIST_ACTION = {
     ELEMENT_ADD: 'ELEMENT_ADD',
     ELEMENT_REPLACE: 'EMENT_REPLACE',
     ELEMENT_MOVE: 'ELEMENT_MOVE',
-    CURRENT_COUNTDOWN_ELEMENT_SET: 'CURRENT_COUNTDOWN_ELEMENT_SET'
+    CURRENT_COUNTDOWN_ELEMENT_SET: 'CURRENT_COUNTDOWN_ELEMENT_SET',
+    LOADING_STATUS_TRUE: 'LOADING_STATUS_TRUE',
+    LOADING_STATUS_FALSE: 'LOADING_STATUS_FALSE',
+    LOADING_ERROR_SET: 'LOADING_ERROR_SET'
 };
 
 
 function useManagedList(apiAccessToken, elementAPI, dispatch) {
     console.log('useManagedList')
-
-
-    const [isLoading, setIsLoding] = useState(true);
-    const [loadingError, setLoadingError] = useState(null);
-
-
-    // const TimeboxAPI = useTimeboxAPI();
-    //const [TimeboxAPI] = useTimeboxAPI();
-
+  
     useEffect(() => {
+        dispatch({ type: MANGEDLIST_ACTION.LOADING_STATUS_TRUE });
         elementAPI.getAllElements(apiAccessToken)
             .then((fetchedElements) => {
                 dispatch({ type: MANGEDLIST_ACTION.ELEMENTS_SET, elements: fetchedElements });
             })
-            .catch((error) => setLoadingError(error))
-            .finally(() => setIsLoding(false));
+            .catch((error) => dispatch({ type: MANGEDLIST_ACTION.LOADING_ERROR_SET, loadingError: error }))
+            .finally(() => dispatch({ type: MANGEDLIST_ACTION.LOADING_STATUS_FALSE }) );
     }, [apiAccessToken, elementAPI, dispatch]);
 
     const handleDeleteListElement = useCallback((deletedElement) => {
@@ -73,9 +69,7 @@ function useManagedList(apiAccessToken, elementAPI, dispatch) {
 
 
 
-    return {
-        isLoading,
-        loadingError,
+    return {    
         handleCreatorAdd,
         handleDeleteListElement,
         handleSaveListElement,

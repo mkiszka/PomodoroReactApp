@@ -68,13 +68,26 @@ function timeboxesReducer(state, action) {
                 });
                 return { ...state, elements };
             }
+        case MANGEDLIST_ACTION.LOADING_STATUS_FALSE: {
+            debugger;
+            return { ...state, isLoading: false };
+        }
+        case MANGEDLIST_ACTION.LOADING_STATUS_TRUE: {
+            debugger;
+            return { ...state, isLoading: true };
+        }
+        case MANGEDLIST_ACTION.LOADING_ERROR_SET: {
+            return { ...state, loadingError: action.loadingError };
+        }
         default:
             return state;
     }
 }
 const initialState = {
     elements: [],
-    currentCountdownElment: null
+    currentCountdownElment: null,
+    isLoading: false,
+    loadingError: null
 
 }
 // function initializeState(arg_initialState) { 
@@ -84,8 +97,6 @@ function Pomodoro() {
     const [state, dispatch] = useReducer(timeboxesReducer, initialState/*,initializeState*/);   
     const { accessToken: apiAccessToken, managedListAPI } = useAuthenticationContext();
     const {
-        isLoading,
-        loadingError,
         handleCreatorAdd: onAddTimeboxElement,
         handleDeleteListElement: onDeleteTimeboxListElement,
         handleSaveListElement: onSaveTimeboxListElement,
@@ -116,8 +127,8 @@ function Pomodoro() {
         <>
             <DndProvider backend={HTML5Backend}>
                 <TimeboxCreator onAdd={onAddTimeboxElement} />
-                {loadingError ? <ErrorMessage error={loadingError} /> : ""}
-                {isLoading ? <AutoIndicator refresh="10" /> : ""}
+                {state.loadingError ? <ErrorMessage error={state.ButtonMessageloadingError} /> : ""}
+                {state.isLoading ? <AutoIndicator refresh="10" /> : ""}
                 <Timebox timebox={state.currentCountdownElment} />
                 <TimeboxList>
                     {state.elements?.map((elem, index) => {
