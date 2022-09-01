@@ -1,5 +1,5 @@
-import { MANGEDLIST_ACTION } from "./hooks/useManagedList";
 import update from 'immutability-helper';
+import { MANGEDLIST_ACTION } from './managedListActions';
 
 //TODO 
 //generatory akcji i przeniesienie ich do jednego pliku (Action.js)
@@ -78,6 +78,8 @@ export const initialState = {
 export const isLoadingError = (state) => state.loadingError ? true : false ;
 export const getLoadingError = (state) => state.loadingError;
 export const isLoading = (state) => state.isLoading;
+export const getAllElements = (state) => state.elements;
+export const getCurrentCountdownElement = (state) => state.currentCountdownElment;
 // function initializeState(arg_initialState) { 
 //     return arg_initialState;
 // }

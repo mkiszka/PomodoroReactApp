@@ -54,7 +54,7 @@ function Pomodoro() {
             <DndProvider backend={HTML5Backend}>
                 <TimeboxCreator onAdd={onAddTimeboxElement} />
                 {isLoadingError(state) ? <ErrorMessage error={getLoadingError(state)} /> : ""}
-                {isLoading() ? <AutoIndicator refresh="10" /> : ""}
+                {isLoading(state) ? <AutoIndicator refresh="10" /> : ""}
                 <Timebox timebox={getCurrentCountdownElement(state)} />
                 <TimeboxList>
                     {getAllElements(state)?.map((elem, index) => {
