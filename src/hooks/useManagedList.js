@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 import { getUserId } from "../utilities/accessToken";
 
 export const MANGEDLIST_ACTION = {
