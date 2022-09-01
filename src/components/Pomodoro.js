@@ -10,17 +10,26 @@ import ModalComponent from './ModalComponent';
 import ButtonMessage from './ButtonMessage';
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
-import { useCallback, useReducer, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useManagedList } from "../hooks/useManagedList";
 
 import { useAuthenticationContext } from "../hooks/useAuthenticationContext";
-import { getLoadingError, initialState, isLoadingError, isLoading, timeboxesReducer, getAllElements, getCurrentCountdownElement } from "../managedListReducer";
+import { getLoadingError, isLoadingError, isLoading, timeboxesReducer, getAllElements, getCurrentCountdownElement } from "../managedListReducer";
+import { /*createSlice,*/ configureStore } from '@reduxjs/toolkit'
+import { useForceUpdate } from "../hooks/useForceUpdate";
 
 const AutoIndicator = withAutoIndicator(ProgressBar);
 
+const timeboxesStore = configureStore ({ reducer: timeboxesReducer });
+
 
 function Pomodoro() {
-    const [state, dispatch] = useReducer(timeboxesReducer, initialState/*,initializeState*/);   
+    const forceUpdate = useForceUpdate();
+    //const [state2, dispatch2] = useReducer(timeboxesReducer, initialState/*,initializeState*/);       
+    const state = timeboxesStore.getState();
+    const dispatch = timeboxesStore.dispatch;
+    useEffect(() => timeboxesStore.subscribe(forceUpdate), [forceUpdate]);
+    
     const { accessToken: apiAccessToken, managedListAPI } = useAuthenticationContext();
     const {
         handleCreatorAdd: onAddTimeboxElement,

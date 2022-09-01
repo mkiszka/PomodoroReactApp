@@ -11,7 +11,10 @@ export const MANGEDLIST_ACTION = {
     LOADING_ERROR_SET: 'LOADING_ERROR_SET'
 };
 //gneratory akcji
-export const setError = error => ({ type: MANGEDLIST_ACTION.LOADING_ERROR_SET, loadingError: error });
+export const setError = error => {
+    const message = `${error.name}-${error.code}-${error.message}`
+    return { type: MANGEDLIST_ACTION.LOADING_ERROR_SET, loadingError: message };
+}
 export const setLoadingStatusFalse = () => ({ type: MANGEDLIST_ACTION.LOADING_STATUS_FALSE });
 export const setLoadingStatusTrue = () => ({ type: MANGEDLIST_ACTION.LOADING_STATUS_TRUE });
 export const removeElement = (removedElement) => ({ type: MANGEDLIST_ACTION.ELEMENT_REMOVE, element: removedElement });      

@@ -2,9 +2,9 @@ import update from 'immutability-helper';
 import { MANGEDLIST_ACTION } from './managedListActions';
 
 //TODO 
-//generatory akcji i przeniesienie ich do jednego pliku (Action.js)
-//selektory akcji
+//createStore
 //dla pamięci currentTimebox na reduera zmienić i generaory oraz selektory ?
+//combineReducers. timebox i currenttimebox Reduc.combineReducers
 function findElement(elements, uid) {
     const element = elements.filter(
         (element) => {
@@ -16,7 +16,15 @@ function findElement(elements, uid) {
         index: elements.indexOf(element),
     }
 };
-export function timeboxesReducer(state, action) {
+export const initialState = {
+    elements: [],
+    currentCountdownElment: null,
+    isLoading: false,
+    loadingError: null
+
+}
+
+export function timeboxesReducer(state = initialState, action) {
     switch (action.type) {
         case MANGEDLIST_ACTION.ELEMENTS_SET:
             return { ...state, elements: action.elements, currentCountdownElment: action.elements.length > 0 ? action.elements[0] : null };
@@ -61,19 +69,14 @@ export function timeboxesReducer(state, action) {
             return { ...state, isLoading: true };
         }
         case MANGEDLIST_ACTION.LOADING_ERROR_SET: {
+           
             return { ...state, loadingError: action.loadingError };
         }
         default:
             return state;
     }
 }
-export const initialState = {
-    elements: [],
-    currentCountdownElment: null,
-    isLoading: false,
-    loadingError: null
 
-}
 
 export const isLoadingError = (state) => state.loadingError ? true : false ;
 export const getLoadingError = (state) => state.loadingError;
