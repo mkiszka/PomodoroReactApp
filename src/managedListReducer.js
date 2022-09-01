@@ -74,6 +74,10 @@ export const initialState = {
     loadingError: null
 
 }
+
+export const isLoadingError = (state) => state.loadingError ? true : false ;
+export const getLoadingError = (state) => state.loadingError;
+export const isLoading = (state) => state.isLoading;
 // function initializeState(arg_initialState) { 
 //     return arg_initialState;
 // }

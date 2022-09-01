@@ -14,7 +14,7 @@ import { useCallback, useReducer, useState } from "react";
 import { useManagedList } from "../hooks/useManagedList";
 
 import { useAuthenticationContext } from "../hooks/useAuthenticationContext";
-import { initialState, timeboxesReducer } from "../managedListReducer";
+import { getLoadingError, initialState, isLoadingError, isLoading, timeboxesReducer, getAllElements, getCurrentCountdownElement } from "../managedListReducer";
 
 const AutoIndicator = withAutoIndicator(ProgressBar);
 
@@ -53,11 +53,11 @@ function Pomodoro() {
         <>
             <DndProvider backend={HTML5Backend}>
                 <TimeboxCreator onAdd={onAddTimeboxElement} />
-                {state.loadingError ? <ErrorMessage error={state.ButtonMessageloadingError} /> : ""}
-                {state.isLoading ? <AutoIndicator refresh="10" /> : ""}
-                <Timebox timebox={state.currentCountdownElment} />
+                {isLoadingError(state) ? <ErrorMessage error={getLoadingError(state)} /> : ""}
+                {isLoading() ? <AutoIndicator refresh="10" /> : ""}
+                <Timebox timebox={getCurrentCountdownElement(state)} />
                 <TimeboxList>
-                    {state.elements?.map((elem, index) => {
+                    {getAllElements(state)?.map((elem, index) => {
                         return (
                             <TimeboxListElement
                                 key={elem.uid}
