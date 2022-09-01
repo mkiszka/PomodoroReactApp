@@ -12,25 +12,32 @@ export const MANGEDLIST_ACTION = {
     LOADING_STATUS_FALSE: 'LOADING_STATUS_FALSE',
     LOADING_ERROR_SET: 'LOADING_ERROR_SET'
 };
-
+//gneratory akcji
+const setError = error => ({ type: MANGEDLIST_ACTION.LOADING_ERROR_SET, loadingError: error });
+const setLoadingStatusFalse = () => ({ type: MANGEDLIST_ACTION.LOADING_STATUS_FALSE });
+const setLoadingStatusTrue = () => ({ type: MANGEDLIST_ACTION.LOADING_STATUS_TRUE });
+const removeElement = (removedElement) => ({ type: MANGEDLIST_ACTION.ELEMENT_REMOVE, element: removedElement });      
+const replaceElement = (replacedElement) => ({ type: MANGEDLIST_ACTION.ELEMENT_REPLACE, element: replacedElement });
+const startCountdownElement = (element) => ({ type: MANGEDLIST_ACTION.CURRENT_COUNTDOWN_ELEMENT_SET, element });
+const moveElement = (uid, atUid) => ({ type: MANGEDLIST_ACTION.ELEMENT_MOVE, uid, atUid });
 
 function useManagedList(apiAccessToken, elementAPI, dispatch) {
     console.log('useManagedList')
   
     useEffect(() => {
-        dispatch({ type: MANGEDLIST_ACTION.LOADING_STATUS_TRUE });
+        dispatch(setLoadingStatusTrue());
         elementAPI.getAllElements(apiAccessToken)
             .then((fetchedElements) => {
                 dispatch({ type: MANGEDLIST_ACTION.ELEMENTS_SET, elements: fetchedElements });
             })
-            .catch((error) => dispatch({ type: MANGEDLIST_ACTION.LOADING_ERROR_SET, loadingError: error }))
-            .finally(() => dispatch({ type: MANGEDLIST_ACTION.LOADING_STATUS_FALSE }) );
+            .catch((error) => dispatch(setError(error)))
+            .finally(() => dispatch(setLoadingStatusFalse()) );
     }, [apiAccessToken, elementAPI, dispatch]);
 
-    const handleDeleteListElement = useCallback((deletedElement) => {
+    const handleDeleteListElement = useCallback((toRemoveElement) => {
 
-        elementAPI.removeElement(apiAccessToken, deletedElement).then(() => {
-            dispatch({ type: MANGEDLIST_ACTION.ELEMENT_REMOVE, element: deletedElement })
+        elementAPI.removeElement(apiAccessToken, toRemoveElement).then(() => {           
+            dispatch(removeElement(toRemoveElement))
         }
         );
     },
@@ -41,7 +48,7 @@ function useManagedList(apiAccessToken, elementAPI, dispatch) {
         const promise = elementAPI.replaceElement(apiAccessToken, { ...editedElement });
         promise.then(
             (replacedElement) => {
-                dispatch({ type: MANGEDLIST_ACTION.ELEMENT_REPLACE, element: replacedElement })
+                dispatch(replaceElement(replacedElement));
             }
         )
         return promise;
@@ -55,14 +62,13 @@ function useManagedList(apiAccessToken, elementAPI, dispatch) {
     }, [apiAccessToken, elementAPI, dispatch]);
 
     const handleStartListElement = useCallback((element) => {
-        //debugger;
-        dispatch({ type: MANGEDLIST_ACTION.CURRENT_COUNTDOWN_ELEMENT_SET, element });
+        dispatch(startCountdownElement(element));
     }, [dispatch]);
 
 
     const handleMoveElement = useCallback(
         (uid, atUid) => {
-            dispatch({ type: MANGEDLIST_ACTION.ELEMENT_MOVE, uid, atUid })
+            dispatch(moveElement(uid,atUid));
         },
         [dispatch],
     )

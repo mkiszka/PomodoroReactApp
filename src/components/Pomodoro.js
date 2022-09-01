@@ -17,7 +17,7 @@ import update from 'immutability-helper';
 import { useAuthenticationContext } from "../hooks/useAuthenticationContext";
 
 const AutoIndicator = withAutoIndicator(ProgressBar);
-//TODO isLoading i loading error do redura
+//TODO 
 //generatory akcji i przeniesienie ich do jednego pliku (Action.js)
 //selektory akcji
 //dla pamięci currentTimebox na reduera zmienić i generaory oraz selektory ?
@@ -69,11 +69,11 @@ function timeboxesReducer(state, action) {
                 return { ...state, elements };
             }
         case MANGEDLIST_ACTION.LOADING_STATUS_FALSE: {
-            debugger;
+            // debugger;
             return { ...state, isLoading: false };
         }
         case MANGEDLIST_ACTION.LOADING_STATUS_TRUE: {
-            debugger;
+            // debugger;
             return { ...state, isLoading: true };
         }
         case MANGEDLIST_ACTION.LOADING_ERROR_SET: {
