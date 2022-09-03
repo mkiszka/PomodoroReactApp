@@ -9,6 +9,7 @@ import { configureStore } from '@reduxjs/toolkit';
 const TIMEBOXACTION = {
     PLAY: 'timebox/play',
     STOP: 'timebox/stop',
+    PAUSE: 'timebox/pause',
     SET_LAST_INTERVAL_TIME: 'timebox/setLastIntervalTime',
     UPDATE_TIMER_STATE: 'timebox/updateTimerState',
     INITIALIZE_TIMER_STATE: 'timebox/initializeTimerState'
@@ -18,6 +19,7 @@ const initialState = {
     isRunning: false,
     isPaused: false,
     pausesCount: 0,
+    pauseTime: null,
     elapsedTimeInMiliSeconds: 0,
 }
 //selectors
@@ -33,20 +35,27 @@ const timeboxReducer =  (state = initialState, action) => { // (state= initialSt
   switch (action.type) {
 
     case TIMEBOXACTION.PLAY: {
-        return { ...initialState, isRunning: true }
+        if( state.isPaused ) {
+            return { ...state, isPaused: false, elapsedTimeInMiliSeconds: state.elapsedTimeInMiliSeconds + state.pauseTime - state.lastIntervalTime  }
+        } else {
+            return { ...initialState, isRunning: true }
+        }
     }
     case TIMEBOXACTION.STOP: {
         return { ...initialState }
     }
+    case TIMEBOXACTION.PAUSE: {
+        return { ...state, isPaused: true, pausesCount: state.pausesCount + 1, pauseTime: action.pauseTime }
+    }
     case TIMEBOXACTION.INITIALIZE_TIMER_STATE: {
         return { ...state, lastIntervalTime: new Date().getTime() }
     }
-    case TIMEBOXACTION.SET_LAST_INTERVAL_TIME: {
+ /*   case TIMEBOXACTION.SET_LAST_INTERVAL_TIME: {
         return { ...state, lastIntervalTime: action.lastIntervalTime }
-    }      
+    }*/      
     case TIMEBOXACTION.UPDATE_TIMER_STATE: {
         const now = new Date().getTime();
-        const elapsedTimeInMiliSeconds = getElapsedTimeInMiliSeconds(state)  + new Date().getTime() - getLastIntervalTime(state);
+        const elapsedTimeInMiliSeconds = state.elapsedTimeInMiliSeconds  + new Date().getTime() - state.lastIntervalTime;
        // const totalTimeInMiliSeconds = state.totalTimeInMinutes * 60000;
 
         return { ...state, elapsedTimeInMiliSeconds, lastIntervalTime: now }
@@ -60,10 +69,11 @@ const timeboxReducer =  (state = initialState, action) => { // (state= initialSt
 const timeboxPlay = () => ({ type: TIMEBOXACTION.PLAY })
 const timeboxStop = () => ({ type: TIMEBOXACTION.STOP })
 const timeboxInitializeTimerState = () => ({ type: TIMEBOXACTION.INITIALIZE_TIMER_STATE })
-const timeboxSetLastIntervalTime = () => ({ 
-    type: TIMEBOXACTION.SET_LAST_INTERVAL_TIME, 
-    lastIntervalTime: new Date().getTime() });
+// const timeboxSetLastIntervalTime = () => ({ 
+//     type: TIMEBOXACTION.SET_LAST_INTERVAL_TIME, 
+//     lastIntervalTime: new Date().getTime() });
 const timeboxUpdateTimer = () =>  ({ type: TIMEBOXACTION.UPDATE_TIMER_STATE});
+const timeboxPause = (pauseTime) => ({ type: TIMEBOXACTION.PAUSE, pauseTime});
 
 class Timebox extends React.Component {
     constructor(props) {
@@ -101,35 +111,8 @@ class Timebox extends React.Component {
     handleTogglePause = (event) => {
 
         const pauseTime = new Date().getTime();
-        this.setState(
-            (prevState) => {
-                const { isPaused, pausesCount, lastIntervalTime, elapsedTimeInMiliSeconds } = prevState;
-
-                return {
-                    isPaused: !isPaused,
-                    pausesCount: !isPaused ? pausesCount + 1 : pausesCount,
-                    elapsedTimeInMiliSeconds: (
-                        !isPaused ?
-                            elapsedTimeInMiliSeconds + pauseTime - lastIntervalTime
-                            :
-                            elapsedTimeInMiliSeconds
-                    )
-                }
-
-            },
-            () => {
-
-                const { isPaused } = this.state;
-                if (isPaused) {
-                    //console.log("stop");
-                    this.stopTimer();
-                } else {
-                    //console.log("start");
-                    this.startTimer(false);
-
-                }
-            }
-        )
+        this.store.dispatch(timeboxPause(pauseTime));
+        this.stopTimer();      
     }
 
     handleStop = (event) => {
@@ -146,8 +129,6 @@ class Timebox extends React.Component {
         if(initializeStartTime) {
             this.store.dispatch(timeboxInitializeTimerState());
         }
-        //this.setState({ lastIntervalTime: new Date().getTime() });
-
         this.intervalId = window.setInterval(
             () => {
                 this.store.dispatch(timeboxUpdateTimer());
