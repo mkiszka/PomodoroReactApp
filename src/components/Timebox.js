@@ -4,25 +4,97 @@ import ProgressBar from './ProgressBar';
 import { IoPlayCircleOutline, IoStopCircleOutline, IoPauseCircleOutline } from 'react-icons/io5'
 import PropTypes from 'prop-types'
 import { convertMiliSecondsToMiliSecondsSecondMinutesHours } from '../utilities/time'
+import { configureStore } from '@reduxjs/toolkit';
+//ki4 mocno do obgadania wygląd poniższej struktury reduxowej
+const TIMEBOXACTION = {
+    PLAY: 'timebox/play',
+    STOP: 'timebox/stop',
+    SET_LAST_INTERVAL_TIME: 'timebox/setLastIntervalTime',
+    UPDATE_TIMER_STATE: 'timebox/updateTimerState',
+    INITIALIZE_TIMER_STATE: 'timebox/initializeTimerState'
+}
+const initialState = {
+    lastIntervalTime: 0,
+    isRunning: false,
+    isPaused: false,
+    pausesCount: 0,
+    elapsedTimeInMiliSeconds: 0,
+}
+//selectors
+const getLastIntervalTime = (state) => state.lastIntervalTime;
+const isRunning = (state) => state.isRunning;
+const isPaused = (state) => state.isPaused;
+const getPausesCount = (state) => state.pausesCount;
+const getElapsedTimeInMiliSeconds = (state) => state.elapsedTimeInMiliSeconds;
+const getTotalTimeInMiliSeconds = (state) => state.totalTimeInMiliSeconds;
+
+//reducer
+const timeboxReducer =  (state = initialState, action) => { // (state= initialState, {type, payload} inaczej const timeboxReducer =  (state = initialState, action)
+  switch (action.type) {
+
+    case TIMEBOXACTION.PLAY: {
+        return { ...initialState, isRunning: true }
+    }
+    case TIMEBOXACTION.STOP: {
+        return { ...initialState }
+    }
+    case TIMEBOXACTION.INITIALIZE_TIMER_STATE: {
+        return { ...state, lastIntervalTime: new Date().getTime() }
+    }
+    case TIMEBOXACTION.SET_LAST_INTERVAL_TIME: {
+        return { ...state, lastIntervalTime: action.lastIntervalTime }
+    }      
+    case TIMEBOXACTION.UPDATE_TIMER_STATE: {
+        const now = new Date().getTime();
+        const elapsedTimeInMiliSeconds = getElapsedTimeInMiliSeconds(state)  + new Date().getTime() - getLastIntervalTime(state);
+       // const totalTimeInMiliSeconds = state.totalTimeInMinutes * 60000;
+
+        return { ...state, elapsedTimeInMiliSeconds, lastIntervalTime: now }
+    }
+    default:
+        return state
+  }
+}
+//action creators
+//todo przy przenoszeniu do timeboxReducer wywalić z nazw 'timebox'
+const timeboxPlay = () => ({ type: TIMEBOXACTION.PLAY })
+const timeboxStop = () => ({ type: TIMEBOXACTION.STOP })
+const timeboxInitializeTimerState = () => ({ type: TIMEBOXACTION.INITIALIZE_TIMER_STATE })
+const timeboxSetLastIntervalTime = () => ({ 
+    type: TIMEBOXACTION.SET_LAST_INTERVAL_TIME, 
+    lastIntervalTime: new Date().getTime() });
+const timeboxUpdateTimer = () =>  ({ type: TIMEBOXACTION.UPDATE_TIMER_STATE});
 
 class Timebox extends React.Component {
     constructor(props) {
         super(props);
-        this.state = this.getInitState();
+        
+        //this.state = this.getInitState();
         this.startTimer = this.startTimer.bind(this);
         this.stopTimer = this.stopTimer.bind(this);
+        this.reRender = this.reRender.bind(this);
+
+        this.store = configureStore({ reducer: timeboxReducer});        
+        this.unsubscribe = this.store.subscribe(this.reRender);
     }
-    getInitState() {
-        return {
-            lastIntervalTime: 0,
-            isRunning: false,
-            isPaused: false,
-            pausesCount: 0,
-            elapsedTimeInMiliSeconds: 0,
-        };
+    reRender = () => {
+        this.forceUpdate();
     }
+    componentWillUnmount() {
+        this.unsubscribe();
+    }
+    // getInitState() {
+    //     return {
+    //         lastIntervalTime: 0,
+    //         isRunning: false,
+    //         isPaused: false,
+    //         pausesCount: 0,
+    //         elapsedTimeInMiliSeconds: 0,
+    //     };
+    // }
     handlePlay = (event) => {
-        this.setState(() => ({ ...this.getInitState(), isRunning: true }));
+        this.store.dispatch(timeboxPlay());
+        //this.setState(() => ({ ...this.getInitState(), isRunning: true }));
         this.startTimer();
     }
 
@@ -62,16 +134,7 @@ class Timebox extends React.Component {
 
     handleStop = (event) => {
         //console.log("Stio");
-        this.setState((prevState) => {
-            return ({
-                isRunning: false,
-                isPaused: false,
-                pausesCount: 0,
-                elapsedTimeInMiliSeconds: 0
-            })
-
-
-        });
+        this.store.dispatch(timeboxStop());
         this.stopTimer();
     }
 
@@ -80,24 +143,18 @@ class Timebox extends React.Component {
     }
 
     startTimer(initializeStartTime = true) {
-
-        this.setState({ lastIntervalTime: new Date().getTime() });
+        if(initializeStartTime) {
+            this.store.dispatch(timeboxInitializeTimerState());
+        }
+        //this.setState({ lastIntervalTime: new Date().getTime() });
 
         this.intervalId = window.setInterval(
             () => {
-                this.setState(
-                    (prevState) => {
-                        const now = new Date().getTime();
-                        const elapsedTimeInMiliSeconds = prevState.elapsedTimeInMiliSeconds + new Date().getTime() - prevState.lastIntervalTime;
-                        const totalTimeInMiliSeconds = prevState.totalTimeInMinutes * 60000;
-                        //console.log(totalTimeInMiliSeconds, elapsedTimeInMiliSeconds);
-                        if (elapsedTimeInMiliSeconds >= totalTimeInMiliSeconds) {
-                            this.stopTimer();
-                        }
-                        return ({ elapsedTimeInMiliSeconds: elapsedTimeInMiliSeconds, lastIntervalTime: now });
-
-                    }
-                );
+                this.store.dispatch(timeboxUpdateTimer());
+                const state = this.store.getState();
+                if( getElapsedTimeInMiliSeconds(state) >= getTotalTimeInMiliSeconds(state)) {
+                    this.stopTimer();
+                }                
             },
             100
         )
@@ -111,10 +168,12 @@ class Timebox extends React.Component {
     }
 
     render() {
-
+        const state = this.store.getState();
         const { timebox, isEditable, progressBarAriaLabel } = this.props;
+     
+        const pausesCount = getPausesCount(state);
+        const elapsedTimeInMiliSeconds = getElapsedTimeInMiliSeconds(state);
 
-        const { isRunning, isPaused, pausesCount, elapsedTimeInMiliSeconds } = this.state
         let totalTimeInMiliSeconds, timeLeftInMiliSeconds, milisecondsLeft, minutesLeft;
         let secondsLeft, hoursLeft;
         let progressInPercent;
@@ -150,10 +209,10 @@ class Timebox extends React.Component {
                 minutes={minutesLeft}
                 seconds={secondsLeft}
                 miliseconds={milisecondsLeft}
-                className={"TimeboxClock " + (isPaused ? "inactive" : "")} />
+                className={"TimeboxClock " + (isPaused(state) ? "inactive" : "")} />
             <ProgressBar
-                percent={progressInPercent} className={isPaused ? "inactive" : ""} trackRemaining={false} ariaLabel={progressBarAriaLabel}/>
-            {isPaused || !isRunning ?
+                percent={progressInPercent} className={isPaused(state) ? "inactive" : ""} trackRemaining={false} ariaLabel={progressBarAriaLabel}/>
+            {isPaused(state) || !isRunning(state) ?
                 <button aria-label='Play' onClick={this.handlePlay} disabled={!trulyIsEditable}>
                    <IoPlayCircleOutline className={classNameOfButton} />
                 </button>
@@ -162,7 +221,7 @@ class Timebox extends React.Component {
                    <IoPauseCircleOutline className={classNameOfButton} /> 
                 </button>
             }
-            <button aria-label='Stop' onClick={this.handleStop} disabled={!isRunning || !trulyIsEditable} >
+            <button aria-label='Stop' onClick={this.handleStop} disabled={!isRunning(state) || !trulyIsEditable} >
                 <IoStopCircleOutline className={classNameOfButton} />
             </button>
 
