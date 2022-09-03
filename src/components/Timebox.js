@@ -88,10 +88,12 @@ class Timebox extends React.Component {
         this.unsubscribe = this.store.subscribe(this.reRender);
     }
     reRender = () => {
+        //ki4 czuje żę to nie jest dobre wymuszać rerender za każdym razem ?
         this.forceUpdate();
     }
     componentWillUnmount() {
         this.unsubscribe();
+        window.clearInterval(this.intervalId);
     }
     // getInitState() {
     //     return {
@@ -130,7 +132,7 @@ class Timebox extends React.Component {
             this.store.dispatch(timeboxInitializeTimerState());
         }
         this.intervalId = window.setInterval(
-            () => {
+            () => {                
                 this.store.dispatch(timeboxUpdateTimer());
                 const state = this.store.getState();
                 if( getElapsedTimeInMiliSeconds(state) >= getTotalTimeInMiliSeconds(state)) {
