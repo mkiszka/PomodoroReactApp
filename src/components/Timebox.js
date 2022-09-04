@@ -11,8 +11,9 @@ const TIMEBOXACTION = {
     STOP: 'timebox/stop',
     PAUSE: 'timebox/pause',
     SET_LAST_INTERVAL_TIME: 'timebox/setLastIntervalTime',
-    UPDATE_TIMER_STATE: 'timebox/updateTimerState',
-    INITIALIZE_TIMER_STATE: 'timebox/initializeTimerState'
+    TICK: 'timebox/tick',
+    INITIALIZE_TIMER_STATE: 'timebox/initializeTimerState',
+    UPDATE_TOTAL_TIME_IN_MINUTES: 'timebox/updateTotalTimeInMinutes'
 }
 const initialState = {
     lastIntervalTime: 0,
@@ -21,6 +22,7 @@ const initialState = {
     pausesCount: 0,
     pauseTime: null,
     elapsedTimeInMiliSeconds: 0,
+    totalTimeInMiliSeconds: 0
 }
 //selectors
 const getLastIntervalTime = (state) => state.lastIntervalTime;
@@ -50,10 +52,12 @@ const timeboxReducer =  (state = initialState, action) => { // (state= initialSt
     case TIMEBOXACTION.INITIALIZE_TIMER_STATE: {
         return { ...state, lastIntervalTime: new Date().getTime() }
     }
- /*   case TIMEBOXACTION.SET_LAST_INTERVAL_TIME: {
-        return { ...state, lastIntervalTime: action.lastIntervalTime }
-    }*/      
-    case TIMEBOXACTION.UPDATE_TIMER_STATE: {
+    case TIMEBOXACTION.UPDATE_TOTAL_TIME_IN_MINUTES: {
+        debugger;
+        return { ...state, totalTimeInMiliSeconds: action.totalTimeInMinutes * 6000 }
+    }
+   
+    case TIMEBOXACTION.TICK: {
         const now = new Date().getTime();
         const elapsedTimeInMiliSeconds = state.elapsedTimeInMiliSeconds  + new Date().getTime() - state.lastIntervalTime;
        // const totalTimeInMiliSeconds = state.totalTimeInMinutes * 60000;
@@ -72,8 +76,9 @@ const timeboxInitializeTimerState = () => ({ type: TIMEBOXACTION.INITIALIZE_TIME
 // const timeboxSetLastIntervalTime = () => ({ 
 //     type: TIMEBOXACTION.SET_LAST_INTERVAL_TIME, 
 //     lastIntervalTime: new Date().getTime() });
-const timeboxUpdateTimer = () =>  ({ type: TIMEBOXACTION.UPDATE_TIMER_STATE});
+const timeboxUpdateTimer = () =>  ({ type: TIMEBOXACTION.TICK});
 const timeboxPause = (pauseTime) => ({ type: TIMEBOXACTION.PAUSE, pauseTime});
+const timeboxUpdateTimeInMinues = (timeInMinutes) => ({ type: TIMEBOXACTION.UPDATE_TOTAL_TIME_IN_MINUTES, timeInMinutes})
 
 class Timebox extends React.Component {
     constructor(props) {
@@ -86,7 +91,9 @@ class Timebox extends React.Component {
 
         this.store = configureStore({ reducer: timeboxReducer});        
         this.unsubscribe = this.store.subscribe(this.reRender);
+        //this.store.dispatch(timeboxUpdateTimeInMinues(props?.timebox?.totalTimeInMinutes));
     }
+    
     reRender = () => {
         //ki4 czuje żę to nie jest dobre wymuszać rerender za każdym razem ?
         this.forceUpdate();
@@ -95,15 +102,12 @@ class Timebox extends React.Component {
         this.unsubscribe();
         window.clearInterval(this.intervalId);
     }
-    // getInitState() {
-    //     return {
-    //         lastIntervalTime: 0,
-    //         isRunning: false,
-    //         isPaused: false,
-    //         pausesCount: 0,
-    //         elapsedTimeInMiliSeconds: 0,
-    //     };
+    // componentDidUpdate(prevProps) {
+    //     if( prevProps?.timebox?.totalTimeInMinutes !== getTotalTimeInMiliSeconds(this.state) / 6000 ) {
+    //         this.store.dispatch(timeboxUpdateTimeInMinues(prevProps?.timebox?.totalTimeInMinutes));
+    //     }
     // }
+    
     handlePlay = (event) => {
         this.store.dispatch(timeboxPlay());
         //this.setState(() => ({ ...this.getInitState(), isRunning: true }));
