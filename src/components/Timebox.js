@@ -5,80 +5,8 @@ import { IoPlayCircleOutline, IoStopCircleOutline, IoPauseCircleOutline } from '
 import PropTypes from 'prop-types'
 import { convertMiliSecondsToMiliSecondsSecondMinutesHours } from '../utilities/time'
 import { configureStore } from '@reduxjs/toolkit';
-//ki4 mocno do obgadania wygląd poniższej struktury reduxowej
-const TIMEBOXACTION = {
-    PLAY: 'timebox/play',
-    STOP: 'timebox/stop',
-    PAUSE: 'timebox/pause',
-    SET_LAST_INTERVAL_TIME: 'timebox/setLastIntervalTime',
-    TICK: 'timebox/tick',
-    INITIALIZE_TIMER_STATE: 'timebox/initializeTimerState',
-    UPDATE_TOTAL_TIME_IN_MINUTES: 'timebox/updateTotalTimeInMinutes'
-}
-const initialState = {
-    lastIntervalTime: 0,
-    isRunning: false,
-    isPaused: false,
-    pausesCount: 0,
-    pauseTime: null,
-    elapsedTimeInMiliSeconds: 0,
-    totalTimeInMiliSeconds: 0
-}
-//selectors
-const getLastIntervalTime = (state) => state.lastIntervalTime;
-const isRunning = (state) => state.isRunning;
-const isPaused = (state) => state.isPaused;
-const getPausesCount = (state) => state.pausesCount;
-const getElapsedTimeInMiliSeconds = (state) => state.elapsedTimeInMiliSeconds;
-const getTotalTimeInMiliSeconds = (state) => state.totalTimeInMiliSeconds;
-
-//reducer
-const timeboxReducer =  (state = initialState, action) => { // (state= initialState, {type, payload} inaczej const timeboxReducer =  (state = initialState, action)
-  switch (action.type) {
-
-    case TIMEBOXACTION.PLAY: {
-        if( state.isPaused ) {
-            return { ...state, isPaused: false, elapsedTimeInMiliSeconds: state.elapsedTimeInMiliSeconds + state.pauseTime - state.lastIntervalTime  }
-        } else {
-            return { ...initialState, isRunning: true }
-        }
-    }
-    case TIMEBOXACTION.STOP: {
-        return { ...initialState }
-    }
-    case TIMEBOXACTION.PAUSE: {
-        return { ...state, isPaused: true, pausesCount: state.pausesCount + 1, pauseTime: action.pauseTime }
-    }
-    case TIMEBOXACTION.INITIALIZE_TIMER_STATE: {
-        return { ...state, lastIntervalTime: new Date().getTime() }
-    }
-    case TIMEBOXACTION.UPDATE_TOTAL_TIME_IN_MINUTES: {
-        debugger;
-        return { ...state, totalTimeInMiliSeconds: action.totalTimeInMinutes * 6000 }
-    }
-   
-    case TIMEBOXACTION.TICK: {
-        const now = new Date().getTime();
-        const elapsedTimeInMiliSeconds = state.elapsedTimeInMiliSeconds  + new Date().getTime() - state.lastIntervalTime;
-       // const totalTimeInMiliSeconds = state.totalTimeInMinutes * 60000;
-
-        return { ...state, elapsedTimeInMiliSeconds, lastIntervalTime: now }
-    }
-    default:
-        return state
-  }
-}
-//action creators
-//todo przy przenoszeniu do timeboxReducer wywalić z nazw 'timebox'
-const timeboxPlay = () => ({ type: TIMEBOXACTION.PLAY })
-const timeboxStop = () => ({ type: TIMEBOXACTION.STOP })
-const timeboxInitializeTimerState = () => ({ type: TIMEBOXACTION.INITIALIZE_TIMER_STATE })
-// const timeboxSetLastIntervalTime = () => ({ 
-//     type: TIMEBOXACTION.SET_LAST_INTERVAL_TIME, 
-//     lastIntervalTime: new Date().getTime() });
-const timeboxUpdateTimer = () =>  ({ type: TIMEBOXACTION.TICK});
-const timeboxPause = (pauseTime) => ({ type: TIMEBOXACTION.PAUSE, pauseTime});
-const timeboxUpdateTimeInMinues = (timeInMinutes) => ({ type: TIMEBOXACTION.UPDATE_TOTAL_TIME_IN_MINUTES, timeInMinutes})
+import { getElapsedTimeInMiliSeconds, getPausesCount, getTotalTimeInMiliSeconds, isPaused, isRunning, timeboxReducer } from '../redux/timeboxReducer';
+import { timeboxInitializeTimerState, timeboxPause, timeboxPlay, timeboxStop, timeboxUpdateTimer } from '../redux/timeboxActions';
 
 class Timebox extends React.Component {
     constructor(props) {
@@ -136,12 +64,12 @@ class Timebox extends React.Component {
             this.store.dispatch(timeboxInitializeTimerState());
         }
         this.intervalId = window.setInterval(
-            () => {                
+            () => {
                 this.store.dispatch(timeboxUpdateTimer());
                 const state = this.store.getState();
-                if( getElapsedTimeInMiliSeconds(state) >= getTotalTimeInMiliSeconds(state)) {
-                    this.stopTimer();
-                }                
+                // if( getElapsedTimeInMiliSeconds(state) >= getTotalTimeInMiliSeconds(state)) {
+                //     this.stopTimer();
+                // }                
             },
             100
         )
