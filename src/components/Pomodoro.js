@@ -14,7 +14,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useManagedList } from "../hooks/useManagedList";
 
 import { useAuthenticationContext } from "../hooks/useAuthenticationContext";
-import { getLoadingError, isLoadingError, isLoading, timeboxesReducer, getAllElements, getCurrentCountdownElement } from "../managedListReducer";
+import { getLoadingError, isLoadingError, isLoading, timeboxesReducer, getAllElements, getCurrentCountdownElement } from "../redux/managedListReducer";
 import { /*createSlice,*/ configureStore } from '@reduxjs/toolkit'
 import { useForceUpdate } from "../hooks/useForceUpdate";
 
