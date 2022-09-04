@@ -5,18 +5,24 @@ import "./styles/main.scss"
 
 import reportWebVitals from './reportWebVitals';
 import App from './components/App';
-import {CookiesProvider} from 'react-cookie'
+import { CookiesProvider } from 'react-cookie'
+import { configureStore } from '@reduxjs/toolkit';
+import rootReducer from './redux/rootReducer';
+import { Provider } from 'react-redux';
 
 //const rootElement = document.getElementById("root");
 //ReactDOM.render(<App />
 //    , rootElement);
+const store = configureStore({ reducer: rootReducer });
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <React.StrictMode>
-        <CookiesProvider>
-            <App />
-        </CookiesProvider>
+        <Provider store={store}>
+            <CookiesProvider>
+                <App />
+            </CookiesProvider>
+        </Provider>
     </React.StrictMode>
 );
 

@@ -4,22 +4,21 @@ import ProgressBar from './ProgressBar';
 import { IoPlayCircleOutline, IoStopCircleOutline, IoPauseCircleOutline } from 'react-icons/io5'
 import PropTypes from 'prop-types'
 import { convertMiliSecondsToMiliSecondsSecondMinutesHours } from '../utilities/time'
-import { configureStore } from '@reduxjs/toolkit';
 import { getElapsedTimeInMiliSeconds, getPausesCount, getTotalTimeInMiliSeconds, isPaused, isRunning, timeboxReducer } from '../redux/timeboxReducer';
 import { timeboxInitializeTimerState, timeboxPause, timeboxPlay, timeboxStop, timeboxUpdateTimer } from '../redux/timeboxActions';
+import { ReactReduxContext } from 'react-redux';
 
 class Timebox extends React.Component {
     constructor(props) {
-        super(props);
-        
+        super(props);     
         //this.state = this.getInitState();
         this.startTimer = this.startTimer.bind(this);
         this.stopTimer = this.stopTimer.bind(this);
         this.reRender = this.reRender.bind(this);
 
-        this.store = configureStore({ reducer: timeboxReducer});        
-        this.unsubscribe = this.store.subscribe(this.reRender);
-        //this.store.dispatch(timeboxUpdateTimeInMinues(props?.timebox?.totalTimeInMinutes));
+        
+       // this.unsubscribe = this.context.store.subscribe(this.reRender);
+        //this.context.store.dispatch(timeboxUpdateTimeInMinues(props?.timebox?.totalTimeInMinutes));
     }
     
     reRender = () => {
@@ -27,17 +26,20 @@ class Timebox extends React.Component {
         this.forceUpdate();
     }
     componentWillUnmount() {
-        this.unsubscribe();
+        this.unsubscribe()
         window.clearInterval(this.intervalId);
+    }
+    componentDidMount() {
+        this.unsubscribe = this.context.store.subscribe(this.reRender);
     }
     // componentDidUpdate(prevProps) {
     //     if( prevProps?.timebox?.totalTimeInMinutes !== getTotalTimeInMiliSeconds(this.state) / 6000 ) {
-    //         this.store.dispatch(timeboxUpdateTimeInMinues(prevProps?.timebox?.totalTimeInMinutes));
+    //         this.context.store.dispatch(timeboxUpdateTimeInMinues(prevProps?.timebox?.totalTimeInMinutes));
     //     }
     // }
     
     handlePlay = (event) => {
-        this.store.dispatch(timeboxPlay());
+        this.context.store.dispatch(timeboxPlay());
         //this.setState(() => ({ ...this.getInitState(), isRunning: true }));
         this.startTimer();
     }
@@ -45,13 +47,13 @@ class Timebox extends React.Component {
     handleTogglePause = (event) => {
 
         const pauseTime = new Date().getTime();
-        this.store.dispatch(timeboxPause(pauseTime));
+        this.context.store.dispatch(timeboxPause(pauseTime));
         this.stopTimer();      
     }
 
     handleStop = (event) => {
         //console.log("Stio");
-        this.store.dispatch(timeboxStop());
+        this.context.store.dispatch(timeboxStop());
         this.stopTimer();
     }
 
@@ -61,12 +63,12 @@ class Timebox extends React.Component {
 
     startTimer(initializeStartTime = true) {
         if(initializeStartTime) {
-            this.store.dispatch(timeboxInitializeTimerState());
+            this.context.store.dispatch(timeboxInitializeTimerState());
         }
         this.intervalId = window.setInterval(
             () => {
-                this.store.dispatch(timeboxUpdateTimer());
-                const state = this.store.getState();
+                this.context.store.dispatch(timeboxUpdateTimer());
+                const state = this.context.store.getState();
                 // if( getElapsedTimeInMiliSeconds(state) >= getTotalTimeInMiliSeconds(state)) {
                 //     this.stopTimer();
                 // }                
@@ -83,7 +85,7 @@ class Timebox extends React.Component {
     }
 
     render() {
-        const state = this.store.getState();
+        const state = this.context.store.getState();
         const { timebox, isEditable, progressBarAriaLabel } = this.props;
      
         const pausesCount = getPausesCount(state);
@@ -143,7 +145,7 @@ class Timebox extends React.Component {
         </div >);
     }
 }
-
+Timebox.contextType = ReactReduxContext;
 Timebox.defaultProps = {
     isEditable: true
 }

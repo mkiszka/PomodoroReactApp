@@ -14,21 +14,20 @@ import { useCallback, useEffect, useState } from "react";
 import { useManagedList } from "../hooks/useManagedList";
 
 import { useAuthenticationContext } from "../hooks/useAuthenticationContext";
-import { getLoadingError, isLoadingError, isLoading, timeboxesReducer, getAllElements, getCurrentCountdownElement } from "../redux/managedListReducer";
+import { getLoadingError, isLoadingError, isLoading, managedListReducer, getAllElements, getCurrentCountdownElement } from "../redux/managedListReducer";
 import { /*createSlice,*/ configureStore } from '@reduxjs/toolkit'
 import { useForceUpdate } from "../hooks/useForceUpdate";
+import { useStore } from "react-redux/es/exports";
 
 const AutoIndicator = withAutoIndicator(ProgressBar);
 
-const timeboxesStore = configureStore ({ reducer: timeboxesReducer });
-
-
 function Pomodoro() {
     const forceUpdate = useForceUpdate();
+    const store = useStore();
     //const [state2, dispatch2] = useReducer(timeboxesReducer, initialState/*,initializeState*/);       
-    const state = timeboxesStore.getState();
-    const dispatch = timeboxesStore.dispatch;
-    useEffect(() => timeboxesStore.subscribe(forceUpdate), [forceUpdate]);
+    const state = store.getState();
+    const dispatch = store.dispatch;
+    useEffect(() => store.subscribe(forceUpdate), [store, forceUpdate]);
     
     const { accessToken: apiAccessToken, managedListAPI } = useAuthenticationContext();
     const {

@@ -80,12 +80,12 @@ export function timeboxesReducer(state = initialState, action) {
     }
 }
 
-
-export const isLoadingError = (state) => state.loadingError ? true : false ;
-export const getLoadingError = (state) => state.loadingError;
-export const isLoading = (state) => state.isLoading;
-export const getAllElements = (state) => state.elements;
-export const getCurrentCountdownElement = (state) => state.currentCountdownElment;
+//ki4 - combine reduxer i element timeboxList powoduje że nie mogę uniwersalności zastosować.
+export const isLoadingError = (state) => state.timeboxList.loadingError ? true : false ;
+export const getLoadingError = (state) => state.timeboxList.loadingError;
+export const isLoading = (state) => state.timeboxList.isLoading;
+export const getAllElements = (state) => state.timeboxList.elements;
+export const getCurrentCountdownElement = (state) => state.timeboxList.currentCountdownElment;
 // function initializeState(arg_initialState) { 
 //     return arg_initialState;
 // }

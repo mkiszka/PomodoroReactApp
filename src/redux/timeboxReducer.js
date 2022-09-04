@@ -18,12 +18,12 @@ const initialState = {
     totalTimeInMiliSeconds: 0
 }
 //selectors
-export const getLastIntervalTime = (state) => state.lastIntervalTime;
-export const isRunning = (state) => state.isRunning;
-export const isPaused = (state) => state.isPaused;
-export const getPausesCount = (state) => state.pausesCount;
-export const getElapsedTimeInMiliSeconds = (state) => state.elapsedTimeInMiliSeconds;
-export const getTotalTimeInMiliSeconds = (state) => state.totalTimeInMiliSeconds;
+export const getLastIntervalTime = (state) => state.timebox.lastIntervalTime;
+export const isRunning = (state) => state.timebox.isRunning;
+export const isPaused = (state) => state.timebox.isPaused;
+export const getPausesCount = (state) => state.timebox.pausesCount;
+export const getElapsedTimeInMiliSeconds = (state) => state.timebox.elapsedTimeInMiliSeconds;
+export const getTotalTimeInMiliSeconds = (state) => state.timebox.totalTimeInMiliSeconds;
 
 //reducer
 export const timeboxReducer =  (state = initialState, action) => { // (state= initialState, {type, payload} inaczej const timeboxReducer =  (state = initialState, action)
