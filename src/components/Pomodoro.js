@@ -10,24 +10,17 @@ import ModalComponent from './ModalComponent';
 import ButtonMessage from './ButtonMessage';
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
-import { useCallback, useEffect, useState } from "react";
+import { useCallback,  useState } from "react";
 import { useManagedList } from "../hooks/useManagedList";
 
 import { useAuthenticationContext } from "../hooks/useAuthenticationContext";
-import { getLoadingError, isLoadingError, isLoading, managedListReducer, getAllElements, getCurrentCountdownElement } from "../redux/managedListReducer";
-import { /*createSlice,*/ configureStore } from '@reduxjs/toolkit'
-import { useForceUpdate } from "../hooks/useForceUpdate";
-import { useStore } from "react-redux/es/exports";
+import { getLoadingError, isLoadingError, isLoading, getAllElements, getCurrentCountdownElement } from "../redux/managedListReducer";
+import { useDispatch, useSelector } from "react-redux/es/exports";
 
 const AutoIndicator = withAutoIndicator(ProgressBar);
 
-function Pomodoro() {
-    const forceUpdate = useForceUpdate();
-    const store = useStore();
-    //const [state2, dispatch2] = useReducer(timeboxesReducer, initialState/*,initializeState*/);       
-    const state = store.getState();
-    const dispatch = store.dispatch;
-    useEffect(() => store.subscribe(forceUpdate), [store, forceUpdate]);
+function Pomodoro() {        
+    const dispatch = useDispatch();    
     
     const { accessToken: apiAccessToken, managedListAPI } = useAuthenticationContext();
     const {
@@ -55,17 +48,23 @@ function Pomodoro() {
     function handleCancelConfirmDeletion() {
         setTimeboxToDelete(null);
     }
+    //ki4 nazewnictwo
+    const loading = useSelector(isLoading);
+    const isLoad___ERROR = useSelector(isLoadingError);
+    const loadingError = useSelector(getLoadingError);
+    const currentCountdownElment = useSelector(getCurrentCountdownElement);
+    const elements = useSelector(getAllElements);
     //TODO sprawdzić /react/menu dla headlessui
     //TODO confirmation modal nagranie ki3
     return (
         <>
             <DndProvider backend={HTML5Backend}>
                 <TimeboxCreator onAdd={onAddTimeboxElement} />
-                {isLoadingError(state) ? <ErrorMessage error={getLoadingError(state)} /> : ""}
-                {isLoading(state) ? <AutoIndicator refresh="10" /> : ""}
-                <Timebox timebox={getCurrentCountdownElement(state)} />
+                {isLoad___ERROR ? <ErrorMessage error={loadingError} /> : ""}
+                {loading ? <AutoIndicator refresh="10" /> : ""}
+                <Timebox timebox={currentCountdownElment} />
                 <TimeboxList>
-                    {getAllElements(state)?.map((elem, index) => {
+                    {elements?.map((elem, index) => {
                         return (
                             <TimeboxListElement
                                 key={elem.uid}
