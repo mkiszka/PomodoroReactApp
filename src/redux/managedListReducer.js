@@ -80,7 +80,7 @@ export function timeboxesReducer(state = initialState, action) {
     }
 }
 
-//ki4 - combine reduxer i element timeboxList powoduje że nie mogę uniwersalności zastosować.
+//ki4 - combine reduxer i element timeboxList powoduje że nie mogę uniwersalności zastosować. To samo się tyczy rootReducer i timeboxesList oraz timeboxReducer.js
 export const isLoadingError = (state) => state.timeboxList.loadingError ? true : false ;
 export const getLoadingError = (state) => state.timeboxList.loadingError;
 export const isLoading = (state) => state.timeboxList.isLoading;
