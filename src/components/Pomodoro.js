@@ -1,4 +1,4 @@
-import Timebox from "./Timebox";
+import CurrentTimebox from "./CurrentTimebox";
 import TimeboxList from "./TimeboxList";
 import TimeboxListElement from "./TimeboxListElement";
 import TimeboxCreator from "./TimeboxCreator";
@@ -62,7 +62,7 @@ function Pomodoro() {
                 <TimeboxCreator onAdd={onAddTimeboxElement} />
                 {isLoad___ERROR ? <ErrorMessage error={loadingError} /> : ""}
                 {loading ? <AutoIndicator refresh="10" /> : ""}
-                <Timebox timebox={currentCountdownElment} />
+                <CurrentTimebox timebox={currentCountdownElment} />
                 <TimeboxList>
                     {elements?.map((elem, index) => {
                         return (

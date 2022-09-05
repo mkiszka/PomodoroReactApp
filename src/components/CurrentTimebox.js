@@ -4,42 +4,24 @@ import ProgressBar from './ProgressBar';
 import { IoPlayCircleOutline, IoStopCircleOutline, IoPauseCircleOutline } from 'react-icons/io5'
 import PropTypes from 'prop-types'
 import { convertMiliSecondsToMiliSecondsSecondMinutesHours } from '../utilities/time'
-import { getElapsedTimeInMiliSeconds, getPausesCount, getTotalTimeInMiliSeconds, isPaused, isRunning, timeboxReducer } from '../redux/timeboxReducer';
+import { getElapsedTimeInMiliSeconds, getPausesCount, isPaused, isRunning } from '../redux/timeboxReducer';
 import { timeboxInitializeTimerState, timeboxPause, timeboxPlay, timeboxStop, timeboxUpdateTimer } from '../redux/timeboxActions';
-import { ReactReduxContext } from 'react-redux';
+import { connect, ReactReduxContext } from 'react-redux';
 
-class Timebox extends React.Component {
+class InternalCurrentTimebox extends React.Component {
     constructor(props) {
         super(props);     
         //this.state = this.getInitState();
         this.startTimer = this.startTimer.bind(this);
-        this.stopTimer = this.stopTimer.bind(this);
-        this.reRender = this.reRender.bind(this);
+        this.stopTimer = this.stopTimer.bind(this);     
+    }      
 
-        
-       // this.unsubscribe = this.context.store.subscribe(this.reRender);
-        //this.context.store.dispatch(timeboxUpdateTimeInMinues(props?.timebox?.totalTimeInMinutes));
-    }
-    
-    reRender = () => {
-        //ki4 czuje żę to nie jest dobre wymuszać rerender za każdym razem ?
-        this.forceUpdate();
-    }
     componentWillUnmount() {
-        this.unsubscribe()
         window.clearInterval(this.intervalId);
-    }
-    componentDidMount() {
-        this.unsubscribe = this.context.store.subscribe(this.reRender);
-    }
-    // componentDidUpdate(prevProps) {
-    //     if( prevProps?.timebox?.totalTimeInMinutes !== getTotalTimeInMiliSeconds(this.state) / 6000 ) {
-    //         this.context.store.dispatch(timeboxUpdateTimeInMinues(prevProps?.timebox?.totalTimeInMinutes));
-    //     }
-    // }
+    }    
     
     handlePlay = (event) => {
-        this.context.store.dispatch(timeboxPlay());
+        this.props.timeboxPlay();
         //this.setState(() => ({ ...this.getInitState(), isRunning: true }));
         this.startTimer();
     }
@@ -47,13 +29,12 @@ class Timebox extends React.Component {
     handleTogglePause = (event) => {
 
         const pauseTime = new Date().getTime();
-        this.context.store.dispatch(timeboxPause(pauseTime));
+        this.props.timeboxPause(pauseTime);
         this.stopTimer();      
     }
 
     handleStop = (event) => {
-        //console.log("Stio");
-        this.context.store.dispatch(timeboxStop());
+        this.props.timeboxStop();        
         this.stopTimer();
     }
 
@@ -63,15 +44,15 @@ class Timebox extends React.Component {
 
     startTimer(initializeStartTime = true) {
         if(initializeStartTime) {
-            this.context.store.dispatch(timeboxInitializeTimerState());
+            this.props.timeboxInitializeTimerState();            
         }
         this.intervalId = window.setInterval(
             () => {
-                this.context.store.dispatch(timeboxUpdateTimer());
-                const state = this.context.store.getState();
-                // if( getElapsedTimeInMiliSeconds(state) >= getTotalTimeInMiliSeconds(state)) {
-                //     this.stopTimer();
-                // }                
+                this.props.timeboxUpdateTimer();                
+                const { totalTimeInMiliSeconds, elapsedTimeInMiliSeconds } = this.props; //ki4 czy poprawne użycie dla reduxa, działa ale czy na pewno?
+                if( elapsedTimeInMiliSeconds >=totalTimeInMiliSeconds) {
+                    this.stopTimer();
+                }                
             },
             100
         )
@@ -84,21 +65,23 @@ class Timebox extends React.Component {
         return false;
     }
 
-    render() {
+    render() {console.log('a');
         const state = this.context.store.getState();
-        const { timebox, isEditable, progressBarAriaLabel } = this.props;
-     
-        const pausesCount = getPausesCount(state);
-        const elapsedTimeInMiliSeconds = getElapsedTimeInMiliSeconds(state);
+        const { timebox, isEditable, progressBarAriaLabel, 
+            totalTimeInMiliSeconds, elapsedTimeInMiliSeconds,
+            pausesCount
+        } = this.props;
+       
+       
 
-        let totalTimeInMiliSeconds, timeLeftInMiliSeconds, milisecondsLeft, minutesLeft;
+        let timeLeftInMiliSeconds, milisecondsLeft, minutesLeft;
         let secondsLeft, hoursLeft;
         let progressInPercent;
         let timeboxEmpty = this.isTimeboxEmpty(timebox);
         let timeboxTitle;
 
         if (timeboxEmpty) {
-            totalTimeInMiliSeconds = 0;
+            
             timeLeftInMiliSeconds = 0;
             milisecondsLeft = 0;
             secondsLeft = 0;
@@ -107,8 +90,7 @@ class Timebox extends React.Component {
             progressInPercent = 0;
             timeboxTitle = "";
             
-        } else {
-            totalTimeInMiliSeconds = timebox.totalTimeInMinutes * 60000;
+        } else {            
             timeLeftInMiliSeconds = totalTimeInMiliSeconds - elapsedTimeInMiliSeconds;
             [milisecondsLeft, secondsLeft, minutesLeft, hoursLeft] = convertMiliSecondsToMiliSecondsSecondMinutesHours(timeLeftInMiliSeconds);
 
@@ -145,13 +127,31 @@ class Timebox extends React.Component {
         </div >);
     }
 }
-Timebox.contextType = ReactReduxContext;
-Timebox.defaultProps = {
+InternalCurrentTimebox.contextType = ReactReduxContext;
+InternalCurrentTimebox.defaultProps = {
     isEditable: true
 }
 
-Timebox.propTypes = {
+InternalCurrentTimebox.propTypes = {
     isEditable: PropTypes.bool,
     timebox: PropTypes.object
 }
-export default Timebox;
+const mapStateToProps = (state,ownProps) => {
+
+    return { 
+        totalTimeInMiliSeconds: ownProps.timebox?ownProps.timebox.totalTimeInMinutes * 60000:0,
+        elapsedTimeInMiliSeconds: getElapsedTimeInMiliSeconds(state),
+        pausesCount: getPausesCount(state),
+     }
+}
+const mapDispatchToProps = (dispatch, ownProps) => {
+    return { 
+        timeboxUpdateTimer: () => { dispatch(timeboxUpdateTimer()) },
+        timeboxPlay: () => { dispatch(timeboxPlay()) },
+        timeboxPause: (pauseTime) => { dispatch(timeboxPause(pauseTime)) },
+        timeboxStop: () => { dispatch(timeboxStop()) },
+        timeboxInitializeTimerState: () => { dispatch(timeboxInitializeTimerState()) }
+     }
+}
+const CurrentTimebx = connect(mapStateToProps,mapDispatchToProps)(InternalCurrentTimebox);
+export default CurrentTimebx;
