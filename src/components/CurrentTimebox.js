@@ -65,7 +65,7 @@ class InternalCurrentTimebox extends React.Component {
         return false;
     }
 
-    render() {console.log('a');
+    render() {
         const state = this.context.store.getState();
         const { timebox, isEditable, progressBarAriaLabel, 
             totalTimeInMiliSeconds, elapsedTimeInMiliSeconds,

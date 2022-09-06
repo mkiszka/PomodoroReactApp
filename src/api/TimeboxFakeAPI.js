@@ -7,7 +7,7 @@ function wait(ms) {
 
 const COOKIE_TIMEBOXES = 'timeboxes';
 const cookies = new CookiesApi();
-//TODO reakcja aplikacji na błędny accessToken
+
 export const TimeboxFakeAPI = {
     timeboxes: cookies.get(COOKIE_TIMEBOXES, { path: '/' }) ||
         [

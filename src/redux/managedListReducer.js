@@ -2,12 +2,8 @@ import update from 'immutability-helper';
 import { MANGEDLIST_ACTION } from './managedListActions';
 
 //TODO 
-//createStore
-//Timebox.js jak aktualizować state na podstawie props.timebox i odkomentować w setInterval
-//dla pamięci currentTimebox na reduera zmienić i generaory oraz selektory ?
 //w Timebox.js dowiedzieć się jak w redux używać setInterval
-//w10l6 - homework - combineReducers. timebox i currenttimebox Reduc.combineReducers
-//w10l7 - przeniesienie inicjalizacji reduxa do App i użycie providera
+
 function findElement(elements, uid) {
     const element = elements.filter(
         (element) => {
