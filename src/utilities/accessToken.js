@@ -11,7 +11,7 @@ function getUserId(accesToken) {
     return sub;
 }
 
-function isExpiried(accesToken) {        
+function isExpired(accesToken) {        
     const { exp } = jwt_decode(accesToken);
     const now = new Date().getTime();
 
@@ -20,4 +20,4 @@ function isExpiried(accesToken) {
     }
     return false;
 }
-export { getUserEmail, getUserId, isExpiried }
+export { getUserEmail, getUserId, isExpired }

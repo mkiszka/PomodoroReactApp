@@ -8,7 +8,7 @@ import UnauthenticationContext from '../contexts/UnauthenticationContext';
 import AuthenticationAPI from '../api/FetchAuthenticationAPI';
 import ManagedListAPI from "../api/ManagedListAPI";
 import { AxiosTimeboxAPI } from "../api/AxiosTimeboxAPI";
-import { isExpiried } from '../utilities/accessToken';
+import { isExpired } from '../utilities/accessToken';
 
 const AuthenticatedApp = React.lazy(() => import('./AuthenticatedApp'));
 const LS_ACCESSTOKEN = 'accessToken';
@@ -25,7 +25,7 @@ function App() {
     // })
     const isUserLoggedIn = () => {
                         
-        return !isExpiried(accessToken);
+        return !isExpired(accessToken);
     }
 
 
