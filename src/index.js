@@ -8,7 +8,7 @@ import App from './components/App';
 import { CookiesProvider } from 'react-cookie'
 import { configureStore } from '@reduxjs/toolkit';
 import rootReducer from './redux/rootReducer';
-import { Provider } from 'react-redux';
+import { Provider as ReduxProvider } from 'react-redux';
 
 //const rootElement = document.getElementById("root");
 //ReactDOM.render(<App />
@@ -18,11 +18,11 @@ const store = configureStore({ reducer: rootReducer });
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <React.StrictMode>
-        <Provider store={store}>
+        <ReduxProvider store={store}>
             <CookiesProvider>
                 <App />
             </CookiesProvider>
-        </Provider>
+        </ReduxProvider>
     </React.StrictMode>
 );
 
