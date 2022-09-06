@@ -8,6 +8,7 @@ import UnauthenticationContext from '../contexts/UnauthenticationContext';
 import AuthenticationAPI from '../api/FetchAuthenticationAPI';
 import ManagedListAPI from "../api/ManagedListAPI";
 import { AxiosTimeboxAPI } from "../api/AxiosTimeboxAPI";
+import { isExpiried } from '../utilities/accessToken';
 
 const AuthenticatedApp = React.lazy(() => import('./AuthenticatedApp'));
 const LS_ACCESSTOKEN = 'accessToken';
@@ -23,7 +24,8 @@ function App() {
     //     previousLoginAttemptFailed: false
     // })
     const isUserLoggedIn = () => {
-        return !!accessToken;
+                        
+        return !isExpiried(accessToken);
     }
 
 
@@ -37,6 +39,7 @@ function App() {
     function handleLogin(credencials) {
         AuthenticationAPI.login(credencials)
             .then(({ accessToken, user }) => {
+                console.log( `new: ${accessToken}`);
                 setAccessToken(accessToken);
                 localStorage.setItem(LS_ACCESSTOKEN, accessToken);
             })
