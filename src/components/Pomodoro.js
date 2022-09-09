@@ -17,14 +17,18 @@ import { useAuthenticationContext } from "../hooks/useAuthenticationContext";
 import { getLoadingError, isLoadingError, isLoading, getAllElements, getCurrentCountdownElement } from "../redux/managedListReducer";
 import { useDispatch, useSelector } from "react-redux/es/exports";
 
+
 const AutoIndicator = withAutoIndicator(ProgressBar);
 
 function Pomodoro() {        
     const dispatch = useDispatch();    
     
     const { accessToken: apiAccessToken, managedListAPI } = useAuthenticationContext();
-    const {
-        handleCreatorAdd: onAddTimeboxElement,
+
+   
+
+    const {        
+        handleAddListElement: onAddTimeboxElement,
         handleDeleteListElement: onDeleteTimeboxListElement,
         handleSaveListElement: onSaveTimeboxListElement,
         handleStartListElement: onStartTimeboxListElement,
@@ -50,7 +54,7 @@ function Pomodoro() {
     }
     //ki4 nazewnictwo
     const loading = useSelector(isLoading);
-    const isLoad___ERROR = useSelector(isLoadingError);
+    const hasLoadingError = useSelector(isLoadingError);
     const loadingError = useSelector(getLoadingError);
     const currentCountdownElment = useSelector(getCurrentCountdownElement);
     const elements = useSelector(getAllElements);
@@ -60,11 +64,12 @@ function Pomodoro() {
         <>
             <DndProvider backend={HTML5Backend}>
                 <TimeboxCreator onAdd={onAddTimeboxElement} />
-                {isLoad___ERROR ? <ErrorMessage error={loadingError} /> : ""}
+                {hasLoadingError ? <ErrorMessage error={loadingError} /> : ""}
                 {loading ? <AutoIndicator refresh="10" /> : ""}
                 <CurrentTimebox timebox={currentCountdownElment} />
                 <TimeboxList>
                     {elements?.map((elem, index) => {
+                        elem.order = index;
                         return (
                             <TimeboxListElement
                                 key={elem.uid}

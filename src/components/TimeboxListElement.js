@@ -31,11 +31,12 @@ function TimeboxListElement({ timebox, onSave, onDelete, onStart, onMoveElement 
   }
   
   function handleSave(newTimebox) {
-    setIsFrozen(true);
+    //setIsFrozen(true);
     handleEdit();
-    onSave(newTimebox).then(() => {      
-      setIsFrozen(false);
-    });
+    onSave(newTimebox);
+    // onSave(newTimebox).then(() => {      
+    //   setIsFrozen(false);
+    // });
   }
 
   const [{ isDragging }, drag] = useDrag(

@@ -9,11 +9,12 @@ import { CookiesProvider } from 'react-cookie'
 import { configureStore } from '@reduxjs/toolkit';
 import rootReducer from './redux/rootReducer';
 import { Provider as ReduxProvider } from 'react-redux';
+import thunk from 'redux-thunk';
 
 //const rootElement = document.getElementById("root");
 //ReactDOM.render(<App />
 //    , rootElement);
-const store = configureStore({ reducer: rootReducer });
+const store = configureStore({ reducer: rootReducer,middleware: [thunk] });
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

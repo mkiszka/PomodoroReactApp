@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from 'react';
-import { addElement, moveElement, removeElement, replaceElement, setElements, setError, setLoadingStatusFalse, setLoadingStatusTrue, startCountdownElement } from '../redux/managedListActions';
+import { addElementToApi, deleteElementFromApi, getAllElements, moveElement, saveElementFromApi, setLoadingStatusFalse, setLoadingStatusTrue, startCountdownElement } from '../redux/managedListActions';
 import { getUserId } from "../utilities/accessToken";
 
 
@@ -8,39 +8,20 @@ function useManagedList(apiAccessToken, elementAPI, dispatch) {
   
     useEffect(() => {
         dispatch(setLoadingStatusTrue());
-        elementAPI.getAllElements(apiAccessToken)
-            .then((fetchedElements) => {
-                dispatch(setElements(fetchedElements));
-            })
-            .catch((error) => dispatch(setError(error)))
-            .finally(() => dispatch(setLoadingStatusFalse()) );
+        dispatch(getAllElements(elementAPI,apiAccessToken))
+       
     }, [apiAccessToken, elementAPI, dispatch]);
 
     const handleDeleteListElement = useCallback((toRemoveElement) => {
-
-        elementAPI.removeElement(apiAccessToken, toRemoveElement).then(() => {           
-            dispatch(removeElement(toRemoveElement))
-        }
-        );
-    },
-        [apiAccessToken, elementAPI, dispatch]);
-
-    const handleSaveListElement = useCallback((editedElement) => {
-        editedElement.userId = getUserId(apiAccessToken);
-        const promise = elementAPI.replaceElement(apiAccessToken, { ...editedElement });
-        promise.then(
-            (replacedElement) => {
-                dispatch(replaceElement(replacedElement));
-            }
-        )
-        return promise;
+        dispatch(deleteElementFromApi(elementAPI,apiAccessToken,toRemoveElement));        
     }, [apiAccessToken, elementAPI, dispatch]);
 
-    const handleCreatorAdd = useCallback((elementToAdd) => {
-        elementToAdd.userId = getUserId(apiAccessToken);
-        elementAPI.addElement(apiAccessToken, { ...elementToAdd }).then((elementAdded) => {
-            dispatch(addElement(elementAdded));
-        });
+    const handleSaveListElement = useCallback((editedElement) => {
+        dispatch(saveElementFromApi(elementAPI,apiAccessToken,editedElement));
+    }, [apiAccessToken, elementAPI, dispatch]);
+
+    const handleAddListElement = useCallback((elementToAdd) => {
+        dispatch(addElementToApi(elementAPI, apiAccessToken, elementToAdd));        
     }, [apiAccessToken, elementAPI, dispatch]);
 
     const handleStartListElement = useCallback((element) => {
@@ -58,7 +39,7 @@ function useManagedList(apiAccessToken, elementAPI, dispatch) {
 
 
     return {    
-        handleCreatorAdd,
+        handleAddListElement,
         handleDeleteListElement,
         handleSaveListElement,
         handleStartListElement,
