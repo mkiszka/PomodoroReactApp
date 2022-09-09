@@ -7,13 +7,14 @@ import React, { useState } from "react";
 import EditableTimeboxListElement from './EditableTimeboxListElement';
 import NonEditableTimeboxListElement from './NonEditableTimeboxListElement';
 import FrozeTimeboxListElement from './FrozeTimeboxListElement';
+import { useSelector } from 'react-redux';
 
 //ki3 czy o to chodziło ? komponent główny i w środku dwa, edytowalny i nie edytowlny??
 //     czy TimeboxListElement wywalić i ....
 //TODO split into TimeboxListElement and DragableTimeboxListElement
 
 function TimeboxListElement({ timebox, onSave, onDelete, onStart, onMoveElement }) {
-
+  
   const [isEditable, setIsEditable] = useState(false);
   const [isFrozen, setIsFrozen] = useState(false);
 
@@ -31,9 +32,14 @@ function TimeboxListElement({ timebox, onSave, onDelete, onStart, onMoveElement 
   }
   
   function handleSave(newTimebox) {
-    //setIsFrozen(true);
+    setIsFrozen(true);
     handleEdit();
-    onSave(newTimebox);
+    //ki4 Potrzeba wyłączenia zamrożenia componentu na czas odpytywania do API
+    //przekazanie callback'a jest ok? bo myślałem o refactorze TimeboxListElement do reduxa i dispatchowanie
+    //odpowiedniej akcji wraz uid componentu, ale po co ?
+    onSave(newTimebox,() => {        
+        setIsFrozen(false);
+    });    
     // onSave(newTimebox).then(() => {      
     //   setIsFrozen(false);
     // });

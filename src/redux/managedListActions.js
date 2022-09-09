@@ -1,3 +1,4 @@
+import { type } from "@testing-library/user-event/dist/type";
 import { getUserId } from "../utilities/accessToken";
 
 
@@ -49,12 +50,15 @@ export const deleteElementFromApi = (managedListAPI, apiAccessToken, toRemoveEle
     }
     );
 }
-export const saveElementFromApi = (managedListAPI, apiAccessToken, editedElement) => (dispatch) => {
+export const saveElementFromApi = (managedListAPI, apiAccessToken, editedElement, callback) => (dispatch) => {
     editedElement.userId = getUserId(apiAccessToken);
     const promise = managedListAPI.replaceElement(apiAccessToken, { ...editedElement });
     promise.then(
         (replacedElement) => {
             dispatch(replaceElement(replacedElement));
+            if( callback !== 'undefined') {
+                callback();
+            }
         }
     )
     return promise;

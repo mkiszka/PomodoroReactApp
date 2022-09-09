@@ -16,8 +16,8 @@ function useManagedList(apiAccessToken, elementAPI, dispatch) {
         dispatch(deleteElementFromApi(elementAPI,apiAccessToken,toRemoveElement));        
     }, [apiAccessToken, elementAPI, dispatch]);
 
-    const handleSaveListElement = useCallback((editedElement) => {
-        dispatch(saveElementFromApi(elementAPI,apiAccessToken,editedElement));
+    const handleSaveListElement = useCallback((editedElement,callback) => {
+        dispatch(saveElementFromApi(elementAPI,apiAccessToken,editedElement,callback));
     }, [apiAccessToken, elementAPI, dispatch]);
 
     const handleAddListElement = useCallback((elementToAdd) => {
