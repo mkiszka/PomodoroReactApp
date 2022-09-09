@@ -5,7 +5,7 @@ import axios from "axios";
 //8:10
 export const AxiosTimeboxAPI = {
     url: "",
-    timeboxesPathname: "timeboxes/",
+    timeboxesPathname: "timeboxes",
     timeboxes: [],
     getURL: function () {
         let url = new URL(this.url);
