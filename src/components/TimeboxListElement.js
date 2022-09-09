@@ -7,7 +7,6 @@ import React, { useState } from "react";
 import EditableTimeboxListElement from './EditableTimeboxListElement';
 import NonEditableTimeboxListElement from './NonEditableTimeboxListElement';
 import FrozeTimeboxListElement from './FrozeTimeboxListElement';
-import { useSelector } from 'react-redux';
 
 //ki3 czy o to chodziło ? komponent główny i w środku dwa, edytowalny i nie edytowlny??
 //     czy TimeboxListElement wywalić i ....
@@ -39,10 +38,7 @@ function TimeboxListElement({ timebox, onSave, onDelete, onStart, onMoveElement 
     //odpowiedniej akcji wraz uid componentu, ale po co ?
     onSave(newTimebox,() => {        
         setIsFrozen(false);
-    });    
-    // onSave(newTimebox).then(() => {      
-    //   setIsFrozen(false);
-    // });
+    });       
   }
 
   const [{ isDragging }, drag] = useDrag(
