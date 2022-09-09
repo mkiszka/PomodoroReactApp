@@ -11,9 +11,19 @@ import rootReducer from './redux/rootReducer';
 import { Provider as ReduxProvider } from 'react-redux';
 import thunk from 'redux-thunk';
 
-//const rootElement = document.getElementById("root");
-//ReactDOM.render(<App />
-//    , rootElement);
+//TODO extraArgument API and accesstoken ?
+// const store = configureStore({
+//     reducer: rootReducer,
+//     middleware: getDefaultMiddleware =>
+//       getDefaultMiddleware({
+//         thunk: {
+//           extraArgument: {
+//             api: myCustomApiService,
+//             otherValue: 42
+//           }
+//         }
+//       })
+//   })
 const store = configureStore({ reducer: rootReducer,middleware: [thunk] });
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
