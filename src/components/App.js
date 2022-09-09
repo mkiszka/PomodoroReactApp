@@ -1,56 +1,40 @@
-import React, { /*useReducer,*/ useState } from 'react';
+import React from 'react';
 import ErrorBoundary from './ErrorBoundary';
 import LoginForm from './LoginForm';
 
 import AuthenticationContext from '../contexts/AuthenticationContext';
 import UnauthenticationContext from '../contexts/UnauthenticationContext';
 
-import AuthenticationAPI from '../api/FetchAuthenticationAPI';
+
 import ManagedListAPI from "../api/ManagedListAPI";
 import { AxiosTimeboxAPI } from "../api/AxiosTimeboxAPI";
-import { isExpired } from '../utilities/accessToken';
+
+import { useDispatch, useSelector } from 'react-redux';
+import { getAccessToken, getPreviousLoginAttemptFailed, isAccessTokenExpired } from '../redux/authentificationActions';
+import { deleteAccessToken, loginToApi } from '../redux/authentificationReducer';
 
 const AuthenticatedApp = React.lazy(() => import('./AuthenticatedApp'));
-const LS_ACCESSTOKEN = 'accessToken';
+
 //function stateReducer = (state,action) => newState;
 
 function App() {
-
-
-    const [accessToken, setAccessToken] = useState(localStorage.getItem(LS_ACCESSTOKEN));
-    const [previousLoginAttemptFailed, setPreviousLoginAttemptFailed] = useState(false);
-    // const [state, dispatch] = useReducer(applicationStateReducer,{
-    //     accessToken: localStorage.getItem(LS_ACCESSTOKEN),
-    //     previousLoginAttemptFailed: false
-    // })
-    const isUserLoggedIn = () => {
-                        
-        return !isExpired(accessToken);
-    }
-
-
-    //https://stackoverflow.com/questions/41030361/how-to-update-react-context-from-inside-a-child-component
+    const dispatch = useDispatch();
+    const accessToken = useSelector(getAccessToken);    
+    const previousLoginAttemptFailed = useSelector(getPreviousLoginAttemptFailed);    
+    const isUserLoggedIn = useSelector(isAccessTokenExpired);
+                            
     function handleLogout() {
-        setAccessToken(null);
-        localStorage.removeItem(LS_ACCESSTOKEN);
+        dispatch(deleteAccessToken())        
     }
-
 
     function handleLogin(credencials) {
-        AuthenticationAPI.login(credencials)
-            .then(({ accessToken, user }) => {
-                console.log( `new: ${accessToken}`);
-                setAccessToken(accessToken);
-                localStorage.setItem(LS_ACCESSTOKEN, accessToken);
-            })
-            .catch(() => { setPreviousLoginAttemptFailed(true) });
-        console.log(credencials);
+       dispatch(loginToApi(credencials));
     }
 
     return (
         <div id="App" className="App">
             <ErrorBoundary>
-                {isUserLoggedIn() ?
+                {isUserLoggedIn ?
                     //ki4 - czy trzymanie API w contexcie to dobry pomysł? Np gdy używawm mangedListApi w różnych miejscach to nie muszę apamiętać co za każdym razem do konstruktora przekazywać
                     //gdyby to była większa konfiguracja to by trzeba było za każdym razem tworzyć od nowa.
                     <AuthenticationContext.Provider value={{ accessToken: accessToken, onLogout: handleLogout, managedListAPI: new ManagedListAPI(AxiosTimeboxAPI) }}>

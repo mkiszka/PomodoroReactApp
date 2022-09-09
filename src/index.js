@@ -10,6 +10,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import rootReducer from './redux/rootReducer';
 import { Provider as ReduxProvider } from 'react-redux';
 import thunk from 'redux-thunk';
+import AuthenticationAPI from './api/FetchAuthenticationAPI';
 
 //TODO extraArgument API and accesstoken ?
 // const store = configureStore({
@@ -23,8 +24,14 @@ import thunk from 'redux-thunk';
 //           }
 //         }
 //       })
+
 //   })
-const store = configureStore({ reducer: rootReducer,middleware: [thunk] });
+
+const store = configureStore({
+    reducer: rootReducer, middleware: [thunk.withExtraArgument({ authenticationAPI: AuthenticationAPI,
+                                                                //TODO manageLIstAPI and refactor managedListActions
+                                                               })]
+});
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
