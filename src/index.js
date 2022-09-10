@@ -5,18 +5,44 @@ import "./styles/main.scss"
 
 import reportWebVitals from './reportWebVitals';
 import App from './components/App';
-import {CookiesProvider} from 'react-cookie'
+import { CookiesProvider } from 'react-cookie'
+import { configureStore } from '@reduxjs/toolkit';
+import rootReducer from './redux/rootReducer';
+import { Provider as ReduxProvider } from 'react-redux';
+import thunk from 'redux-thunk';
+import AuthenticationAPI from './api/FetchAuthenticationAPI';
+import ManagedListAPI from './api/ManagedListAPI';
+import { AxiosTimeboxAPI } from './api/AxiosTimeboxAPI';
 
-//const rootElement = document.getElementById("root");
-//ReactDOM.render(<App />
-//    , rootElement);
+//TODO extraArgument API and accesstoken ?
+// const store = configureStore({
+//     reducer: rootReducer,
+//     middleware: getDefaultMiddleware =>
+//       getDefaultMiddleware({
+//         thunk: {
+//           extraArgument: {
+//             api: myCustomApiService,
+//             otherValue: 42
+//           }
+//         }
+//       })
+
+//   })
+
+const store = configureStore({
+    reducer: rootReducer, middleware: [thunk.withExtraArgument({ authenticationAPI: AuthenticationAPI,
+                                                                 managedListAPI: new ManagedListAPI(AxiosTimeboxAPI)
+                                                               })]
+});
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <React.StrictMode>
-        <CookiesProvider>
-            <App />
-        </CookiesProvider>
+        <ReduxProvider store={store}>
+            <CookiesProvider>
+                <App />
+            </CookiesProvider>
+        </ReduxProvider>
     </React.StrictMode>
 );
 

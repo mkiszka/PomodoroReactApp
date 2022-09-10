@@ -1,17 +1,12 @@
 import React from 'react'
-import AuthenticationContext from '../contexts/AuthenticationContext'
+import { useSelector } from 'react-redux'
+import { getAccessToken } from '../redux/authentificationActions'
 import { getUserEmail } from '../utilities/accessToken'
 
-function UserGreeting({ accesToken }) {
-
+function UserGreeting() {
+    const accessToken = useSelector(getAccessToken)
     return (
-        <p>
-            <AuthenticationContext.Consumer>
-                {
-                    ({accessToken}) => <>{getUserEmail(accessToken)}</>
-                }
-            </AuthenticationContext.Consumer>
-        </p>
+        <p>{getUserEmail(accessToken)}</p>
     )
 }
 

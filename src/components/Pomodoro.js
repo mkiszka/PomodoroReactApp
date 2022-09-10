@@ -1,4 +1,4 @@
-import Timebox from "./Timebox";
+import CurrentTimebox from "./CurrentTimebox";
 import TimeboxList from "./TimeboxList";
 import TimeboxListElement from "./TimeboxListElement";
 import TimeboxCreator from "./TimeboxCreator";
@@ -10,30 +10,31 @@ import ModalComponent from './ModalComponent';
 import ButtonMessage from './ButtonMessage';
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
-import { useCallback, useState } from "react";
+import { useCallback,  useState } from "react";
 import { useManagedList } from "../hooks/useManagedList";
-import { useDND } from "../hooks/useDND";
-import ManagedListAPI from "../api/ManagedListAPI";
-import { AxiosTimeboxAPI } from "../api/AxiosTimeboxAPI";
+
+import { useAuthenticationContext } from "../hooks/useAuthenticationContext";
+import { getLoadingError, isLoadingError, isLoading, getAllElements, getCurrentCountdownElement } from "../redux/managedListReducer";
+import { useDispatch, useSelector } from "react-redux/es/exports";
+
 
 const AutoIndicator = withAutoIndicator(ProgressBar);
-const managedListAPI = new ManagedListAPI(AxiosTimeboxAPI);
 
-function Pomodoro() {
-    const [timeboxes, setTimeboxes] = useState([]);
-    const {
-        isLoading,
-        loadingError,
-        elements: currentTimebox,
-        handleCreatorAdd: onAddTimeboxElement,
+function Pomodoro() {        
+    const dispatch = useDispatch();    
+    
+    const { accessToken: apiAccessToken, managedListAPI } = useAuthenticationContext();
+
+   
+
+    const {        
+        handleAddListElement: onAddTimeboxElement,
         handleDeleteListElement: onDeleteTimeboxListElement,
         handleSaveListElement: onSaveTimeboxListElement,
         handleStartListElement: onStartTimeboxListElement,
+        handleMoveElement: onMoveListElement
 
-    } = useManagedList(timeboxes, setTimeboxes, managedListAPI);
-
-    const [onMoveListElement,
-        findElement] = useDND(timeboxes, setTimeboxes);
+    } = useManagedList(apiAccessToken, managedListAPI, dispatch);
 
     // const TimeboxAPI= useTimeboxAPI();
 
@@ -43,31 +44,38 @@ function Pomodoro() {
     //czy jako zmienna stanowa sterująca wyświetlaniem jest ok?
     //2. przekazywanie tekstu do wyświetlenia, czy forma ok?
     const [timeboxToDelete, setTimeboxToDelete] = useState(null);
-    const handleConfirmDeletion = useCallback((element)  => {       
+    const handleConfirmDeletion = useCallback((element) => {
         setTimeboxToDelete(element);
-    },[]);
+    }, []);
 
 
     function handleCancelConfirmDeletion() {
         setTimeboxToDelete(null);
     }
+    //ki4 nazewnictwo
+    const loading = useSelector(isLoading);
+    const hasLoadingError = useSelector(isLoadingError);
+    const loadingError = useSelector(getLoadingError);
+    const currentCountdownElment = useSelector(getCurrentCountdownElement);
+    const elements = useSelector(getAllElements);
     //TODO sprawdzić /react/menu dla headlessui
     //TODO confirmation modal nagranie ki3
     return (
         <>
             <DndProvider backend={HTML5Backend}>
                 <TimeboxCreator onAdd={onAddTimeboxElement} />
-                {loadingError ? <ErrorMessage error={loadingError} /> : ""}
-                {isLoading ? <AutoIndicator refresh="10" /> : ""}
-                <Timebox timebox={currentTimebox} />
-                <TimeboxList timeboxes={timeboxes}>
-                    {timeboxes?.map((elem, index) => {
+                {hasLoadingError ? <ErrorMessage error={loadingError} /> : ""}
+                {loading ? <AutoIndicator refresh="10" /> : ""}
+                <CurrentTimebox timebox={currentCountdownElment} />
+                <TimeboxList>
+                    {elements?.map((elem, index) => {
+                        elem.order = index;
                         return (
                             <TimeboxListElement
                                 key={elem.uid}
                                 timebox={elem}
-                                onSave={ onSaveTimeboxListElement }
-                                onDelete={ handleConfirmDeletion }
+                                onSave={onSaveTimeboxListElement}
+                                onDelete={handleConfirmDeletion}
                                 onStart={onStartTimeboxListElement}
                                 onMoveElement={onMoveListElement}
                             />

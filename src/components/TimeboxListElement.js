@@ -7,13 +7,15 @@ import React, { useState } from "react";
 import EditableTimeboxListElement from './EditableTimeboxListElement';
 import NonEditableTimeboxListElement from './NonEditableTimeboxListElement';
 import FrozeTimeboxListElement from './FrozeTimeboxListElement';
+import { useDispatch } from 'react-redux';
+import { updateElementsOrderToApi } from '../redux/managedListActions';
 
 //ki3 czy o to chodziło ? komponent główny i w środku dwa, edytowalny i nie edytowlny??
 //     czy TimeboxListElement wywalić i ....
 //TODO split into TimeboxListElement and DragableTimeboxListElement
 
 function TimeboxListElement({ timebox, onSave, onDelete, onStart, onMoveElement }) {
-
+  
   const [isEditable, setIsEditable] = useState(false);
   const [isFrozen, setIsFrozen] = useState(false);
 
@@ -33,10 +35,14 @@ function TimeboxListElement({ timebox, onSave, onDelete, onStart, onMoveElement 
   function handleSave(newTimebox) {
     setIsFrozen(true);
     handleEdit();
-    onSave(newTimebox).then(() => {      
-      setIsFrozen(false);
-    });
+    //ki4 Potrzeba wyłączenia zamrożenia componentu na czas odpytywania do API
+    //przekazanie callback'a jest ok? bo myślałem o refactorze TimeboxListElement do reduxa i dispatchowanie
+    //odpowiedniej akcji wraz uid componentu, ale po co ?
+    onSave(newTimebox,() => {        
+        setIsFrozen(false);
+    });       
   }
+  const dispatch = useDispatch();
 
   const [{ isDragging }, drag] = useDrag(
     () => ({
@@ -48,7 +54,11 @@ function TimeboxListElement({ timebox, onSave, onDelete, onStart, onMoveElement 
       end: (item, monitor) => {
         const { uid: droppedUid, } = item
         const didDrop = monitor.didDrop()
-        if (!didDrop) {
+        if (didDrop) {          
+          console.log('didDrop');
+          dispatch(updateElementsOrderToApi('abc'))
+        } else {          
+          console.log('did not drop');
           onMoveElement(droppedUid, uid)
         }
       },
@@ -68,7 +78,7 @@ function TimeboxListElement({ timebox, onSave, onDelete, onStart, onMoveElement 
     [onMoveElement],
   )
   const opacity = isDragging ? 0 : 1
-console.log('TimeboxListElement rendered');
+//console.log('TimeboxListElement rendered');
   //ki3 0 niestety przy zostawieniu drag tutaj, i wyciągnięciu diva tutaj, komponenty podrzędne stają się niereużywalne,
   //przez chwile myślałem o HOC ? żeby dodać drag and drop, ale jeszcze nie ogarniam
   //opcja - div tylko dla dragging ? ale jak lepiej ?

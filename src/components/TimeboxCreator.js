@@ -10,9 +10,9 @@ class TimeboxCreator extends React.Component {
     constructor(props) {
         super(props);
         this.formRef = React.createRef();
-        this.state = { 
-            hasError: false, 
-            title: 'Ucze się tego i tamtego?', 
+        this.state = {
+            hasError: false,
+            title: 'Ucze się tego i tamtego?',
             totalTimeInMinutes: 25
         }
     }
@@ -23,40 +23,40 @@ class TimeboxCreator extends React.Component {
             const { onAdd } = this.props;
             const inputs = event.target.getElementsByTagName("input");
             onAdd({ uid: uuidv4(), title: inputs[0].value, totalTimeInMinutes: inputs[1].value });
-        } catch (error) {            
-            this.setState( { hasError: true, error  })
+        } catch (error) {
+            this.setState({ hasError: true, error })
         }
     }
- 
+
     handleTitleCreatorChange = (event) => {
-        this.setState( { ...this.state, title: event.target.value });
+        this.setState({ ...this.state, title: event.target.value });
     }
     handleTotalTimeInMinutesCreatorChange = (event) => {
-        this.setState( { ...this.state, totalTimeInMinutes: event.target.value });
+        this.setState({ ...this.state, totalTimeInMinutes: event.target.value });
     }
 
-    render() {        
-        const { isEditable } = this.props;        
-        const { /*hasError,*/ error, title, totalTimeInMinutes  } = this.state;
+    render() {
+        const { isEditable } = this.props;
+        const { /*hasError,*/ error, title, totalTimeInMinutes } = this.state;
 
         return (
-            this.state.hasError?
-            <Message summmaryMessage={error.Message} />:
-            <IconContext.Provider value={{ className: "" }}>
-                <form ref={this.form} onSubmit={this.handleSubmit} className={`TimeboxCreator ${isEditable ? "" : "inactive"}`}>
-                    <div>
-                        <label>Co robisz ?<input disabled={!isEditable} value={title} type="text"
-                            onChange={this.handleTitleCreatorChange} /></label>
-                        <label>Ile minut ?<input disabled={!isEditable} value={totalTimeInMinutes} type="number"
-                            onChange={this.handleTotalTimeInMinutesCreatorChange} /></label>
-                    </div>
-                    <div>
-                        <button type="submit">
-                            <IoAddCircleOutline disabled={!isEditable} className={`${isEditable ? "button-active" : "button-inactive"}`} />
-                        </button>
-                    </div>
-                </form>
-            </IconContext.Provider>
+            this.state.hasError ?
+                <Message summmaryMessage={error.Message} /> :
+                <IconContext.Provider value={{ className: "" }}>
+                    <form ref={this.form} onSubmit={this.handleSubmit} className={`TimeboxCreator ${isEditable ? "" : "inactive"}`}>
+                        <div>
+                            <label>Co robisz ?<input disabled={!isEditable} value={title} type="text"
+                                onChange={this.handleTitleCreatorChange} /></label>
+                            <label>Ile minut ?<input disabled={!isEditable} value={totalTimeInMinutes} type="number"
+                                onChange={this.handleTotalTimeInMinutesCreatorChange} /></label>
+                        </div>
+                        <div>
+                            <button type="submit">
+                                <IoAddCircleOutline disabled={!isEditable} className={`${isEditable ? "button-active" : "button-inactive"}`} />
+                            </button>
+                        </div>
+                    </form>
+                </IconContext.Provider>
         );
     }
 }

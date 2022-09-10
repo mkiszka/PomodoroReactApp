@@ -1,91 +1,47 @@
-import { useAuthenticationContext } from "./useAuthenticationContext";
-import { useCallback, useEffect, useState } from 'react';
-import { getUserId } from "../utilities/accessToken";
+import { useCallback, useEffect } from 'react';
+import { addElementToApi, deleteElementAPI, getAllElements, moveElement, saveElementAPI, setLoadingStatusTrue, startCountdownElement } from '../redux/managedListActions';
 
-
-function useManagedList(elements, setElements, elementAPI) {
+function useManagedList(apiAccessToken, elementAPI, dispatch) {
     console.log('useManagedList')
-    const { accessToken: apiAccessToken } = useAuthenticationContext();
-    const [isLoading, setIsLoding] = useState(true);
-    const [loadingError, setLoadingError] = useState(null);
-
-
-    // const TimeboxAPI = useTimeboxAPI();
-    //const [TimeboxAPI] = useTimeboxAPI();
 
     useEffect(() => {
-        //ki3 - czy tutaj dostęp do Api w zasadzie taki singleton troszkę
-        //którego nie da się zamocować przy testach, czy nie powinien być 
-        //przekazywany z zewnątrz ?
-        elementAPI.getAllElements(apiAccessToken)
-            .then((fetchedElements) => {
-                setElements(fetchedElements);
-            })
-            .catch((error) => setLoadingError(error))
-            .finally(() => setIsLoding(false));
-    }, [apiAccessToken, elementAPI, setElements]); //ki3 po przejściu na hooka wymusza mi tutaj dodanie TimeboxAPI, czy to naprawde musi być?    
+        dispatch(setLoadingStatusTrue());
+        dispatch(getAllElements())
 
-    const handleDeleteListElement = useCallback((deletedElement) => {
+    }, [apiAccessToken, elementAPI, dispatch]);
 
-        elementAPI.removeElement(apiAccessToken, deletedElement).then(() => {
-            setElements(
-                (prevTimeboxes) => {
-                    return prevTimeboxes.filter((value, index) => value.uid === deletedElement.uid ? false : true);;
-                }
-            )
-        }
-        );
-    },
-        [apiAccessToken, elementAPI, setElements]);
+    const handleDeleteListElement = useCallback((toRemoveElement) => {
+        dispatch(deleteElementAPI(toRemoveElement));
+    }, [dispatch]);
 
-    const handleSaveListElement = useCallback((editedElement) => {
-        editedElement.userId = getUserId(apiAccessToken);
-        const promise = elementAPI.replaceElement(apiAccessToken, { ...editedElement });
-        promise.then(
-            (replacedElement) => {
-                setElements(
-                    (prevElements) => {
+    const handleSaveListElement = useCallback((editedElement, callback) => {
+        dispatch(saveElementAPI(editedElement, callback));
+    }, [dispatch]);
 
-                        return prevElements.map((value) => { //TODOa1 tego mapa spróbować zedytować według uwag z konsultacji
-                            return value.uid === editedElement.uid ? { ...editedElement } : value
-                        })
-                    }
-                )
-            }
-        )
-        return promise;
-    }, [apiAccessToken, elementAPI, setElements]);
-
-    const handleCreatorAdd = useCallback((timeboxToAdd) => {
-        timeboxToAdd.userId = getUserId(apiAccessToken);
-        elementAPI.addElement(apiAccessToken, { ...timeboxToAdd }).then((timeboxAdded) => {
-            setElements(
-                (prevTimeboxes) => {
-                    return [...prevTimeboxes, timeboxAdded];
-                }
-            )
-        });
-    },
-        [apiAccessToken, elementAPI, setElements]);
-
-    const [currentIndex, setCurrentIndex] = useState(0);
+    const handleAddListElement = useCallback((elementToAdd) => {
+        dispatch(addElementToApi(elementToAdd));
+    }, [dispatch]);
 
     const handleStartListElement = useCallback((element) => {
-        debugger;
-        const index = elements.findIndex((felement) => felement.uid === element.uid )
-        setCurrentIndex(index);
-        //TODOa1 refactor w/w handlerów z (id) na findElement z hooka useDND ? 
-        //findElement do czegoś wspólnego przenieść ?
-    }, [setCurrentIndex,elements]);
+        dispatch(startCountdownElement(element));
+    }, [dispatch]);
+
+
+    const handleMoveElement = useCallback(
+        (uid, atUid) => {
+            dispatch(moveElement(uid, atUid));         
+        },
+        [dispatch],
+    )
+
+
 
     return {
-        isLoading,
-        loadingError,
-        elements: ((elements.length > 0) ? elements[currentIndex] : null),
-        handleCreatorAdd,
+        handleAddListElement,
         handleDeleteListElement,
         handleSaveListElement,
-        handleStartListElement
+        handleStartListElement,
+        handleMoveElement
     }
 };
 
