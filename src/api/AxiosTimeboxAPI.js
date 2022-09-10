@@ -21,7 +21,7 @@ export const AxiosTimeboxAPI = {
         return res;
     },
     getAllTimeboxes: async function (accessToken) {
-        const response = await axios.get(this.getURL(), { headers: this.getHeaders(accessToken) });
+        const response = await axios.get(`${this.getURL()}?_sort=order`, { headers: this.getHeaders(accessToken) });
         return response.data;
 
     },
