@@ -1,5 +1,6 @@
 import { getUserId } from "../utilities/accessToken";
-
+import { getAccessToken } from "./authentificationActions";
+import { getAllElements as state_getAllElements } from "./managedListReducer";
 
 export const MANGEDLIST_ACTION = {
     ELEMENTS_SET: 'ELEMENTS_SET',
@@ -50,15 +51,31 @@ export const deleteElementFromApi = (managedListAPI, apiAccessToken, toRemoveEle
     );
 }
 export const saveElementFromApi = (managedListAPI, apiAccessToken, editedElement, callback) => (dispatch) => {
+    console.log(editedElement)
     editedElement.userId = getUserId(apiAccessToken);
     const promise = managedListAPI.replaceElement(apiAccessToken, { ...editedElement });
     promise.then(
         (replacedElement) => {
             dispatch(replaceElement(replacedElement));
-            if( callback !== 'undefined') {
+            if( callback !== undefined) {                
                 callback();
             }
         }
-    )
-    return promise;
+    )  
+}
+
+export const updateElementsOrderToApi = () => (dispatch, getState,{ manageLIstAPI }) => {
+    const state = getState();
+    const accessToken = getAccessToken(state);
+    console.log('API');
+    const elements =  state_getAllElements(state); //ki4 i tu powstał konflik między getAllElements jako akcja i jako pobranie stanu
+    
+    elements.forEach((element) => {
+        //old order is set in reducer (MANGEDLIST_ACTION.ELEMENT_MOVE) 
+        const oldOrder = element.oldOrder;
+        delete element.oldOrder;
+        if( oldOrder !== element.order) {
+           dispatch(saveElementFromApi(manageLIstAPI,accessToken,element));
+        }
+    })
 }

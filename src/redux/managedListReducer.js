@@ -57,6 +57,10 @@ export function timeboxesReducer(state = initialState, action) {
                         [atIndex, 0, element],
                     ],
                 });
+                elements.forEach((element,index) => {
+                    element.oldOrder = element.order
+                    element.order = index;
+                })               
                 return { ...state, elements };
             }
         case MANGEDLIST_ACTION.LOADING_STATUS_FALSE: {

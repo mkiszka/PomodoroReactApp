@@ -11,6 +11,8 @@ import rootReducer from './redux/rootReducer';
 import { Provider as ReduxProvider } from 'react-redux';
 import thunk from 'redux-thunk';
 import AuthenticationAPI from './api/FetchAuthenticationAPI';
+import ManagedListAPI from './api/ManagedListAPI';
+import { AxiosTimeboxAPI } from './api/AxiosTimeboxAPI';
 
 //TODO extraArgument API and accesstoken ?
 // const store = configureStore({
@@ -29,7 +31,7 @@ import AuthenticationAPI from './api/FetchAuthenticationAPI';
 
 const store = configureStore({
     reducer: rootReducer, middleware: [thunk.withExtraArgument({ authenticationAPI: AuthenticationAPI,
-                                                                //TODO manageLIstAPI and refactor managedListActions
+                                                                 manageLIstAPI: new ManagedListAPI(AxiosTimeboxAPI)
                                                                })]
 });
 
