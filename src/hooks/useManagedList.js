@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from 'react';
-import { addElementToApi, deleteElementFromApi, getAllElements, moveElement, saveElementFromApi, setLoadingStatusTrue, startCountdownElement, updateElementsOrderToApi } from '../redux/managedListActions';
+import { addElementToApi, deleteElementFromApi, getAllElements, moveElement, saveElementFromApi, setLoadingStatusTrue, startCountdownElement } from '../redux/managedListActions';
 
 function useManagedList(apiAccessToken, elementAPI, dispatch) {
     console.log('useManagedList')
@@ -29,10 +29,9 @@ function useManagedList(apiAccessToken, elementAPI, dispatch) {
 
     const handleMoveElement = useCallback(
         (uid, atUid) => {
-            dispatch(moveElement(uid, atUid));
-            //dispatch(updateElementsOrderToApi(elementAPI,apiAccessToken));
+            dispatch(moveElement(uid, atUid));         
         },
-        [elementAPI,apiAccessToken,dispatch],
+        [dispatch],
     )
 
 
