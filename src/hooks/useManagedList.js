@@ -1,26 +1,26 @@
 import { useCallback, useEffect } from 'react';
-import { addElementToApi, deleteElementFromApi, getAllElements, moveElement, saveElementFromApi, setLoadingStatusTrue, startCountdownElement } from '../redux/managedListActions';
+import { addElementToApi, deleteElementAPI, getAllElements, moveElement, saveElementAPI, setLoadingStatusTrue, startCountdownElement } from '../redux/managedListActions';
 
 function useManagedList(apiAccessToken, elementAPI, dispatch) {
     console.log('useManagedList')
 
     useEffect(() => {
         dispatch(setLoadingStatusTrue());
-        dispatch(getAllElements(elementAPI, apiAccessToken))
+        dispatch(getAllElements())
 
     }, [apiAccessToken, elementAPI, dispatch]);
 
     const handleDeleteListElement = useCallback((toRemoveElement) => {
-        dispatch(deleteElementFromApi(elementAPI, apiAccessToken, toRemoveElement));
-    }, [apiAccessToken, elementAPI, dispatch]);
+        dispatch(deleteElementAPI(toRemoveElement));
+    }, [dispatch]);
 
     const handleSaveListElement = useCallback((editedElement, callback) => {
-        dispatch(saveElementFromApi(elementAPI, apiAccessToken, editedElement, callback));
-    }, [apiAccessToken, elementAPI, dispatch]);
+        dispatch(saveElementAPI(editedElement, callback));
+    }, [dispatch]);
 
     const handleAddListElement = useCallback((elementToAdd) => {
-        dispatch(addElementToApi(elementAPI, apiAccessToken, elementToAdd));
-    }, [apiAccessToken, elementAPI, dispatch]);
+        dispatch(addElementToApi(elementToAdd));
+    }, [dispatch]);
 
     const handleStartListElement = useCallback((element) => {
         dispatch(startCountdownElement(element));

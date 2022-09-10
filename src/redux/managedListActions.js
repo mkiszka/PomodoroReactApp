@@ -29,31 +29,34 @@ export const setElements = (elements) => ({ type: MANGEDLIST_ACTION.ELEMENTS_SET
 export const addElement = (element) => ({ type: MANGEDLIST_ACTION.ELEMENT_ADD, element });
 
 
-export const addElementToApi = (managedListAPI, apiAccessToken, elementToAdd) => (dispatch) => {
-    elementToAdd.userId = getUserId(apiAccessToken);
-    managedListAPI.addElement(apiAccessToken, { ...elementToAdd }).then((elementAdded) => {
-        debugger;
+export const addElementToApi = (elementToAdd) => (dispatch, getState,{ managedListAPI }) => {
+    const accessToken = getAccessToken(getState())
+    elementToAdd.userId = getUserId(accessToken);
+    managedListAPI.addElement(accessToken, { ...elementToAdd }).then((elementAdded) => {    
         dispatch(addElement(elementAdded));
     });
 }
-export const getAllElements = (managedListAPI, apiAccessToken) => (dispatch) => {
-    managedListAPI.getAllElements(apiAccessToken)
+export const getAllElements = () => (dispatch, getState,{ managedListAPI }) => {
+    const accessToken = getAccessToken(getState())
+    managedListAPI.getAllElements(accessToken)
         .then((fetchedElements) => {
             dispatch(setElements(fetchedElements));
         })
         .catch((error) => dispatch(setError(error)))
         .finally(() => dispatch(setLoadingStatusFalse()));
 }
-export const deleteElementFromApi = (managedListAPI, apiAccessToken, toRemoveElement) => (dispatch) => {
-    managedListAPI.removeElement(apiAccessToken, toRemoveElement).then(() => {
+export const deleteElementAPI = (toRemoveElement) => (dispatch, getState,{ managedListAPI }) => {
+    const accessToken = getAccessToken(getState());  
+    managedListAPI.removeElement(accessToken, toRemoveElement).then(() => {
         dispatch(removeElement(toRemoveElement))
     }
     );
 }
-export const saveElementFromApi = (managedListAPI, apiAccessToken, editedElement, callback) => (dispatch) => {
-    console.log(editedElement)
-    editedElement.userId = getUserId(apiAccessToken);
-    const promise = managedListAPI.replaceElement(apiAccessToken, { ...editedElement });
+export const saveElementAPI = (editedElement, callback) => (dispatch, getState,{ managedListAPI }) => {        
+    const accessToken = getAccessToken(getState());     
+    editedElement.userId = getUserId(accessToken);
+
+    const promise = managedListAPI.replaceElement(accessToken, { ...editedElement });
     promise.then(
         (replacedElement) => {
             dispatch(replaceElement(replacedElement));
@@ -64,10 +67,8 @@ export const saveElementFromApi = (managedListAPI, apiAccessToken, editedElement
     )  
 }
 
-export const updateElementsOrderToApi = () => (dispatch, getState,{ manageLIstAPI }) => {
-    const state = getState();
-    const accessToken = getAccessToken(state);
-    console.log('API');
+export const updateElementsOrderToApi = () => (dispatch, getState,{ managedListAPI }) => {
+    const state = getState(); 
     const elements =  state_getAllElements(state); //ki4 i tu powstał konflik między getAllElements jako akcja i jako pobranie stanu
     
     elements.forEach((element) => {
@@ -75,7 +76,7 @@ export const updateElementsOrderToApi = () => (dispatch, getState,{ manageLIstAP
         const oldOrder = element.oldOrder;
         delete element.oldOrder;
         if( oldOrder !== element.order) {
-           dispatch(saveElementFromApi(manageLIstAPI,accessToken,element));
+           dispatch(saveElementAPI(element));
         }
     })
 }

@@ -31,7 +31,7 @@ import { AxiosTimeboxAPI } from './api/AxiosTimeboxAPI';
 
 const store = configureStore({
     reducer: rootReducer, middleware: [thunk.withExtraArgument({ authenticationAPI: AuthenticationAPI,
-                                                                 manageLIstAPI: new ManagedListAPI(AxiosTimeboxAPI)
+                                                                 managedListAPI: new ManagedListAPI(AxiosTimeboxAPI)
                                                                })]
 });
 

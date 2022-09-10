@@ -1,7 +1,6 @@
 import jwt_decode from "jwt-decode";
 
-function getUserEmail(accesToken) {
-    console.log(jwt_decode(accesToken));
+function getUserEmail(accesToken) {    
     const { email } = jwt_decode(accesToken);
     return email;
 }
