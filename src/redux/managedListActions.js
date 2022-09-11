@@ -11,7 +11,8 @@ export const MANGEDLIST_ACTION = {
     CURRENT_COUNTDOWN_ELEMENT_SET: 'CURRENT_COUNTDOWN_ELEMENT_SET',
     LOADING_STATUS_TRUE: 'LOADING_STATUS_TRUE',
     LOADING_STATUS_FALSE: 'LOADING_STATUS_FALSE',
-    LOADING_ERROR_SET: 'LOADING_ERROR_SET'
+    LOADING_ERROR_SET: 'LOADING_ERROR_SET',
+    REMEBER_ORDER: 'managedList/remeber_order'
 };
 //gneratory akcji
 export const setError = error => {
@@ -27,7 +28,7 @@ export const startCountdownElement = (element) => ({ type: MANGEDLIST_ACTION.CUR
 export const moveElement = (uid, atUid) => ({ type: MANGEDLIST_ACTION.ELEMENT_MOVE, uid, atUid });
 export const setElements = (elements) => ({ type: MANGEDLIST_ACTION.ELEMENTS_SET, elements });
 export const addElement = (element) => ({ type: MANGEDLIST_ACTION.ELEMENT_ADD, element });
-
+export const rememberOrder = () => ({ type: MANGEDLIST_ACTION.REMEBER_ORDER });
 
 export const addElementToApi = (elementToAdd) => (dispatch, getState,{ managedListAPI }) => {
     const accessToken = getAccessToken(getState())

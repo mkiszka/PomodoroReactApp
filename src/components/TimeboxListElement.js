@@ -8,7 +8,7 @@ import EditableTimeboxListElement from './EditableTimeboxListElement';
 import NonEditableTimeboxListElement from './NonEditableTimeboxListElement';
 import FrozeTimeboxListElement from './FrozeTimeboxListElement';
 import { useDispatch } from 'react-redux';
-import { updateElementsOrderToApi } from '../redux/managedListActions';
+import { rememberOrder, updateElementsOrderToApi } from '../redux/managedListActions';
 
 //ki3 czy o to chodziło ? komponent główny i w środku dwa, edytowalny i nie edytowlny??
 //     czy TimeboxListElement wywalić i ....
@@ -47,18 +47,19 @@ function TimeboxListElement({ timebox, onSave, onDelete, onStart, onMoveElement 
   const [{ isDragging }, drag] = useDrag(
     () => ({
       type: DraggableItemTypes.TimeboxListElement,
-      item: { uid },
+      item: () => { 
+        dispatch(rememberOrder());
+        return { uid };
+      },
       collect: (monitor) => ({
         isDragging: monitor.isDragging(),
       }),
       end: (item, monitor) => {
         const { uid: droppedUid, } = item
         const didDrop = monitor.didDrop()
-        if (didDrop) {          
-          console.log('didDrop');
+        if (didDrop) {                    
           dispatch(updateElementsOrderToApi('abc'))
-        } else {          
-          console.log('did not drop');
+        } else {                    
           onMoveElement(droppedUid, uid)
         }
       },
