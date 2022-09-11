@@ -22,7 +22,7 @@ class TimeboxCreator extends React.Component {
             event.preventDefault();
             const { onAdd } = this.props;
             const inputs = event.target.getElementsByTagName("input");
-            onAdd({ uid: uuidv4(), title: inputs[0].value, totalTimeInMinutes: inputs[1].value });
+            onAdd({ uid: uuidv4(), title: inputs[0].value, totalTimeInMinutes: inputs[1].value, complete: false });
         } catch (error) {
             this.setState({ hasError: true, error })
         }
