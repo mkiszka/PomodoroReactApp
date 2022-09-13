@@ -1,6 +1,6 @@
 import { getUserId } from "../utilities/accessToken";
 import { getAccessToken } from "./authentificationActions";
-import { getAllElements as state_getAllElements } from "./managedListReducer";
+import { getAllElements } from "./managedListReducer";
 
 export const MANGEDLIST_ACTION = {
     ELEMENTS_SET: 'ELEMENTS_SET',
@@ -37,7 +37,7 @@ export const addElementToApi = (elementToAdd) => (dispatch, getState,{ managedLi
         dispatch(addElement(elementAdded));
     });
 }
-export const getAllElements = () => (dispatch, getState,{ managedListAPI }) => {
+export const requestAllElements = () => (dispatch, getState,{ managedListAPI }) => {
     const accessToken = getAccessToken(getState())
     managedListAPI.getAllElements(accessToken)
         .then((fetchedElements) => {
@@ -70,7 +70,7 @@ export const saveElementAPI = (editedElement, callback) => (dispatch, getState,{
 
 export const updateElementsOrderToApi = () => (dispatch, getState,{ managedListAPI }) => {
     const state = getState(); 
-    const elements =  state_getAllElements(state); //ki4 i tu powstał konflik między getAllElements jako akcja i jako pobranie stanu
+    const elements =  getAllElements(state);
     
     elements.forEach((element) => {
         //old order is set in reducer (MANGEDLIST_ACTION.ELEMENT_MOVE) 

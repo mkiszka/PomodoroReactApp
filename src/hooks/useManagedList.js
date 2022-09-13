@@ -1,12 +1,12 @@
 import { useCallback, useEffect } from 'react';
-import { addElementToApi, deleteElementAPI, getAllElements, moveElement, saveElementAPI, setLoadingStatusTrue, startCountdownElement } from '../redux/managedListActions';
+import { addElementToApi, deleteElementAPI, requestAllElements, moveElement, saveElementAPI, setLoadingStatusTrue, startCountdownElement } from '../redux/managedListActions';
 
 function useManagedList(apiAccessToken, elementAPI, dispatch) {
     console.log('useManagedList')
 
     useEffect(() => {
         dispatch(setLoadingStatusTrue());
-        dispatch(getAllElements())
+        dispatch(requestAllElements())
 
     }, [apiAccessToken, elementAPI, dispatch]);
 
