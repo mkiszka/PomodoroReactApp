@@ -7,13 +7,14 @@ import { convertMiliSecondsToMiliSecondsSecondMinutesHours } from '../utilities/
 import { getElapsedTimeInMiliSeconds, getPausesCount, isPaused, isRunning } from '../redux/timeboxReducer';
 import { timeboxInitializeTimerState, timeboxPause, timeboxPlay, timeboxStop, timeboxUpdateTimer } from '../redux/timeboxActions';
 import { connect, ReactReduxContext } from 'react-redux';
-
+//TODO 4 refaktor - na kilka komponentów jako reprezentacja stanu
 class InternalCurrentTimebox extends React.Component {
     constructor(props) {
         super(props);     
         //this.state = this.getInitState();
         this.startTimer = this.startTimer.bind(this);
         this.stopTimer = this.stopTimer.bind(this);     
+        
     }      
 
     componentWillUnmount() {

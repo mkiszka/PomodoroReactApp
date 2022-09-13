@@ -39,7 +39,7 @@ function TimeboxListElement({ timebox, onSave, onDelete, onStart, onMoveElement 
     //przekazanie callback'a jest ok? bo myślałem o refactorze TimeboxListElement do reduxa i dispatchowanie
     //odpowiedniej akcji wraz uid componentu, ale po co ?
     onSave(newTimebox,() => {        
-        setIsFrozen(false);
+        setIsFrozen(false); //TODO refaktor do stanu reduxa, nowy stan info o błędzie. (error)
     });       
   }
   const dispatch = useDispatch();
@@ -83,11 +83,12 @@ function TimeboxListElement({ timebox, onSave, onDelete, onStart, onMoveElement 
   //ki3 0 niestety przy zostawieniu drag tutaj, i wyciągnięciu diva tutaj, komponenty podrzędne stają się niereużywalne,
   //przez chwile myślałem o HOC ? żeby dodać drag and drop, ale jeszcze nie ogarniam
   //opcja - div tylko dla dragging ? ale jak lepiej ?
+  //TODO refaktor na jeden typ zamiast isFrozen i isEditable
   return (
     <div
       ref={(node) => drag(drop(node))}
       style={{ opacity }}
-    >
+    >    
       {isFrozen ?
         <FrozeTimeboxListElement timebox={timebox} />
         :

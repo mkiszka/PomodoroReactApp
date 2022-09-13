@@ -12,7 +12,7 @@ export const AxiosTimeboxAPI = {
         url.pathname = this.timeboxesPathname;
         return url;
     },
-    getHeaders: function (accessToken) {        
+    getHeaders: function (accessToken) {
         let res = {};
         // const accessToken = localStorage.getItem('accessToken');
         if (!!accessToken) {

@@ -12,17 +12,14 @@ function useTimeboxes(ListAPI,) {
     const [loadingError, setLoadingError] = useState(null);
 
     const [timeboxes, setTimeboxes] = useState([]);    
-    // const TimeboxAPI = useTimeboxAPI();
+    
     const [
         removeElementAPI,
         getAllElementsAPI,
         replaceElementAPI
     ] = useTimeboxAPI();
     
-    useEffect(() => {
-        //ki3 - czy tutaj dostęp do Api w zasadzie taki singleton troszkę
-        //którego nie da się zamocować przy testach, czy nie powinien być 
-        //przekazywany z zewnątrz ?
+    useEffect(() => {        
         getAllElementsAPI(accessToken)
             .then((timeboxes) => { setTimeboxes(timeboxes);console.log('setTimeboxes') })
             .catch((error) => setLoadingError(error))
@@ -32,8 +29,7 @@ function useTimeboxes(ListAPI,) {
     
     
 
-    function handleDeleteTimeboxListElement(uid) {
-        //setTimeboxToDelete(null);
+    function handleDeleteTimeboxListElement(uid) {    
         removeElementAPI(accessToken, uid).then(() => {
             setTimeboxes(
                 (prevTimeboxes) => {
@@ -46,7 +42,7 @@ function useTimeboxes(ListAPI,) {
     }
 
     function handleSaveTimeboxListElement(editedTimebox) {
-        //const { element } = findElement(editedTimebox.uid);        
+        
         replaceElementAPI(accessToken, { ...editedTimebox }).then(
             () => {
                 setTimeboxes(
