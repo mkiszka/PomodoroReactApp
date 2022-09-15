@@ -7,47 +7,46 @@ import React, { useState } from "react";
 import EditableTimeboxListElement from './EditableTimeboxListElement';
 import NonEditableTimeboxListElement from './NonEditableTimeboxListElement';
 import FrozeTimeboxListElement from './FrozeTimeboxListElement';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { rememberOrder, updateElementsOrderToApi } from '../redux/managedListActions';
+
+import { TIMEBOXLISTELEMENT_STATE } from '../redux/TIMEBOXLISTELEMENT_STATE';
+import useUIElementState from '../hooks/useUIElementState';
 
 //ki3 czy o to chodziło ? komponent główny i w środku dwa, edytowalny i nie edytowlny??
 //     czy TimeboxListElement wywalić i ....
 //TODO split into TimeboxListElement and DragableTimeboxListElement
 
 function TimeboxListElement({ timebox, onSave, onDelete, onStart, onMoveElement }) {
-  
-  const [isEditable, setIsEditable] = useState(false);
-  const [isFrozen, setIsFrozen] = useState(false);
-
+  //ki4 wspólny stan isEditable i isFrozen 
   const uid = timebox.uid;
+  const { getUIState, setUIState } = useUIElementState(uid);
+  const uiState = useSelector(getUIState(uid));
+  //const [isEditable, setIsEditable] = useState(false);
+  //const [isFrozen, setIsFrozen] = useState(false);
 
   function handleEdit() {
-    setIsEditable((prevIsEditable) => {
-      return !prevIsEditable;
-    })
+    setUIState(TIMEBOXLISTELEMENT_STATE.EDITABLE);
   }
   function handleCancel() {
-    setIsEditable((prevIsEditable) => {
-      return false;
-    })
+    setUIState(TIMEBOXLISTELEMENT_STATE.NONEDITABLE);
   }
-  
-  function handleSave(newTimebox) {
-    setIsFrozen(true);
-    handleEdit();
+
+  function handleSave(editedTimebox) {
+    //setIsFrozen(true);
+    // dispatch(setUIState(TIMEBOXLISTELEMENT_STATE.FROZEN));
+    //ki5
     //ki4 Potrzeba wyłączenia zamrożenia componentu na czas odpytywania do API
     //przekazanie callback'a jest ok? bo myślałem o refactorze TimeboxListElement do reduxa i dispatchowanie
     //odpowiedniej akcji wraz uid componentu, ale po co ?
-    onSave(newTimebox,() => {        
-        setIsFrozen(false); //TODO refaktor do stanu reduxa, nowy stan info o błędzie. (error)
-    });       
+    onSave(editedTimebox);
   }
   const dispatch = useDispatch();
 
   const [{ isDragging }, drag] = useDrag(
     () => ({
       type: DraggableItemTypes.TimeboxListElement,
-      item: () => { 
+      item: () => {
         dispatch(rememberOrder());
         return { uid };
       },
@@ -57,9 +56,9 @@ function TimeboxListElement({ timebox, onSave, onDelete, onStart, onMoveElement 
       end: (item, monitor) => {
         const { uid: droppedUid, } = item
         const didDrop = monitor.didDrop()
-        if (didDrop) {                    
+        if (didDrop) {
           dispatch(updateElementsOrderToApi('abc'))
-        } else {                    
+        } else {
           onMoveElement(droppedUid, uid)
         }
       },
@@ -79,7 +78,7 @@ function TimeboxListElement({ timebox, onSave, onDelete, onStart, onMoveElement 
     [onMoveElement],
   )
   const opacity = isDragging ? 0 : 1
-//console.log('TimeboxListElement rendered');
+  //console.log('TimeboxListElement rendered');
   //ki3 0 niestety przy zostawieniu drag tutaj, i wyciągnięciu diva tutaj, komponenty podrzędne stają się niereużywalne,
   //przez chwile myślałem o HOC ? żeby dodać drag and drop, ale jeszcze nie ogarniam
   //opcja - div tylko dla dragging ? ale jak lepiej ?
@@ -88,23 +87,29 @@ function TimeboxListElement({ timebox, onSave, onDelete, onStart, onMoveElement 
     <div
       ref={(node) => drag(drop(node))}
       style={{ opacity }}
-    >    
-      {isFrozen ?
-        <FrozeTimeboxListElement timebox={timebox} />
-        :
+    > {(() => {
+     
+      switch (uiState) {
 
-        isEditable ?
-          <EditableTimeboxListElement
+        case TIMEBOXLISTELEMENT_STATE.EDITABLE:
+          return <EditableTimeboxListElement
             timebox={timebox}
             onSave={handleSave}
             onCancel={handleCancel}
           />
-          : <NonEditableTimeboxListElement
+        case TIMEBOXLISTELEMENT_STATE.FROZEN:
+          return <FrozeTimeboxListElement timebox={timebox} />
+        case TIMEBOXLISTELEMENT_STATE.NONEDITABLE:
+        default:
+          return <NonEditableTimeboxListElement
             timebox={timebox}
             onEdit={handleEdit}
             onDelete={onDelete}
             onStart={onStart}
-          />}
+          />
+      }
+    })()
+      }
     </div>
   )
 }

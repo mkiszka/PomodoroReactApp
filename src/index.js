@@ -15,7 +15,7 @@ import { AxiosTimeboxAPI } from './api/AxiosTimeboxAPI';
 import { timeboxReducer } from './redux/timeboxReducer';
 import { timeboxesReducer } from './redux/managedListReducer';
 import { authentificationReducer } from './redux/authentificationReducer';
-
+import uiElementStateReducer from './redux/uiElementStateReducer';
 //TODO extraArgument API and accesstoken ?
 // const store = configureStore({
 //     reducer: rootReducer,
@@ -35,7 +35,8 @@ const store = configureStore({
     reducer: {
         timebox: timeboxReducer,
         timeboxList: timeboxesReducer,
-        auth: authentificationReducer
+        auth: authentificationReducer,
+        uiElementState: uiElementStateReducer
     }, 
     middleware: [thunk.withExtraArgument({ authenticationAPI: AuthenticationAPI,
                                                                  managedListAPI: new ManagedListAPI(AxiosTimeboxAPI)

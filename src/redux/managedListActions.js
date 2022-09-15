@@ -1,6 +1,8 @@
 import { getUserId } from "../utilities/accessToken";
 import { getAccessToken } from "./authentificationActions";
 import { getAllElements } from "./managedListReducer";
+import { TIMEBOXLISTELEMENT_STATE } from "./TIMEBOXLISTELEMENT_STATE";
+import { setUIState } from "./uiElementStateReducer";
 
 export const MANGEDLIST_ACTION = {
     ELEMENTS_SET: 'ELEMENTS_SET',
@@ -53,18 +55,18 @@ export const deleteElementAPI = (toRemoveElement) => (dispatch, getState,{ manag
     }
     );
 }
-export const saveElementAPI = (editedElement, callback) => (dispatch, getState,{ managedListAPI }) => {        
+export const saveElementAPI = (editedElement) => (dispatch, getState,{ managedListAPI }) => {        
     const accessToken = getAccessToken(getState());     
     editedElement.userId = getUserId(accessToken);
 
+    dispatch(setUIState({ id:editedElement.uid, uiState: TIMEBOXLISTELEMENT_STATE.FROZEN}));
     const promise = managedListAPI.replaceElement(accessToken, { ...editedElement });
     promise.then(
         (replacedElement) => {
+            
             dispatch(replaceElement(replacedElement));
-            if( callback !== undefined) {                
-                callback();
-            }
-        }
+            dispatch(setUIState({id: editedElement.uid,uiState: TIMEBOXLISTELEMENT_STATE.NONEDITABLE})) //ki5 - czy mogę z reduxa odpalać zmianę stanu komponentów?
+        }          
     )  
 }
 

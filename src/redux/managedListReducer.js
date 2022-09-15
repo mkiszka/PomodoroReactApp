@@ -1,6 +1,9 @@
 import update from 'immutability-helper';
 import { MANGEDLIST_ACTION } from './managedListActions';
 
+
+
+
 //TODO 
 //w Timebox.js dowiedzieć się jak w redux używać setInterval
 
@@ -89,3 +92,9 @@ export const getLoadingError = (state) => state.timeboxList.loadingError;
 export const isLoading = (state) => state.timeboxList.isLoading;
 export const getAllElements = (state) => state.timeboxList.elements;
 export const getCurrentCountdownElement = (state) => state.timeboxList.currentCountdownElment;
+export const isFrozen = (timeboxUid) => (state)  => {
+    const element = findElement(state.elements,timeboxUid);
+    return element?.frozen ?? false
+
+    //editable frozen noneditable
+}
