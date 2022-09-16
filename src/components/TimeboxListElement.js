@@ -3,7 +3,7 @@ import { useDrop } from 'react-dnd';
 import PropTypes from "prop-types";
 import { v4 as uuidv4 } from "uuid"
 import { DraggableItemTypes } from "./DraggableItemTypes";
-import React, { useState } from "react";
+import React from "react";
 import EditableTimeboxListElement from './EditableTimeboxListElement';
 import NonEditableTimeboxListElement from './NonEditableTimeboxListElement';
 import FrozeTimeboxListElement from './FrozeTimeboxListElement';
@@ -35,10 +35,9 @@ function TimeboxListElement({ timebox, onSave, onDelete, onStart, onMoveElement 
   function handleSave(editedTimebox) {
     //setIsFrozen(true);
     // dispatch(setUIState(TIMEBOXLISTELEMENT_STATE.FROZEN));
-    //ki5
-    //ki4 Potrzeba wyłączenia zamrożenia componentu na czas odpytywania do API
-    //przekazanie callback'a jest ok? bo myślałem o refactorze TimeboxListElement do reduxa i dispatchowanie
-    //odpowiedniej akcji wraz uid componentu, ale po co ?
+    //ki5 - zmiana stanu frozen jest teraz w managedListReducer
+    //i tu jest mały problem. bo jest to miejsce oderwane od TimeboxListElement, gdzie jego stan jest zmieniany
+    //wcześniej w onSave miałem callback i było wiadomo tutaj, że coś się zmienia    
     onSave(editedTimebox);
   }
   const dispatch = useDispatch();

@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import {
     initializeUIState,
@@ -9,6 +9,9 @@ import {
 export default function useUIElementState(id) {
     const [isInitialized, setIsInitialized] = useState(false);
     const dispatch = useDispatch();
+    // useEffect(()=>{
+    //     dispatch(initializeUIState({ id })); //ki5 - chciałbym to mieć w ifie poniżej jako isInitialized. Niestety wtedy console wywala błąd
+    // },[dispatch,id]);
     if (!isInitialized) {
         // debugger;
         dispatch(initializeUIState({ id }));
