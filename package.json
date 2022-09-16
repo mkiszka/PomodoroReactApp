@@ -29,6 +29,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "build-profile": "react-scripts build --profile",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "postinstall": "patch-package"
