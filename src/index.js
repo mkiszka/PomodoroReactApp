@@ -6,42 +6,8 @@ import "./styles/main.scss"
 import reportWebVitals from './reportWebVitals';
 import App from './components/App';
 import { CookiesProvider } from 'react-cookie'
-import { configureStore } from '@reduxjs/toolkit';
 import { Provider as ReduxProvider } from 'react-redux';
-import thunk from 'redux-thunk';
-import AuthenticationAPI from './api/FetchAuthenticationAPI';
-import ManagedListAPI from './api/ManagedListAPI';
-import { AxiosTimeboxAPI } from './api/AxiosTimeboxAPI';
-import { timeboxReducer } from './redux/timeboxReducer';
-import { timeboxesReducer } from './redux/managedListReducer';
-import { authentificationReducer } from './redux/authentificationReducer';
-import uiElementStateReducer from './redux/uiElementStateReducer';
-//TODO extraArgument API and accesstoken ?
-// const store = configureStore({
-//     reducer: rootReducer,
-//     middleware: getDefaultMiddleware =>
-//       getDefaultMiddleware({
-//         thunk: {
-//           extraArgument: {
-//             api: myCustomApiService,
-//             otherValue: 42
-//           }
-//         }
-//       })
-
-//   })
-
-const store = configureStore({
-    reducer: {
-        timebox: timeboxReducer,
-        timeboxList: timeboxesReducer,
-        auth: authentificationReducer,
-        uiElementState: uiElementStateReducer
-    }, 
-    middleware: [thunk.withExtraArgument({ authenticationAPI: AuthenticationAPI,
-                                                                 managedListAPI: new ManagedListAPI(AxiosTimeboxAPI)
-                                                               })]
-});
+import { store } from './redux';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
