@@ -1,13 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit';
 
 import thunk from 'redux-thunk';
-import AuthenticationAPI from './api/FetchAuthenticationAPI';
-import ManagedListAPI from './api/ManagedListAPI';
-import { AxiosTimeboxAPI } from './api/AxiosTimeboxAPI';
-import timeboxReducer/*, * as timeboxeSelectors */ from './redux/timeboxReducer';
-import timeboxesReducer/*, * as timeboxesSelectors */ from './redux/managedListReducer';
-import { authentificationReducer } from './redux/authentificationReducer';
-import uiElementStateReducer from './redux/uiElementStateReducer';
+import AuthenticationAPI from '../api/FetchAuthenticationAPI';
+import ManagedListAPI from '../api/ManagedListAPI';
+import { AxiosTimeboxAPI } from '../api/AxiosTimeboxAPI';
+import { timeboxReducer } /*, * as timeboxeSelectors */ from './timeboxReducer';
+import { timeboxesReducer }/*, * as timeboxesSelectors */ from './managedListReducer';
+import { authentificationReducer } from './authentificationReducer';
+import uiElementStateReducer from './uiElementStateReducer';
 
 
 export const store = configureStore({
