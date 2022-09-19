@@ -30,7 +30,7 @@ root.render(
                 {/* <Route path="/" exact component={Index} /> */}
                 {/* add redirect for first page */}
                 <Route 
-                    path="*"
+                    path="/"
                     element={<Navigate to="/auth" replace/>}
                 />
                 </Routes>

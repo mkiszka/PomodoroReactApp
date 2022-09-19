@@ -1,5 +1,5 @@
 import React from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate  } from "react-router-dom";
 
 // components
 
@@ -11,9 +11,9 @@ import FooterSmall from "components/Footers/FooterSmall.js";
 import Login from "views/auth/Login.js";
 import Register from "views/auth/Register.js";
 
-export default function Auth() { 
-  return (
-    <>
+export default function Auth() {  
+  return (    
+    <>    
       <Navbar transparent />
       <main>
         <section className="relative w-full h-full py-40 min-h-screen">
@@ -21,17 +21,17 @@ export default function Auth() {
             className="absolute top-0 w-full h-full bg-blueGray-800 bg-no-repeat bg-full"
             style={{
               backgroundImage:
-                "url(" + require("assets/img/register_bg_2.png").default + ")",
+                "url(" + require("assets/img/register_bg_2.png") + ")",
             }}
-          ></div>
+          ></div>              
           <Routes>
-            <Route path="login" element={<Login />} />
-            <Route path="register" element={<Register />} />
-            <Route path="*"
-              element={<Navigate to="/auth/login" />}
-            />
+            <Route path="login"  element={<Login/>} />
+            <Route path="register" element={<Register/>} />
+            <Route path="/"
+                element={<Navigate to="/auth/login" />}
+              />
           </Routes>
-          <FooterSmall absolute />s
+          <FooterSmall absolute />
         </section>
       </main>
     </>
