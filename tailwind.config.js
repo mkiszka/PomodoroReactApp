@@ -1,6 +1,13 @@
 const plugin = require("tailwindcss/plugin");
-const colors = require("tailwindcss/colors");
+let colors = require("tailwindcss/colors");
+//https://github.com/tailwindlabs/tailwindcss/issues/4690
+delete colors['lightBlue'];
+delete colors['warmGray'];
+delete colors['trueGray'];
+delete colors['coolGray'];
+delete colors['blueGray'];
 
+//
 module.exports = {
   content: [
     "./public/**/*.html",
@@ -15,6 +22,7 @@ module.exports = {
   theme: {
     colors: {
       ...colors,
+      transparent: 'transparent'
     },
     extend: {
       minHeight: {
