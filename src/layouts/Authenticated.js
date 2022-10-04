@@ -9,7 +9,7 @@ import AuthenticatedApp from "components/AuthenticatedApp";
 
 // views
 
-export default function Auth() {  
+export default function Authenticated() {  
   return (    
     <>    
       <Navbar transparent />

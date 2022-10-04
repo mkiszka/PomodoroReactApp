@@ -64,7 +64,7 @@ function Pomodoro() {
         <>
             <DndProvider backend={HTML5Backend}>
                 <TimeboxCreator onAdd={onAddTimeboxElement} />
-                {hasLoadingError ? <ErrorMessage error={loadingError} /> : ""}
+                {/* {hasLoadingError ? <ErrorMessage error={loadingError} /> : ""}
                 {loading ? <AutoIndicator refresh="10" /> : ""}
                 <CurrentTimebox timebox={currentCountdownElment} />
                 <TimeboxList>
@@ -91,7 +91,7 @@ function Pomodoro() {
                                 onAction={() => { onDeleteTimeboxListElement(timeboxToDelete); handleCancelConfirmDeletion(); }}
                                 onCancel={handleCancelConfirmDeletion} />
                         </ModalComponent>
-                    </Portal> : ""}
+                    </Portal> : ""} */}
             </DndProvider>
         </>
 

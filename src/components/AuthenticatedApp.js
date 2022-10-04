@@ -20,7 +20,7 @@ function AuthenticatedApp() {
             <React.Suspense fallback={'Loading ...'}>
                 {/* <Header className="AppHeader" /> */}
                 {/* <hr /> */}
-                {/* <Pomodoro /> */}
+                <Pomodoro />
                 <InspirationQuoteManager />
             </React.Suspense>
         </AuthenticationContext.Provider>
