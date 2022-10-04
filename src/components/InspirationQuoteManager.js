@@ -1,4 +1,6 @@
 
+import CardSimple from 'layouts/cards/CardSimple';
+import InspirationQuoteContainer from 'layouts/InspirationQuoteContainer';
 import React, { useEffect, useState } from 'react';
 import InspirationQuote from './InspirationQuote';
 //import OverAllInspirationQuote from './OverAllInspirationQuote';
@@ -12,7 +14,7 @@ function InspirationQuoteManager() {
     }, []);
  
     function renderInspirationQuote(author, text, className) {
-        return <InspirationQuote author={author} text={text} className={className} />
+        return <InspirationQuoteContainer><CardSimple shortDescription={author} description={text} /></InspirationQuoteContainer>
     }
     return (<>
         {quote ?
