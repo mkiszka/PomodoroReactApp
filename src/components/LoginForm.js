@@ -1,22 +1,9 @@
-import React, { useRef } from "react";
-import { useUnauthicationContext } from "../hooks/useUnauthenticationContext";
+import React from "react";
 import { IoLogInOutline } from "react-icons/io5";
-
+import { useLoginForm } from "../hooks/useLoginForm";
 function LoginForm(props) {
-    //ki3 - sprawdzić refactor do funkcyjnego    
-    const { onLoginAttempt } = useUnauthicationContext();
-    const emailInput = useRef();
-    const passwordInput = useRef();
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        onLoginAttempt({
-            email: emailInput.current.value,
-            password: passwordInput.current.value
-        });
-        emailInput.current.value = "";
-        passwordInput.current.value = "";
-    }
+    const { emailInput, passwordInput, handleSubmit } = useLoginForm();
 
     return (
         <form onSubmit={handleSubmit} className="LoginForm">
@@ -44,7 +31,7 @@ function LoginForm(props) {
             </div>
             <div>
                 <button>
-                    <IoLogInOutline className="button-active" />                    
+                    <IoLogInOutline className="button-active" />
                 </button>
             </div>
         </form>

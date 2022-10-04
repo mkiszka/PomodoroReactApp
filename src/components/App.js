@@ -1,50 +1,67 @@
 import React from 'react';
 import ErrorBoundary from './ErrorBoundary';
 import LoginForm from './LoginForm';
+import { BrowserRouter, Route, Routes, Navigate, redirect, useNavigate } from 'react-router-dom';
 
-import AuthenticationContext from '../contexts/AuthenticationContext';
+import Auth from "layouts/Auth.js";
+
 import UnauthenticationContext from '../contexts/UnauthenticationContext';
 
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { getPreviousLoginAttemptFailed, isAccessTokenExpired } from '../redux/authentificationActions';
 import { deleteAccessToken, loginToApi } from '../redux/authentificationReducer';
 
-const AuthenticatedApp = React.lazy(() => import('./AuthenticatedApp'));
+const Authenticated = React.lazy(() => import('../layouts/Authenticated'));
 
 //function stateReducer = (state,action) => newState;
 
 function App() {
-    const dispatch = useDispatch();    
-    const previousLoginAttemptFailed = useSelector(getPreviousLoginAttemptFailed);    
-    const isUserLoggedIn = useSelector(isAccessTokenExpired);
-                            
-    function handleLogout() {
-        dispatch(deleteAccessToken())        
-    }
+    
+    const dispatch = useDispatch();
+    const previousLoginAttemptFailed = useSelector(getPreviousLoginAttemptFailed);
+    const isUserLoggedIn = useSelector(isAccessTokenExpired, shallowEqual);
+    const navigate = useNavigate();
 
-    function handleLogin(credencials) {
-       dispatch(loginToApi(credencials));
+    function handleLogin(credencials) {       
+        dispatch(loginToApi(credencials));
+        navigate('/'); //ki5 - czy takie podejście do przekierowania z /old/login lub /auth/login jest prawidłowe
     }
 
     return (
-        <div id="App" className="App">
-            <ErrorBoundary>
-                {isUserLoggedIn ?
-                    //ki4 - czy trzymanie API w contexcie to dobry pomysł? Np gdy używawm mangedListApi w różnych miejscach to nie muszę apamiętać co za każdym razem do konstruktora przekazywać
-                    //gdyby to była większa konfiguracja to by trzeba było za każdym razem tworzyć od nowa.
-                    <AuthenticationContext.Provider value={{ onLogout: handleLogout }}>
-                        <React.Suspense fallback={'Loading ...'}>
-                            <AuthenticatedApp />
-                        </React.Suspense>
-                    </AuthenticationContext.Provider>
-                    :
-                    // ki3 pytanie o w8 l3 i haczyk
+
+        <ErrorBoundary>
+            {/*                
                     <UnauthenticationContext.Provider value={{ onLoginAttempt: handleLogin }}>
                         <LoginForm errorMessage={previousLoginAttemptFailed ? "Masz jakiś problem !" : null} />
                     </UnauthenticationContext.Provider>
-                }
-            </ErrorBoundary>
-        </div>
+                */}
+            
+                <Routes>
+                    {/* add routes with layouts */}
+                    {/* <Route path="/admin" component={Admin} /> */}
+                    <Route path="/auth/*" element={<UnauthenticationContext.Provider value={{ onLoginAttempt: handleLogin }}><Auth /></UnauthenticationContext.Provider>} />
+                    <Route path="/oldLogin" element={<UnauthenticationContext.Provider value={{ onLoginAttempt: handleLogin }}><LoginForm errorMessage={previousLoginAttemptFailed ? "Masz jakiś problem !" : null} /></UnauthenticationContext.Provider>} />
+                    <Route path="/manageYourTime/*" element={<Authenticated/>} />
+                    {/* add routes without layouts */}
+                    {/* <Route path="/landing" exact component={Landing} /> */}
+                    {/* <Route path="/profile" exact component={Profile} /> */}
+                    {/* <Route path="/" exact component={Index} /> */}
+                    {/* add redirect for first page */}
+                    {isUserLoggedIn ?
+                        <Route
+                            path="/"
+                            element={<Navigate to="/manageYourTime" replace />}
+                        />
+
+                        :
+                        <Route
+                            path="/"
+                            element={<Navigate to="/auth" replace />}
+                        />
+                    }
+                </Routes>
+   
+        </ErrorBoundary>
     )
 }
 
