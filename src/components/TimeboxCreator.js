@@ -8,6 +8,7 @@ import { CardContainer } from "layouts/CardContainer";
 import { CardElement } from "layouts/CardElement";
 import CardSimple from "layouts/cards/CardSimple";
 import TimeboxCreatorLayout from "layouts/TimeboxCreatorLayouot";
+import { CardContent } from "layouts/cards/CardContent";
 
 class TimeboxCreator extends React.Component {
 
@@ -45,11 +46,12 @@ class TimeboxCreator extends React.Component {
 
         return (
             this.state.hasError ?
-                <Message summmaryMessage={error.Message} /> :                                
-                <CardContainer>                  
+                <Message summmaryMessage={error.Message} /> :
+                <CardContainer>
                     <CardElement>
-                        <TimeboxCreatorLayout title={title} totalTimeInMinutes={totalTimeInMinutes} formRef={this.form} titleOnChange={this.handleTitleCreatorChange} totalTimeInMinutesOnChange={this.handleTotalTimeInMinutesCreatorChange} />
-                    {/* <form ref={this.form} onSubmit={this.handleSubmit} >a
+                        <CardContent>
+                            <TimeboxCreatorLayout title={title} totalTimeInMinutes={totalTimeInMinutes} formRef={this.form} titleOnChange={this.handleTitleCreatorChange} totalTimeInMinutesOnChange={this.handleTotalTimeInMinutesCreatorChange} />
+                            {/* <form ref={this.form} onSubmit={this.handleSubmit} >a
                         <div>
                             <label>Co robisz ?<input disabled={!isEditable} value={title} type="text"
                                 onChange={this.handleTitleCreatorChange} /></label>
@@ -62,9 +64,10 @@ class TimeboxCreator extends React.Component {
                             </button>
                         </div>
                     </form> */}
+                        </CardContent>
                     </CardElement>
-                    </CardContainer>
-               //</IconContext.Provider>
+                </CardContainer>
+            //</IconContext.Provider>
         );
     }
 }

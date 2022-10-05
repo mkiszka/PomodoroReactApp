@@ -3,8 +3,7 @@ import React from "react";
 export default function TimeboxCreatorLayout({title, totalTimeInMinutes, formRef, titleOnChange, totalTimeInMinutesOnChange }) {
   return (
     <>      
-            <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-blueGray-200 border-0">              
-              <div className="flex-auto px-4 lg:px-10 py-10">                
+             
                 <form ref={formRef}>
                   <div className="relative w-full mb-3">
                     <label
@@ -42,9 +41,7 @@ export default function TimeboxCreatorLayout({title, totalTimeInMinutes, formRef
                       Dodaj
                     </button>
                   </div>
-                </form>
-              </div>
-            </div>          
+                </form>            
     </>
   );
 }
