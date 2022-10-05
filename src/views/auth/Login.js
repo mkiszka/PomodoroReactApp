@@ -1,11 +1,22 @@
 import { useLoginForm } from "hooks/useLoginForm";
-import React from "react";
+import React, { useEffect } from "react";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom/dist";
+import { isAccessTokenExpired } from "redux/authentificationActions";
 
 export default function Login() {
+  const navigate = useNavigate();
 
   const { emailInput, passwordInput, handleSubmit } = useLoginForm();
-
+  const isUserLoggedIn = useSelector(isAccessTokenExpired);
+  useEffect(() => {
+    if(isUserLoggedIn) {
+      navigate('/');
+    }
+  },[navigate, isUserLoggedIn])
+    
+  
   return (
     <>
       <div className="container mx-auto px-4 h-full"> 

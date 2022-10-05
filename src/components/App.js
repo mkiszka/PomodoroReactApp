@@ -19,7 +19,7 @@ function App() {
     
     const dispatch = useDispatch();
     const previousLoginAttemptFailed = useSelector(getPreviousLoginAttemptFailed);
-    const isUserLoggedIn = useSelector(isAccessTokenExpired, shallowEqual);
+    const isUserLoggedIn = useSelector(isAccessTokenExpired/*, shallowEqual*/);
     const navigate = useNavigate();
 
     function handleLogin(credencials) {       
