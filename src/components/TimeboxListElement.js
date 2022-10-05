@@ -86,33 +86,41 @@ function TimeboxListElement({ timebox, onSave, onDelete, onStart, onMoveElement 
     <div
       ref={(node) => drag(drop(node))}
       style={{ opacity }}
-    > {(() => {
-     
-      switch (uiState) {
-
-        case TIMEBOXLISTELEMENT_STATE.EDITABLE:
-          return <EditableTimeboxListElement
-            timebox={timebox}
-            onSave={handleSave}
-            onCancel={handleCancel}
-          />
-        case TIMEBOXLISTELEMENT_STATE.FROZEN:
-          return <FrozeTimeboxListElement timebox={timebox} />
-        case TIMEBOXLISTELEMENT_STATE.NONEDITABLE:
-        default:
-          return <NonEditableTimeboxListElement
-            timebox={timebox}
-            onEdit={handleEdit}
-            onDelete={onDelete}
-            onStart={onStart}
-          />
-      }
-    })()
-      }
+    >
+      <TimeboxListElementState state={uiState} timebox={timebox} handleSave={handleSave} handleCancel={handleCancel} handleEdit={handleEdit} onDelete={onDelete} onStart={onStart} />
     </div>
   )
 }
+//TODO - na zewnątrz
+function TimeboxListElementState({
+  state, 
+  timebox,
+  handleSave, handleCancel, handleEdit, onDelete, onStart, //TODO zmiana nazwenictwa na onSave itd
+  
+}) {
 
+
+  switch (state) {
+//<DIV_D&D>
+    case TIMEBOXLISTELEMENT_STATE.EDITABLE:
+      return <EditableTimeboxListElement
+        timebox={timebox}
+        onSave={handleSave}
+        onCancel={handleCancel}
+      />
+    case TIMEBOXLISTELEMENT_STATE.FROZEN:
+      return <FrozeTimeboxListElement timebox={timebox} />
+    case TIMEBOXLISTELEMENT_STATE.NONEDITABLE:
+    default:
+      return <NonEditableTimeboxListElement
+        timebox={timebox}
+        onEdit={handleEdit}
+        onDelete={onDelete}
+        onStart={onStart}
+      />
+  }
+
+}
 TimeboxListElement.defaultProps = {
 
   timebox: { uid: uuidv4(), title: "Default title", totalTimeInMinutes: 3 },

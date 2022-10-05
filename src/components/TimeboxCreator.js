@@ -4,8 +4,10 @@ import { IconContext } from "react-icons/";
 import { IoAddCircleOutline } from "react-icons/io5";
 import Message from "./Message";
 import PropTypes from "prop-types";
-import InspirationQuoteContainer from "layouts/InspirationQuoteContainer";
+import { CardContainer } from "layouts/CardContainer";
+import { CardElement } from "layouts/CardElement";
 import CardSimple from "layouts/cards/CardSimple";
+import TimeboxCreatorLayout from "layouts/TimeboxCreatorLayouot";
 
 class TimeboxCreator extends React.Component {
 
@@ -14,7 +16,7 @@ class TimeboxCreator extends React.Component {
         this.formRef = React.createRef();
         this.state = {
             hasError: false,
-            title: 'Ucze się tego i tamtego?',
+            title: '',
             totalTimeInMinutes: 25
         }
     }
@@ -43,13 +45,11 @@ class TimeboxCreator extends React.Component {
 
         return (
             this.state.hasError ?
-                <Message summmaryMessage={error.Message} /> :
-                
-                <IconContext.Provider><InspirationQuoteContainer>
-                    <CardSimple description="test" shortDescription="nie test" />
-                    {/* className={`TimeboxCreator ${isEditable ? "" : "inactive"}`} */}
-                    <>
-                    <form ref={this.form} onSubmit={this.handleSubmit} >a
+                <Message summmaryMessage={error.Message} /> :                                
+                <CardContainer>                  
+                    <CardElement>
+                        <TimeboxCreatorLayout title={title} totalTimeInMinutes={totalTimeInMinutes} formRef={this.form} titleOnChange={this.handleTitleCreatorChange} totalTimeInMinutesOnChange={this.handleTotalTimeInMinutesCreatorChange} />
+                    {/* <form ref={this.form} onSubmit={this.handleSubmit} >a
                         <div>
                             <label>Co robisz ?<input disabled={!isEditable} value={title} type="text"
                                 onChange={this.handleTitleCreatorChange} /></label>
@@ -58,13 +58,13 @@ class TimeboxCreator extends React.Component {
                         </div>
                         <div>
                             <button type="submit">
-                                {/* <IoAddCircleOutline disabled={!isEditable} className={`${isEditable ? "button-active" : "button-inactive"}`} /> */}
+                                  <IoAddCircleOutline disabled={!isEditable} className={`${isEditable ? "button-active" : "button-inactive"}`} />  
                             </button>
                         </div>
-                    </form>
-                    </>
-                    </InspirationQuoteContainer>
-                </IconContext.Provider>
+                    </form> */}
+                    </CardElement>
+                    </CardContainer>
+               //</IconContext.Provider>
         );
     }
 }
