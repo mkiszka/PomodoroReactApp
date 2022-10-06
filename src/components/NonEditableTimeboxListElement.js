@@ -29,8 +29,7 @@ function NonEditableTimeboxListElement({ timebox, onEdit, onDelete, onStart }) {
   
   return (
     <div      
-      role={"listitem"}
-      className={"Timebox TimeboxListElement"}
+      role={"listitem"}    
       >
       <div className="TimeboxListElementTitle">{timebox.title}</div>
       <div className="TimeboxListElementTime">{timebox.totalTimeInMinutes} min.</div>

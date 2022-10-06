@@ -12,6 +12,8 @@ import { rememberOrder, updateElementsOrderToApi } from '../redux/managedListAct
 
 import { TIMEBOXLISTELEMENT_STATE } from '../redux/TIMEBOXLISTELEMENT_STATE';
 import useUIElementState from '../hooks/useUIElementState';
+import { CardContainerElement } from 'layouts/CardContainerElement';
+import { CardContent } from 'layouts/cards/CardContent';
 
 //ki3 czy o to chodziło ? komponent główny i w środku dwa, edytowalny i nie edytowlny??
 //     czy TimeboxListElement wywalić i ....
@@ -83,41 +85,48 @@ function TimeboxListElement({ timebox, onSave, onDelete, onStart, onMoveElement 
   //opcja - div tylko dla dragging ? ale jak lepiej ?
   //TODO refaktor na jeden typ zamiast isFrozen i isEditable
   return (
-    <div
+    <span
       ref={(node) => drag(drop(node))}
       style={{ opacity }}
     >
-      <TimeboxListElementState state={uiState} timebox={timebox} handleSave={handleSave} handleCancel={handleCancel} handleEdit={handleEdit} onDelete={onDelete} onStart={onStart} />
-    </div>
+      <TimeboxListElementState state={uiState} timebox={timebox} onSave={handleSave} onCancel={handleCancel} onEdit={handleEdit} onDelete={onDelete} onStart={onStart} />
+  </span> 
   )
 }
 //TODO - na zewnątrz
 function TimeboxListElementState({
-  state, 
+  state,
   timebox,
-  handleSave, handleCancel, handleEdit, onDelete, onStart, //TODO zmiana nazwenictwa na onSave itd
-  
+  onSave, 
+  onCancel,
+  onEdit, 
+  onDelete, 
+  onStart,
+
 }) {
 
 
   switch (state) {
-//<DIV_D&D>
+    //<DIV_D&D>
     case TIMEBOXLISTELEMENT_STATE.EDITABLE:
-      return <EditableTimeboxListElement
-        timebox={timebox}
-        onSave={handleSave}
-        onCancel={handleCancel}
-      />
+      return <CardContainerElement>
+        <CardContent>
+          <EditableTimeboxListElement
+            timebox={timebox}
+            onSave={onSave}
+            onCancel={onCancel}
+          />
+        </CardContent></CardContainerElement>
     case TIMEBOXLISTELEMENT_STATE.FROZEN:
-      return <FrozeTimeboxListElement timebox={timebox} />
+      return <CardContainerElement><CardContent><FrozeTimeboxListElement timebox={timebox} /></CardContent></CardContainerElement>
     case TIMEBOXLISTELEMENT_STATE.NONEDITABLE:
     default:
-      return <NonEditableTimeboxListElement
+      return <CardContainerElement><CardContent><NonEditableTimeboxListElement
         timebox={timebox}
-        onEdit={handleEdit}
+        onEdit={onEdit}
         onDelete={onDelete}
         onStart={onStart}
-      />
+      /></CardContent></CardContainerElement>
   }
 
 }

@@ -26,7 +26,6 @@ function EditableTimeboxListElement({ timebox, onSave, onCancel }) {
   return (
     <div
       role={"listitem"}
-      className={"Timebox TimeboxListElement"}
     >
       <div className="TimeboxListElementTitle"><textarea value={insideTimebox.title} onChange={(event) => { handleTitleChange(event) }} /></div>
       <div className="TimeboxListElementTime"><input value={insideTimebox.totalTimeInMinutes} onChange={(event) => { handleTotalTimeInMinutesChange(event) }} type="number" />min.</div>
