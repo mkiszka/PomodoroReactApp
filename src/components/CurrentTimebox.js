@@ -8,7 +8,7 @@ import { getElapsedTimeInMiliSeconds, getPausesCount, isPaused, isRunning } from
 import { timeboxInitializeTimerState, timeboxPause, timeboxPlay, timeboxStop, timeboxUpdateTimer } from '../redux/timeboxActions';
 import { connect, ReactReduxContext } from 'react-redux';
 import { CardContainer } from 'layouts/CardContainer';
-import { CardElement } from 'layouts/CardElement';
+import { CardContainerElement } from 'layouts/CardContainerElement';
 import CardSimple from 'layouts/cards/CardSimple';
 import { CardContent } from 'layouts/cards/CardContent';
 //TODO 4 refaktor - na kilka komponentów jako reprezentacja stanu
@@ -108,7 +108,7 @@ class InternalCurrentTimebox extends React.Component {
         return (
         <div data-testid={"Timebox"} className={`Timebox  ${isEditable ? "" : "inactive"}`}>
             <CardContainer>
-                <CardElement>
+                <CardContainerElement>
                     <CardContent>
                         <h1>{timeboxTitle}</h1>
                         <h4>Liczba przerw: {pausesCount}</h4>
@@ -133,7 +133,7 @@ class InternalCurrentTimebox extends React.Component {
                             <IoStopCircleOutline className={classNameOfButton} />
                         </button>
                     </CardContent>
-                </CardElement>
+                </CardContainerElement>
             </CardContainer>
         </div >);
     }

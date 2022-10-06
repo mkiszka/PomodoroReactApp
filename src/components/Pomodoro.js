@@ -10,24 +10,27 @@ import ModalComponent from './ModalComponent';
 import ButtonMessage from './ButtonMessage';
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
-import { useCallback,  useState } from "react";
+import { useCallback, useState } from "react";
 import { useManagedList } from "../hooks/useManagedList";
 
 import { useAuthenticationContext } from "../hooks/useAuthenticationContext";
 import { getLoadingError, isLoadingError, isLoading, getAllElements, getCurrentCountdownElement } from "../redux/managedListReducer";
 import { useDispatch, useSelector } from "react-redux/es/exports";
+import { CardContainer } from "layouts/CardContainer";
+import { CardContainerElement } from "layouts/CardContainerElement";
+import { CardContent } from "layouts/cards/CardContent";
 
 
 const AutoIndicator = withAutoIndicator(ProgressBar);
 
-function Pomodoro() {        
-    const dispatch = useDispatch();    
-    
+function Pomodoro() {
+    const dispatch = useDispatch();
+
     const { accessToken: apiAccessToken, managedListAPI } = useAuthenticationContext();
 
-   
 
-    const {        
+
+    const {
         handleAddListElement: onAddTimeboxElement,
         handleDeleteListElement: onDeleteTimeboxListElement,
         handleSaveListElement: onSaveTimeboxListElement,
@@ -68,20 +71,24 @@ function Pomodoro() {
                 {loading ? <AutoIndicator refresh="10" /> : ""}
                 <CurrentTimebox timebox={currentCountdownElment} />
                 <TimeboxList>
-                    {elements?.map((elem, index) => {
-                        elem.order = index;
-                        return (
-                            <TimeboxListElement
-                                key={elem.uid}
-                                timebox={elem}
-                                onSave={onSaveTimeboxListElement}
-                                onDelete={handleConfirmDeletion}
-                                onStart={onStartTimeboxListElement}
-                                onMoveElement={onMoveListElement}
-                            />
-                        );
-                    })
-                    }
+                    <CardContainer>
+                        {elements?.map((elem, index) => {
+                            elem.order = index;
+                            return (
+                                
+                                        <TimeboxListElement
+                                            key={elem.uid}
+                                            timebox={elem}
+                                            onSave={onSaveTimeboxListElement}
+                                            onDelete={handleConfirmDeletion}
+                                            onStart={onStartTimeboxListElement}
+                                            onMoveElement={onMoveListElement}
+                                        />
+                                 
+                            );
+                        })
+                        }
+                    </CardContainer>
                 </TimeboxList>
                 {timeboxToDelete ?
                     <Portal>
@@ -91,7 +98,7 @@ function Pomodoro() {
                                 onAction={() => { onDeleteTimeboxListElement(timeboxToDelete); handleCancelConfirmDeletion(); }}
                                 onCancel={handleCancelConfirmDeletion} />
                         </ModalComponent>
-                    </Portal> : ""} 
+                    </Portal> : ""}
             </DndProvider>
         </>
 

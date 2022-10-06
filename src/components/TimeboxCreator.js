@@ -5,7 +5,7 @@ import { IoAddCircleOutline } from "react-icons/io5";
 import Message from "./Message";
 import PropTypes from "prop-types";
 import { CardContainer } from "layouts/CardContainer";
-import { CardElement } from "layouts/CardElement";
+import { CardContainerElement } from "layouts/CardContainerElement";
 import CardSimple from "layouts/cards/CardSimple";
 import TimeboxCreatorLayout from "layouts/TimeboxCreatorLayouot";
 import { CardContent } from "layouts/cards/CardContent";
@@ -48,7 +48,7 @@ class TimeboxCreator extends React.Component {
             this.state.hasError ?
                 <Message summmaryMessage={error.Message} /> :
                 <CardContainer>
-                    <CardElement>
+                    <CardContainerElement>
                         <CardContent>
                             <TimeboxCreatorLayout title={title} totalTimeInMinutes={totalTimeInMinutes} formRef={this.form} titleOnChange={this.handleTitleCreatorChange} totalTimeInMinutesOnChange={this.handleTotalTimeInMinutesCreatorChange} />
                             {/* <form ref={this.form} onSubmit={this.handleSubmit} >a
@@ -65,7 +65,7 @@ class TimeboxCreator extends React.Component {
                         </div>
                     </form> */}
                         </CardContent>
-                    </CardElement>
+                    </CardContainerElement>
                 </CardContainer>
             //</IconContext.Provider>
         );
