@@ -9,7 +9,7 @@ export const CardContainerDraggable = memo(({ children }) => {
   return (<>
     <div ref={drop} className="relative bg-lightBlue-600 md:pt-32 pb-32 pt-12">
       <div className="px-4 md:px-10 mx-auto w-full">
-        <div className="flex flex-wrap justify-center">
+        <div className="flex flex-col items-center">
           {children}
         </div>
       </div>
