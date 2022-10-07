@@ -108,15 +108,15 @@ class InternalCurrentTimebox extends React.Component {
         <div data-testid={"Timebox"} className={`Timebox  ${isEditable ? "" : "inactive"}`}>
             <CardContainer>
                 <CardContainerElement>
-                    <CardContent>
-                        <h1>{timeboxTitle}</h1>
-                        <h4>Liczba przerw: {pausesCount}</h4>
+                    <CardContent>                    
+                        <h1 className="block uppercase text-blueGray-600 text-lg font-bold mb-2">{timeboxTitle}</h1>
+                        <h4 className="block uppercase text-blueGray-600 text-xs font-bold mb-2">Liczba przerw: {pausesCount}</h4>
                         <Clock keyPrefix="clock1"
                             hours={hoursLeft}
                             minutes={minutesLeft}
                             seconds={secondsLeft}
                             miliseconds={milisecondsLeft}
-                            className={"TimeboxClock " + (isPaused(state) ? "inactive" : "")} />
+                            className={"block uppercase text-red-600 text-lg font-bold mb-2 TimeboxClock " + (isPaused(state) ? "inactive" : "")} />
                         <ProgressBar
                             percent={progressInPercent} className={isPaused(state) ? "inactive" : ""} trackRemaining={false} ariaLabel={progressBarAriaLabel} />
                         {isPaused(state) || !isRunning(state) ?

@@ -17,11 +17,11 @@ function AuthenticatedApp() {
     }
     return <>
         <AuthenticationContext.Provider value={{ onLogout: handleLogout }}>
-            <div class="relative bg-lightBlue-600 md:pt-32 pb-32 pt-12">
+            <div className="relative bg-lightBlue-600 md:pt-32 pb-32 pt-12">
                 <button style={{ backgroundColor: "red" }} onClick={handleLogout}>test logout</button>
             </div>
             <React.Suspense fallback={'Loading ...'}>
-            <div class="relative bg-lightBlue-600 md:pt-32 pb-32 pt-12">
+            <div className="relative bg-lightBlue-600 md:pt-32 pb-32 pt-12">
                 <Header className="AppHeader" />
                 </div>
                 {/* <hr /> */}
