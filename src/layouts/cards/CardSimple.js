@@ -11,12 +11,12 @@ export default function CardSimple({
         <div className="flex-auto p-4">
           <div className="flex flex-wrap">
             <div className="relative w-full pr-4 max-w-full flex-grow flex-1">            
-              <span className="font-semibold text-xl text-blueGray-700">
+              <span className="font-semibold text-xl text-sky-700">
                 {description}
               </span>
             </div>            
           </div>
-          <p className="text-sm text-blueGray-400 mt-4">            
+          <p className="text-sm text-sky-400 mt-4">            
             <span className="whitespace-nowrap">{shortDescription}</span>
           </p>
         </div>

@@ -109,8 +109,8 @@ class InternalCurrentTimebox extends React.Component {
             <CardContainer>
                 <CardContainerElement>
                     <CardContent>                    
-                        <h1 className="block uppercase text-blueGray-600 text-lg font-bold mb-2">{timeboxTitle}</h1>
-                        <h4 className="block uppercase text-blueGray-600 text-xs font-bold mb-2">Liczba przerw: {pausesCount}</h4>
+                        <h1 className="block uppercase text-sky-600 text-lg font-bold mb-2">{timeboxTitle}</h1>
+                        <h4 className="block uppercase text-sky-600 text-xs font-bold mb-2">Liczba przerw: {pausesCount}</h4>
                         <Clock keyPrefix="clock1"
                             hours={hoursLeft}
                             minutes={minutesLeft}

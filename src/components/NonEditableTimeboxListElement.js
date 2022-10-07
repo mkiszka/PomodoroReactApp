@@ -28,12 +28,12 @@ function NonEditableTimeboxListElement({ timebox, onEdit, onDelete, onStart }) {
   
   
   return (
-    <div      
+    <div className="flex flex-row align-bottom"
       role={"listitem"}    
       >
-      <div className="TimeboxListElementTitle">{timebox.title}</div>
-      <div className="TimeboxListElementTime">{timebox.totalTimeInMinutes} min.</div>
-      <div className="TimeboxListElementAction">
+      <div className="w-6/12">{timebox.title}</div>
+      <div className="lg:w-3/12 xl:w-2/6 px-4">{timebox.totalTimeInMinutes} min.</div>
+      <div className="flex flex-row lg:w-3/12 xl:w-1/6 px-4">
         <IoMenu title="edytuj" className="button-active" onClick={handleEdit} />
         <IoTrashOutline title="usuń" className="button-active" onClick={handleDelete} />
         <IoPushOutline title="start" className="button-active" onClick={handleStart} />
