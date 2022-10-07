@@ -1,12 +1,9 @@
 import React from "react";
 import { v4 as uuidv4 } from "uuid";
-import { IconContext } from "react-icons/";
-import { IoAddCircleOutline } from "react-icons/io5";
 import Message from "./Message";
 import PropTypes from "prop-types";
-import { CardContainer } from "layouts/CardContainer";
-import { CardContainerElement } from "layouts/CardContainerElement";
-import CardSimple from "layouts/cards/CardSimple";
+import { CardContainer } from "layouts/cards/CardContainer";
+import { CardContainerElement } from "layouts/cards/CardContainerElement";
 import TimeboxCreatorLayout from "layouts/TimeboxCreatorLayouot";
 import { CardContent } from "layouts/cards/CardContent";
 
@@ -41,7 +38,7 @@ class TimeboxCreator extends React.Component {
     }
 
     render() {
-        const { isEditable } = this.props;
+//        const { isEditable } = this.props;
         const { /*hasError,*/ error, title, totalTimeInMinutes } = this.state;
 
         return (

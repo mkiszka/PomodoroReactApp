@@ -1,7 +1,7 @@
 
 import CardSimple from 'layouts/cards/CardSimple';
-import { CardContainer } from 'layouts/CardContainer';
-import { CardContainerElement } from "layouts/CardContainerElement";
+import { CardContainer } from 'layouts/cards/CardContainer';
+import { CardContainerElement } from "layouts/cards/CardContainerElement";
 import React, { useEffect, useState } from 'react';
 //import OverAllInspirationQuote from './OverAllInspirationQuote';
 

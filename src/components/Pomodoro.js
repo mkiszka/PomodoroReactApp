@@ -1,5 +1,4 @@
 import CurrentTimebox from "./CurrentTimebox";
-import TimeboxList from "./TimeboxList";
 import TimeboxListElement from "./TimeboxListElement";
 import TimeboxCreator from "./TimeboxCreator";
 import ErrorMessage from "./ErrorMessage";
@@ -16,9 +15,8 @@ import { useManagedList } from "../hooks/useManagedList";
 import { useAuthenticationContext } from "../hooks/useAuthenticationContext";
 import { getLoadingError, isLoadingError, isLoading, getAllElements, getCurrentCountdownElement } from "../redux/managedListReducer";
 import { useDispatch, useSelector } from "react-redux/es/exports";
-import { CardContainer } from "layouts/CardContainer";
-import { CardContainerElement } from "layouts/CardContainerElement";
-import { CardContent } from "layouts/cards/CardContent";
+import { CardContainerDraggableElement } from "layouts/cards/CardContainerDraggableElement";
+import { CardContainerDraggable } from "layouts/cards/CardContainerDraggable";
 
 
 const AutoIndicator = withAutoIndicator(ProgressBar);
@@ -70,26 +68,25 @@ function Pomodoro() {
                 {hasLoadingError ? <ErrorMessage error={loadingError} /> : ""}
                 {loading ? <AutoIndicator refresh="10" /> : ""}
                 <CurrentTimebox timebox={currentCountdownElment} />
-                <TimeboxList>
-                    <CardContainer>
-                        {elements?.map((elem, index) => {
-                            elem.order = index;
-                            return (
-                                
-                                        <TimeboxListElement
-                                            key={elem.uid}
-                                            timebox={elem}
-                                            onSave={onSaveTimeboxListElement}
-                                            onDelete={handleConfirmDeletion}
-                                            onStart={onStartTimeboxListElement}
-                                            onMoveElement={onMoveListElement}
-                                        />
-                                 
-                            );
-                        })
-                        }
-                    </CardContainer>
-                </TimeboxList>
+                <CardContainerDraggable>
+                    {elements?.map((elem, index) => {
+                        elem.order = index;
+                        return (
+                            <CardContainerDraggableElement uid={elem.uid} onMoveElement={onMoveListElement} >
+                                <TimeboxListElement
+                                    key={elem.uid}
+                                    timebox={elem}
+                                    onSave={onSaveTimeboxListElement}
+                                    onDelete={handleConfirmDeletion}
+                                    onStart={onStartTimeboxListElement}
+
+                                />
+                            </CardContainerDraggableElement>
+
+                        );
+                    })
+                    }
+                </CardContainerDraggable>
                 {timeboxToDelete ?
                     <Portal>
                         <ModalComponent>

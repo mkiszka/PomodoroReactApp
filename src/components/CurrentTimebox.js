@@ -7,9 +7,8 @@ import { convertMiliSecondsToMiliSecondsSecondMinutesHours } from '../utilities/
 import { getElapsedTimeInMiliSeconds, getPausesCount, isPaused, isRunning } from '../redux/timeboxReducer';
 import { timeboxInitializeTimerState, timeboxPause, timeboxPlay, timeboxStop, timeboxUpdateTimer } from '../redux/timeboxActions';
 import { connect, ReactReduxContext } from 'react-redux';
-import { CardContainer } from 'layouts/CardContainer';
-import { CardContainerElement } from 'layouts/CardContainerElement';
-import CardSimple from 'layouts/cards/CardSimple';
+import { CardContainer } from 'layouts/cards/CardContainer';
+import { CardContainerElement } from 'layouts/cards/CardContainerElement';
 import { CardContent } from 'layouts/cards/CardContent';
 //TODO 4 refaktor - na kilka komponentów jako reprezentacja stanu
 class InternalCurrentTimebox extends React.Component {
